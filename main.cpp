@@ -1,44 +1,59 @@
 //Software Technik Projekt Gruppe1
 #include <stdio.h>
+#include <string> //??!?
 #include <string.h>
 #include <iostream>
 using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
 int main() {
-    char answer;
+    std::string answer{};
     bool repeat = true;
-    /*
-    printf("************************\n");
-    printf("Willkommen zum Musikplayer!\n");
-    printf("Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ");*/
-    /*scanf("%c", myinput);
-    printf("%c", myinput); //testtest
-    */
-
 
 
 
     while (repeat) {
         cout << "\nMoechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ";
         cin >> answer;
-
-        if (answer == 'ja' || answer == 'Ja' || answer == 'JA') {
+        cout << answer; //testtest
+        
+            if (answer == "ja") {
             repeat = false;
+            //bibliothek initialisieren
             cout << "\nGeben sie den Namen der zu initialisierenden Playlist ein:\n" << endl; // sprache zu kompliziert fuer den benutzer??
-            //hier kommt der musikplayer
-            cout << "answer=ja" << endl;
+            
+            cout << "answer=ja" << endl; //testtest
             
         }
-        }if (answer == 'nein' || answer =='Nein' || answer == 'NEIN') {
+        
+            }if (answer == "nein") {
             repeat = false;   
-            cout << "answer=nein" << endl;
-        } /*else {
-            //nichts es geht von selbst weiter
-        }*/
+            //bibliothek NICHT initialisieren
+            //hier soll es normal mit dem musikplayer weitergehen
 
-    /*
+            cout << "answer=nein" << endl; //testtesttest
+        } /*else {  //nichts es geht von selbst weiter  }*/
+
+    return 0;
+}
+
+
+    /*    printf("************************\n");
+    printf("Willkommen zum Musikplayer!\n");
+    printf("Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ");
+    /*scanf("%c", myinput);
+    printf("%c", myinput); //testtest
+    
+    
+    //if (answer == 'ja' || answer == 'Ja' || answer == 'JA') {
+    
+    //}if (answer == 'nein' || answer =='Nein' || answer == 'NEIN') {
+
+
     if(myinput=='ja') {
-        //bibliothek initialisieren
+        
         printf("\nGeben sie den Namen der zu initialisierenden Playlist ein:\n"); // sprache zu kompliziert fuer den benutzer??
 
     } else {
@@ -54,13 +69,9 @@ int main() {
         printf("hdahsfhdfsdo\n");
         printf("Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein):");
         scanf("%s", myinput);
-    }*/
-
-    return 0;
-}
+    }
 
 
-/*/
 bool myinitialize(char *pointerFile) {
     FILE *initFile;
     //Bibiliothek initialisieren und status(erfolg/fehler) zurueckgeben!
