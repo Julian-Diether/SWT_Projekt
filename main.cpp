@@ -21,8 +21,7 @@ int main() {
     while (repeat) {
         cout << "\nMoechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ";
         cin >> answer;
-        cout << answer << endl; //testtest
-        cout << mynein;
+        //cout << answer << endl; //testtest
         
             if (strcasecmp(answer, myja) == 0) {//if (answer == "ja") {
             repeat = false;
