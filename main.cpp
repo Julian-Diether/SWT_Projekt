@@ -9,33 +9,36 @@ using std::cin;
 using std::endl;
 
 int main() {
-    std::string answer{};
+    char answer[20];
+    //std::string answer{};
     bool repeat = true;
-
+    const char* mynein = "nein";
+    const char* myja = "ja";
+    //std::string mynein = "nein";
+    //std::string myja = "ja";
 
 
     while (repeat) {
         cout << "\nMoechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ";
         cin >> answer;
-        cout << answer; //testtest
+        cout << answer << endl; //testtest
+        cout << mynein;
         
-            if (answer == "ja") {
+            if (strcasecmp(answer, myja) == 0) {//if (answer == "ja") {
             repeat = false;
             //bibliothek initialisieren
             cout << "\nGeben sie den Namen der zu initialisierenden Playlist ein:\n" << endl; // sprache zu kompliziert fuer den benutzer??
             
             cout << "answer=ja" << endl; //testtest
             
-        }
-        
-            }if (answer == "nein") {
+        } if (strcasecmp(answer, mynein) == 0) {
             repeat = false;   
             //bibliothek NICHT initialisieren
             //hier soll es normal mit dem musikplayer weitergehen
 
             cout << "answer=nein" << endl; //testtesttest
         } /*else {  //nichts es geht von selbst weiter  }*/
-
+    }
     return 0;
 }
 
