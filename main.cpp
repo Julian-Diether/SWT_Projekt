@@ -8,6 +8,7 @@
 #include "nlohmann/json.hpp"//nlohmann json bibliothek
 //inkludieren anderer programmteile!!
 #include "fileops.cpp"//
+#include "menu.cpp"
 //json bibiliothek
 using json = nlohmann::json;
 //cpp sachen??!
@@ -16,8 +17,8 @@ using std::cout;
 using std::cin;
 using std::endl;
 //initialisierung eigener funktionen
-void myinitialize();
-void myopenfile();
+/*void myinitialize();
+void myopenfile();brauchenwirnicht*/
 
 
 
@@ -27,8 +28,10 @@ int main() {
     std::string myja = "ja";    brauchen wir das noch? eigentlich nicht*/
 
     //begruesssungsnachricht mit wichtigsten infos zur bedienung einfuegen?!
+    welcome_msg(); //Greetings at the programm start
+    main_menu();
 
-    myinitialize();
+    //myinitialize();
     //ggfs variable anlegen um zu wissen ob initialisiert wurde oder nicht und dann anderen programmablauf durchfuehren??
 
     //------------------------------------
