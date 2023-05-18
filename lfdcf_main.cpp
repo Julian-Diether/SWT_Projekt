@@ -1,4 +1,4 @@
-//Software Technik Projekt Gruppe1
+//Software Technik Projekt Gruppe 1
 
 //inkludieren saemtlicher bibliotheken
 #include <string> 
