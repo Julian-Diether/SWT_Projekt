@@ -21,6 +21,9 @@ using std::endl;
 /*void myinitialize();
 void myopenfile();brauchenwirnicht*/
 
+//deklarierung globaler variablen
+std::string mypath = "playlists/"; //PFAD ZUM PLAYLIST ORDNER! immer aktuell halten! ggfs. spaeter in einstellungen aenderbar
+
 //----------------------
 //wichtig damit programm jederzeit beendet werden kann! IMMER HINZUFUEGEN WENN ETWAS EINGELESEN WIRD!!!
 //  wenn char eingelesen wird:

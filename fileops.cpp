@@ -17,6 +17,7 @@ using std::cin;
 using std::endl;
 
 //deklarierung globaler variablen
+extern std::string mypath;
 /*const char* mynein = "nein";
 const char* myja = "ja"; brauchen wir zum glueck doch nicht*/
 
@@ -69,41 +70,38 @@ void myopenfile() {
         cin >> filename; const char* answer=filename.c_str(); if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
 
         if (filename.find(".json") != std::string::npos) {
-
-            cout << "test1 test1";
-            //hier passiert alles?!
-
+            //cout << "test1 test1";
+            //.json ist schon angefuegt! hier passiert alles
         } else {
             std::swap(filename, filename2);//filename2 = filename
-            std::string filename = filename2 + ".json";// an dateiname wird dateiendung angefuegt
-            cout << filename;//test
+            filename = filename2 + ".json";// an dateiname wird dateiendung .json angefuegt
+            //cout << filename;//test
         }
+        cout << "\tDie Datei " << filename << " wird geoeffnet." << endl;//WARUM FUNKTIONIERT DAS NICHT???
 
-        cout << filename << endl;//test
         //stand jetzt haben wir einen vielleicht gueltigen dateiname. datei wird nun geoeffnet
         try {
-            std::ifstream file(filename);
+            std::ifstream file(mypath + filename);
             //oeffnen der .json datei^^ (in einem sicheren umfeld --> kein absturz)
             if (!file.is_open()) {
                 std::cerr << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
-            } //fehler, wenn datei nicht geoeffnet werden konnte??
+            } //fehler, wenn datei nicht geoeffnet werden konnte
             
             repeat = false; //erst nachden file.is_open = true ist. danach bei fehler wieder geaendert
             nlohmann::json jsonContent;
-            file >> jsonContent;
-            //cout << "funktioniert das?";
-
-            //hier ueberpruefen ob die datei leer ist oder inkorrekt geoeffnet wurde!! absturz des programmes verhindern und den nutzer erneut versuchen lassen
-
+            file >> jsonContent;//datei wird ausgelesen und in program als 'file' gespeichert!
+            cout << "\t\tPlaylist wurde geoeffnet";
+            
             //jsonContent[0][]?
+
             //wie genau benenne ich die dateitypen?? mit namen oder dateitypen? muss ich das ganze in eine ober kategorie??
             //wie suche ich spaeter die einzelnen metadaten?? muss ich die werte fuer die liste 'sterilisieren' um probleme zu verhindern?
 
-        //falls ein fehler auftritt gibt wird hier die meldung abgegeben
         } catch (const std::exception& e) {
             repeat = true;
             cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << endl << e.what() << endl;
-            //hier gab es einen fehler beim einlesen? der datei. "wenden sie sich mit folgender fehlermeldung an den support"
+            //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
+            //("wenden sie sich mit folgender fehlermeldung an den support")?
         }
     }
 

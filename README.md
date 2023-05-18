@@ -26,3 +26,11 @@ songtitel, kuenstler, album, jahr, laenge des titels?, genre, explicit(y/n)?
 -hinzufuegen der 'beenden' funktion zu jedem zeitpunkt!
     (fuer spaeter: kann das eleganter geloest werden??)
 
+-fertigstellung der funktion um dateien zu oeffnen
+    seperater pfad, der in main veraenderbar ist
+    mehr informationen fuer den benutzer
+
+-teilweise uebersetzung von menu.cpp auf deustsch und zusammenfuehrung mit main.cpp und fileops.cpp
+
+todo:inputs in menu.cpp gegebenenfalls als char speichern um probleme bei eingabe von buchstaben zu vermeiden!
+

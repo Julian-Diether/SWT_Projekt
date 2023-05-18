@@ -13,11 +13,11 @@ using json = nlohmann::json;
 //initialisierung eigener funktionen
 void welcome_msg();
 void run_last_library();
-void load_library();
+//void load_library();
 void add_library();
 void create_library();
 void song_management();
-void turn_off();
+//void turn_off();
 void add_song();
 void modify_song();
 void search_song();
@@ -25,8 +25,10 @@ void delete_song();
 void return_main();
 void main_menu();
 int input_validation(int option_num);
-//void myinitialize();
-//void myopenfile();
+
+//void myinitialize();//brauchen wir nicht da in main initialisiert wird!
+void myopenfile();
+
 
 //Main menu functions
 void welcome_msg()
@@ -41,11 +43,11 @@ void run_last_library()
     cout << "Run last lib selected" << endl;
     main_menu();
 }
-void load_library()
+/*void load_library()
 {
     cout << "Load lib selected" << endl;
     main_menu();
-}
+}*/
 void add_library()
 {
     cout << "Add lib selected" << endl;
@@ -56,10 +58,10 @@ void create_library()
     cout << "Create lib selected" << endl;
     main_menu();
 }
-void turn_off()
+/*void turn_off()
 {
     cout << "Good Bye" << endl;
-}
+}*/
 //Song functions
 void add_song()
 {
@@ -89,14 +91,23 @@ void return_main()
 //Options functions
 void main_menu()
 {
-    cout << "\n***********************\tMain menu\t**************************" << endl;
+    /*cout << "\n***********************\tMain menu\t**************************" << endl;
     cout << "Load the last library to the playlist - 1" << endl;
     cout << "Load a new library to the playlist - 2" << endl;
     cout << "Add a library to the actual playlist - 3" << endl;
     cout << "Create a new library - 4" << endl;
     cout << "Manage songs - 5" << endl;
     cout << "Shut down app - 6" << endl;
-    cout << "Enter an option number: "; 
+    cout << "Enter an option number: ";
+    cout << "\n***********************\tHauptmenue\t**************************" << endl;*/
+    cout << "\n***********************  Hauptmenue  **************************" << endl;
+    cout << "Aktuelle Playlist anzeigen - 1" << endl;
+    cout << "Gespeicherte Playlist oeffnen - 2" << endl;
+    cout << "Eine neue Playlist erstellen - 3" << endl;
+    cout << "Titel der Playlist verwalten - 5" << endl;
+    cout << "Aktuelle playlist durchsuchen - 4" << endl;
+    cout << "Den Musikplayer beenden  -  6" << endl;
+    cout << "Geben sie die entsprechende Zahl ein: "; 
     int selection {0}; //User input
     int option_num {6}; //Number of options in the displayed menu
     selection = input_validation(option_num);
@@ -108,7 +119,8 @@ void main_menu()
             run_last_library();
         break;
         case 2:
-            load_library();
+            //load_library();
+            myopenfile();
         break;
         case 3:
             add_library();
@@ -120,7 +132,8 @@ void main_menu()
             song_management();
         break;
         case 6:
-            turn_off();
+            //turn_off();
+            exit(0);
         break;
         default:
         break;
