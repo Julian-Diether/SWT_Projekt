@@ -1,6 +1,7 @@
 //Software Technik Projekt Gruppe1
 //inkludieren saemtlicher bibliotheken
 #include <stdio.h>
+#include <cstdlib>
 #include <string> //??!?
 #include <string.h>
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
@@ -20,6 +21,13 @@ using std::endl;
 /*void myinitialize();
 void myopenfile();brauchenwirnicht*/
 
+//----------------------
+//wichtig damit programm jederzeit beendet werden kann! IMMER HINZUFUEGEN WENN ETWAS EINGELESEN WIRD!!!
+//  wenn char eingelesen wird:
+// cin >> answer; if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+//  wenn str eingelesen wird:
+//  cin >> filename; const char* answer=filename.c_str(); if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+
 
 
 int main() {
@@ -29,7 +37,8 @@ int main() {
 
     //begruesssungsnachricht mit wichtigsten infos zur bedienung einfuegen?!
     welcome_msg(); //Greetings at the programm start
-    main_menu();
+    //main_menu();
+    myinitialize();//wenn ja wird datei initialisiert/wenn nein --> main_menu();
 
     //myinitialize();
     //ggfs variable anlegen um zu wissen ob initialisiert wurde oder nicht und dann anderen programmablauf durchfuehren??

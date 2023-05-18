@@ -1,5 +1,6 @@
 
 //inkludieren saemtlicher bibliotheken
+#include <cstdlib>//warum auch immer benoetigt um programm zu beenden
 #include <string> //string.h und stdio.h fehlen hier! scheint kein problem zu sein?!
 #include <iostream>
 #include <fstream>
@@ -31,7 +32,8 @@ int input_validation(int option_num);
 void welcome_msg()
 {
     cout << "******************************************************************" << endl;
-    cout << "\t\tWillkommen zum Musikplayer!" << endl;
+    cout << "\t\t Willkommen zum Musikplayer!" << endl;
+    cout << "\t    - zum schliessen >beenden< eingeben -" << endl;
     cout << "******************************************************************" << endl;
 }
 void run_last_library()
@@ -97,7 +99,8 @@ void main_menu()
     cout << "Enter an option number: "; 
     int selection {0}; //User input
     int option_num {6}; //Number of options in the displayed menu
-    selection = input_validation(option_num); 
+    selection = input_validation(option_num);
+    //cout << selection << endl;//test
 
     switch(selection)
     {
@@ -158,7 +161,7 @@ void song_management()
     }
 }
 //Extra functions
-int input_validation(int option_num)
+int input_validation(int option_num)    //wenn input != int (buchstabe eingegeben) entstegt eine unendlich-schleife!!
 {
     int selection{0};
     do

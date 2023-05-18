@@ -1,6 +1,7 @@
 //brauchen wir hier wohl auch:
 //inkludieren saemtlicher bibliotheken
 #include <stdio.h>
+#include <cstdlib>
 #include <string> //??!?
 #include <string.h>
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
@@ -19,21 +20,25 @@ using std::endl;
 /*const char* mynein = "nein";
 const char* myja = "ja"; brauchen wir zum glueck doch nicht*/
 
+//deklarierung GLOBALER funktionen
+void main_menu();
+//void turn_off();  // turn_off(); anstatt exit(0); funktioniert in komplexen schleifen nicht, exit(0); scheint einfacher
+
 void myinitialize();
 void myopenfile();
 
 
 void myinitialize() {
-    char answer[20];
+    char answer[50];
     bool repeat = true;
     
     while (repeat) {
         // else if fuer nein und else danach mit "befehl nicht verstanden, playlist initialisieren (ja/nein)" einfuegen???
         cout << "Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ";
-        cin >> answer;
+        cin >> answer; if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
         //cout << answer << endl; //testtest
         
-            if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
+        if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
             repeat = false;
             //bibliothek initialisieren
             myopenfile();
@@ -42,10 +47,11 @@ void myinitialize() {
             
         } if (strcasecmp(answer, "nein") == 0) {
             repeat = false;   
+            cout << "answer=nein" << endl; //testtesttest
+
             //bibliothek NICHT initialisieren
             //hier soll es normal mit dem musikplayer weitergehen
-
-            cout << "answer=nein" << endl; //testtesttest
+            main_menu();
         } /*else {  //nichts es geht von selbst weiter  }*/
     }
 }
@@ -59,8 +65,8 @@ void myopenfile() {
 
     //while schleife, bis die datei gueltig geoeffnet wurde
     while (repeat) {
-        cout << "Geben sie den Namen der zu oeffnenden Playlist ein:"; // spezifizieren, dass nur name der playlist und nicht .json eingegeben werden soll???
-        cin >> filename;
+        cout << "Geben sie den Namen der zu oeffnenden Playlist ein: "; // spezifizieren, dass nur name der playlist und nicht .json eingegeben werden soll???
+        cin >> filename; const char* answer=filename.c_str(); if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
 
         if (filename.find(".json") != std::string::npos) {
 
@@ -96,7 +102,7 @@ void myopenfile() {
         //falls ein fehler auftritt gibt wird hier die meldung abgegeben
         } catch (const std::exception& e) {
             repeat = true;
-            std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen:" << e.what() << std::endl;
+            cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << endl << e.what() << endl;
             //hier gab es einen fehler beim einlesen? der datei. "wenden sie sich mit folgender fehlermeldung an den support"
         }
     }
