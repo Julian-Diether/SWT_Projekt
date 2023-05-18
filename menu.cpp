@@ -10,6 +10,9 @@ using std::cin;
 using std::endl;
 using json = nlohmann::json;
 
+//globale variablen
+int counter=0; // wird benutzt um nach 10 fehleingaben das hauptmenue erneut anzuzeigen. verbessert sichtbarkeit (siehe input_validation)
+
 //initialisierung eigener funktionen
 void welcome_msg();
 void run_last_library();
@@ -24,10 +27,13 @@ void search_song();
 void delete_song();
 void return_main();
 void main_menu();
-int input_validation(int option_num);
+int input_validation(int option_num, bool bmainmenu);
 
+//initialisierung fremder funktionen (fileops.cpp)
 //void myinitialize();//brauchen wir nicht da in main initialisiert wird!
 void myopenfile();
+void myprintfile();
+void mycreatefile();
 
 
 //Main menu functions
@@ -104,32 +110,37 @@ void main_menu()
     cout << "Aktuelle Playlist anzeigen - 1" << endl;
     cout << "Gespeicherte Playlist oeffnen - 2" << endl;
     cout << "Eine neue Playlist erstellen - 3" << endl;
-    cout << "Titel der Playlist verwalten - 5" << endl;
-    cout << "Aktuelle playlist durchsuchen - 4" << endl;
+    cout << "Titel der Playlist verwalten - 4" << endl;
+    cout << "Aktuelle playlist durchsuchen - 5" << endl;
     cout << "Den Musikplayer beenden  -  6" << endl;
     cout << "Geben sie die entsprechende Zahl ein: "; 
     int selection {0}; //User input
     int option_num {6}; //Number of options in the displayed menu
-    selection = input_validation(option_num);
+    selection = input_validation(option_num, true);
     //cout << selection << endl;//test
 
     switch(selection)
     {
         case 1:
-            run_last_library();
+            //run_last_library();
+            myprintfile();
         break;
         case 2:
             //load_library();
             myopenfile();
         break;
         case 3:
-            add_library();
+            //add_library();
+            mycreatefile();
         break;
         case 4:
-            create_library();
+            //create_library();     titel verwalten
+            song_management();
+
         break;
         case 5:
-            song_management();
+            //song_management();      playlist durchsuchen
+
         break;
         case 6:
             //turn_off();
@@ -150,7 +161,7 @@ void song_management()
     cout << "Enter an option number:";
     int selection {0}; //User input
     int option_num {5}; //Number of options in the displayed menu
-    selection = input_validation(option_num); 
+    selection = input_validation(option_num, false); 
 
     switch(selection)
     {
@@ -174,7 +185,7 @@ void song_management()
     }
 }
 //Extra functions
-int input_validation(int option_num)    //wenn input != int (buchstabe eingegeben) entstegt eine unendlich-schleife!!
+int input_validation(int option_num, bool bmainmenu)    //wenn input != int (buchstabe eingegeben) entstegt eine unendlich-schleife!!
 {
     int selection{0};
     do
@@ -182,6 +193,16 @@ int input_validation(int option_num)    //wenn input != int (buchstabe eingegebe
         cin >> selection;
         if (selection <= 0 || selection > option_num)
             cout << "Enter a valid option: ";
+            
+            counter++;
+            if(counter>4) {//nach 5 fehlerhaften eingaben wird mainmenu bzw. songmanagement erneut angezeigt
+                counter=0;
+                if(bmainmenu) {
+                    main_menu();
+                } else {
+                    song_management();
+                }
+            }
     }
     while (selection <= 0 || selection > option_num);
     return selection;

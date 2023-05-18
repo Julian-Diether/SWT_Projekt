@@ -34,3 +34,7 @@ songtitel, kuenstler, album, jahr, laenge des titels?, genre, explicit(y/n)?
 
 todo:inputs in menu.cpp gegebenenfalls als char speichern um probleme bei eingabe von buchstaben zu vermeiden!
 
+todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
+
+-Im hauptmenue, sowie song-management menue werden die Befehle nach 6 ungueltigen versuchen nun wiederholt um die bedienfaehigkeit zu vermeiden
+
