@@ -42,3 +42,9 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     dateien koennen direkt nach dem oeffnen ausgelesen werden
     dateien sind leichter lesbar, dank warten auf enter druck vor rueckkehr zum haupemenue
     vereinfachung der oeffnen funktion
+
+***Fehlercodes***
+    -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
+    -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
+    -03 --> user will datei ausgenen waehrend keine geoeffnet ist
+    

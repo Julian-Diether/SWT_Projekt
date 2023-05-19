@@ -95,10 +95,11 @@ void myopenfile() {
             repeat = false; //erst nachden file.is_open = true ist. danach bei fehler wieder geaendert
             /*nlohmann::json jsonContent;
             file >> jsonContent;//datei wird ausgelesen und in program als 'file' gespeichert!*/
-            cout << "\t\tPlaylist wurde geoeffnet" << endl;
+            
             //datei ist gueltig also kann sie als variable an andere funktionen uebergeben werden
             file >> currentplaylist;
-            file.close(); cout <<"zeghiowegiwe8+TESTETSTETSTETSTET" << endl;
+            file.close();
+            cout << "\t\tPlaylist wurde geoeffnet" << endl; //erst hier ist die datei erfolgreich geoeffnet!!
             //wie genau benenne ich die dateitypen?? mit namen oder dateitypen? muss ich das ganze in eine ober kategorie??
             //wie suche ich spaeter die einzelnen metadaten?? muss ich die werte fuer die liste 'sterilisieren' um probleme zu verhindern?
 
@@ -144,6 +145,11 @@ void myprintfile() {
     //fehlermeldung falls keine playlist geoffnet ist (z.b. wenn keine initialisiert wurde aber im hauptmenue direkt ausgabe gefordet wurde)
     if (filename=="") {
         cout << "Fehler! Momentan ist keine Datei geoeffnet. Fehlercode: 03" << endl;
+        cout << "\t----------------------------------" << endl;
+        cout << ">mit Enter zurueck zum Hauptmenue...";
+        std::string temp;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin.get();
         main_menu();
     }
 
@@ -195,6 +201,8 @@ void mycreatefile() {
     //gameplan:
     //abfragen, wie viele eintraege in die json datei geschrieben werden sollen = i
     //i mal jedes parameter nacheinander abfragen und in jeweiligen arrays speichern
+
+    
     char title[length][25];
     char artist[length][25];
     char album[length][25];
@@ -203,10 +211,19 @@ void mycreatefile() {
     char genre[length][25];
     bool badwords[length];//    true/false
 
-
+    //brauchen wir diesen zwischenschritt ueberhaupt oder koennen wir die daten direkt an writefile uebergeben??
+    for(int i=0; i<length; i++) {
+        cout << "Songname: "; cin >> title[i];
+        cout << "Interpret: "; cin >> title[i];
+        cout << "Album: "; cin >> title[i];
+        cout << "Erscheinungsjahr: "; cin >> title[i];
+        cout << "Laenge: "; cin >> title[i];
+        cout << "Musikrichtung: "; cin >> title[i];
+        cout << "Jugendfrei: "; cin >> title[i];
+    }
     nlohmann::json writefile;
 
-    while(int i=0; i<length; i++) {
+    for(int i=0; i<length; i++) {
         writefile[i]["title"] = title[i];
         writefile[i]["artist"] = artist[i];
         writefile[i]["album"] = album[i];
