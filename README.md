@@ -47,4 +47,5 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
     -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
     -03 --> user will datei ausgenen waehrend keine geoeffnet ist
-    
+
+-git ignore hinzugefuegt

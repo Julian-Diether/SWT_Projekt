@@ -192,12 +192,13 @@ void mycreatefile() {
     cout << "createfile--------" << endl;
 
 
-    cout << "Name der neuen Playlist eingeben: " << endl;
+    cout << "Name der neuen Playlist eingeben: ";
     cin >> answer3; if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
 
-    cout << "Wie viele Songs sollen hinzugefuegt werden?: 0";
+    cout << "Wie viele Songs sollen hinzugefuegt werden?: ";
     cin >> length;
 
+    cout << length;//testtestt
     //gameplan:
     //abfragen, wie viele eintraege in die json datei geschrieben werden sollen = i
     //i mal jedes parameter nacheinander abfragen und in jeweiligen arrays speichern
@@ -213,14 +214,16 @@ void mycreatefile() {
 
     //brauchen wir diesen zwischenschritt ueberhaupt oder koennen wir die daten direkt an writefile uebergeben??
     for(int i=0; i<length; i++) {
+        cout << "Informationen fuer Song [" << i *****************<< "] eingeben:" << endl;
         cout << "Songname: "; cin >> title[i];
         cout << "Interpret: "; cin >> title[i];
         cout << "Album: "; cin >> title[i];
         cout << "Erscheinungsjahr: "; cin >> title[i];
         cout << "Laenge: "; cin >> title[i];
         cout << "Musikrichtung: "; cin >> title[i];
-        cout << "Jugendfrei: "; cin >> title[i];
+        cout << "Jugendfrei (Ja/Nein): "; cin >> title[i];
     }
+cout << "Daten werden in Datei geschrieben" << endl;
     nlohmann::json writefile;
 
     for(int i=0; i<length; i++) {
