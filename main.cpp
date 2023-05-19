@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string> //??!?
 #include <string.h>
+#include <cstring>
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
 #include <fstream>
 #include "nlohmann/json.hpp"//nlohmann json bibliothek

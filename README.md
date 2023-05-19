@@ -49,3 +49,21 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -03 --> user will datei ausgenen waehrend keine geoeffnet ist
 
 -git ignore hinzugefuegt
+
+todo: input laenge eingeben, bei datei erstellen auf integer ueberpruefen. sonst fehlermeldung und wiederholung. Kein Absturz!!
+
+-myexit() / mywaitenter() / mycheckifopen() funktionen hinzugefuegt
+    code vereinfacht und verschiedene fehler behoben
+
+todo: beim oeffnen/ausgeben/erstellen von dateien leere eingaben NICHT zulassen!
+
+todo: beim einlesen der dateien sonderzeichen herausfiltern! vllt noch einen hinweis anfuegen, dass diese nicht zulaessig sind!!
+
+-mydashedline() hinzugefuegt und eingesetzt um die lesbarkeit im ganzen programm zu erhoehen
+
+-mycreatefile stark ueberarbeitet und viele fehlerquellen beseitigt
+    einlesen von erscheinungsjahr, musikdauer und jugendfrei berichtigt
+    bessere uebersichtbarkeit durch mydashedline 
+
+todo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
+
