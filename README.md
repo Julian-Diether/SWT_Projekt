@@ -38,3 +38,7 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
 
 -Im hauptmenue, sowie song-management menue werden die Befehle nach 6 ungueltigen versuchen nun wiederholt um die bedienfaehigkeit zu vermeiden
 
+-das oeffnen und auslesen funktioniert nun!!
+    dateien koennen direkt nach dem oeffnen ausgelesen werden
+    dateien sind leichter lesbar, dank warten auf enter druck vor rueckkehr zum haupemenue
+    vereinfachung der oeffnen funktion

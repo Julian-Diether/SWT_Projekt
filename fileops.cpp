@@ -5,7 +5,7 @@
 #include <string> //??!?
 #include <string.h>
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
-#include <fstream>
+#include <fstream>//benutzen wir um dateien zu lesen/schreiben
 #include "nlohmann/json.hpp"//nlohmann json bibliothek
 //inkludieren anderer programmteile!!
 //json bibiliothek
@@ -29,6 +29,7 @@ void main_menu();
 
 void myinitialize();
 void myopenfile();
+void myprintfile();
 void mycreatefile();
 
 
@@ -64,6 +65,7 @@ void myinitialize() {
 
 void myopenfile() {
     bool repeat = true;
+    bool repeat2= true;
     std::string filename2 = "";
     //const char* myjson = ".json";//gibt es keinen besseren weg?
 
@@ -93,18 +95,41 @@ void myopenfile() {
             repeat = false; //erst nachden file.is_open = true ist. danach bei fehler wieder geaendert
             /*nlohmann::json jsonContent;
             file >> jsonContent;//datei wird ausgelesen und in program als 'file' gespeichert!*/
-            cout << "\t\tPlaylist wurde geoeffnet";
+            cout << "\t\tPlaylist wurde geoeffnet" << endl;
             //datei ist gueltig also kann sie als variable an andere funktionen uebergeben werden
             file >> currentplaylist;
-
+            file.close(); cout <<"zeghiowegiwe8+TESTETSTETSTETSTET" << endl;
             //wie genau benenne ich die dateitypen?? mit namen oder dateitypen? muss ich das ganze in eine ober kategorie??
             //wie suche ich spaeter die einzelnen metadaten?? muss ich die werte fuer die liste 'sterilisieren' um probleme zu verhindern?
+
+            //damit das programm weitergeht, gehen wir zurueck zum mainmenu oder lesen die datei direkt aus
+            
+            cout << "\t----------------------------------" << endl;
+
 
         } catch (const std::exception& e) {
             repeat = true;
             cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << endl << e.what() << endl;
+            cout << "\t----------------------------------" << endl;
             //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
             //("wenden sie sich mit folgender fehlermeldung an den support")?
+        }
+
+
+        if(!repeat) {
+        char answer2[50];
+        while (repeat2) {
+        cout << "Soll die Playlist direkt angezeigt werden? (Ja/Nein): ";
+        cin >> answer2; if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+        
+            if (strcasecmp(answer2, "ja") == 0) {//if (answer == "ja") {
+                repeat2 = false;
+                myprintfile();
+            } if (strcasecmp(answer2, "nein") == 0) {
+                repeat2 = false;   
+                main_menu();//zurueck zum hauptmenue
+            }
+        }
         }
     }
 
@@ -122,20 +147,83 @@ void myprintfile() {
         main_menu();
     }
 
+    cout << "\t----------------------------------" << endl;
     cout << "\tDie Datei " << filename << " wird ausgegeben." << endl;//WARUM FUNKTIONIERT DAS NICHT???
-    cout << "Titel | Interpret | Album | Erscheinungsjahr | Laenge | Genre | Explizit? " << endl;
+    cout << "     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Explizit?   |" << endl;
 
+    //cout <<currentplaylist["data"][0]["title"] <<currentplaylist["data"][0]["artist"] <<currentplaylist["data"][0]["album"] <<currentplaylist["data"][0]["date"] <<currentplaylist["data"][0]["length"] <<currentplaylist["data"][0]["genre"] <<currentplaylist["data"][0]["explicit"] <<endl;
+
+    for(int i=0; i<(currentplaylist.size()+1); i++) {
+        cout <<
+        currentplaylist["data"][i]["title"] << " | " <<
+        currentplaylist["data"][i]["artist"] << " | " <<
+        currentplaylist["data"][i]["album"] << " | " <<
+        currentplaylist["data"][i]["date"] << " |    " <<
+        currentplaylist["data"][i]["length"] << " |    " <<
+        currentplaylist["data"][i]["genre"] << " |    " <<
+        currentplaylist["data"][i]["explicit"] << " | " <<
+        endl;
+    }
+
+    cout << ">mit Enter zurueck zum Hauptmenue...";
+    std::string temp;
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.get();
+
+    main_menu();
 }
 
 void mycreatefile() {
+    char answer3[50];
+    int length=0;
+    
     //soll eine json datei mit bielibigem namen erstellen
 
     //while true schleife die einen gueltigen dateinamen(nur buchstaben, vllt zahlen wenn moeglich) abfragt
-
     //name darf noch nicht vergeben sein!! fehlermeldung die dem nutzer dies mitteilt
+    //NEIN!!nutzer soll dann NEIN!!zurueck zum hauptmenue.NEIN!! ihm hier mitteilen, dassNEIN!! er dort songs NEIN!!hinzufuegen kann
+    //JA!vllt fragen wir ihn hier, ob er direkt in den 'editor' will???JA!
+    cout << "createfile--------" << endl;
 
-    //nutzer soll dann zurueck zum hauptmenue. ihm hier mitteilen, dass er dort songs hinzufuegen kann
-    //vllt fragen wir ihn hier, ob er direkt in den 'editor' will???
+
+    cout << "Name der neuen Playlist eingeben: " << endl;
+    cin >> answer3; if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+
+    cout << "Wie viele Songs sollen hinzugefuegt werden?: 0";
+    cin >> length;
+
+    //gameplan:
+    //abfragen, wie viele eintraege in die json datei geschrieben werden sollen = i
+    //i mal jedes parameter nacheinander abfragen und in jeweiligen arrays speichern
+    char title[length][25];
+    char artist[length][25];
+    char album[length][25];
+    int year[length][25];// int erscheinungsjahr
+    char duration[length][25];
+    char genre[length][25];
+    bool badwords[length];//    true/false
+
+
+    nlohmann::json writefile;
+
+    while(int i=0; i<length; i++) {
+        writefile[i]["title"] = title[i];
+        writefile[i]["artist"] = artist[i];
+        writefile[i]["album"] = album[i];
+        writefile[i]["date"] = year[i];
+        writefile[i]["length"] = duration[i];
+        writefile[i]["genre"] = genre[i];
+        writefile[i]["explicit"] = badwords[i];
+    }
+
+
+
+    //daten werden in die datei answer3 geschrieben
+    std::ofstream file2(mypath + answer3);
+    file2 << writefile;
+
+    //feierabend! datei wird geschlossen
+    file2.close();
 }
 
 

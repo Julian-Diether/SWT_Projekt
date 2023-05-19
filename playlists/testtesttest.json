@@ -1,10 +1,23 @@
 {
-    "string": "Leider Geil",
-    "string": "Deichkind",
-    "string": "Befehl von ganz unten",
-    "number": "2012",
-    "string": "03:11",
-    "string": "Rap",
-    "boolean": "false"
+    "data": [
+        {
+            "title": "Leider Geil",
+            "artist": "Deichkind",
+            "album": "Befehl von ganz unten",
+            "date": 2012,
+            "length": "03:11",
+            "genre": "Rap",
+            "explicit": "false"
+        },
+        {
+            "title": "Leider Geil2",
+            "artist": "Deichkind2",
+            "album": "Befehl von ganz unten2",
+            "date": 20122,
+            "length": "03:112",
+            "genre": "Rap2",
+            "explicit": "false2"
+        }
+    ]
 }
 
