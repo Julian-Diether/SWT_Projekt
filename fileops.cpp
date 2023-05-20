@@ -31,7 +31,9 @@ void main_menu();
 void myinitialize();
 void myopenfile();
 void myprintfile();
+/*
 void mycreatefile();
+*/
 void myexit(char input[100]);
 void mywaitenter();
 void mycheckifopen(char input2[25]);
@@ -219,7 +221,10 @@ void myprintfile() {
 void mycreatefile() {
     bool repeat3=true;
     bool repeat6=true;
-    char answer3[50];
+    //char answer3[50];
+    char filenamecreatefile[50];
+    //char answer3temp[50];
+    char answer6[50];
     int length=0;
     
     //soll eine json datei mit bielibigem namen erstellen
@@ -232,10 +237,32 @@ void mycreatefile() {
     
     mydashedline();
     cout << "Name der neuen Playlist eingeben: ";
-    cin >> answer3;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
-    myexit(answer3);
+    cin >> filenamecreatefile;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+    myexit(filenamecreatefile);
     //vllt schauen ob playlist gerade schon offen ist?DONE
-    mycheckifopen(answer3);
+    cout << "davor: " << filenamecreatefile << endl;
+    std::string answer3str(filenamecreatefile);
+    std::string answer3str2;//sonst bekommen wir irgendwelche schwachsinnigen emojis uns sonderzeichen.
+    if (answer3str.find(".json") != std::string::npos) {
+        //cout << "test1 test1";
+        //.json ist schon angefuegt! hier passiert alles
+    } else {
+        answer3str2 = answer3str;//WARUM MUSS ALLES SO KOMPLIZIERT SEIN???
+        answer3str = answer3str2 + ".json";// an dateiname wird dateiendung .json angefuegt
+        //cout << filename;//test
+    }
+
+    std::copy(answer3str.begin(), answer3str.end(), filenamecreatefile);
+    filenamecreatefile[answer3str.size()] = '\0';
+    myexit(filenamecreatefile);
+
+    //for (size_t i = 0; i < answer3str.length(); ++i) {
+    //    filenamecreatefile[i] = answer3str[i];
+    //}
+    //----------------------------------------------------^^^absolutes chaos!! muss spaeter alles aufgeraeumt werden!!!!!
+    cout << "danach:" << filenamecreatefile << endl;
+
+    mycheckifopen(filenamecreatefile);
     //if(answer3==filename || answer3==) {
     //    cout << "Die Playlist: >" << answer3 << "< ist bereits geoeffnet!"<< endl;
     //    cout << "Bearbeiten/Loeschen und weitere Funktionen ueber das Hauptmenue." << endl;
@@ -279,12 +306,12 @@ void mycreatefile() {
     //abfragen, wie viele eintraege in die json datei geschrieben werden sollen = i
     //i mal jedes parameter nacheinander abfragen und in jeweiligen arrays speichern
     while (repeat6) {
-        cout << length << " Songs werden zu " << answer3 << " hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
-        cin >> answer3;
-        myexit(answer3);//wurde "beenden" eingegeben?
-        if (strcasecmp(answer3, "ja") == 0) {
+        cout << length << " Songs werden zu " << filenamecreatefile << " hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
+        cin >> answer6;
+        myexit(answer6);//wurde "beenden" eingegeben?
+        if (strcasecmp(answer6, "ja") == 0) {
             repeat6 = false;
-        } if (strcasecmp(answer3, "nein") == 0) {
+        } if (strcasecmp(answer6, "nein") == 0) {
             repeat6 = false;
             main_menu();
         }
@@ -361,24 +388,49 @@ void mycreatefile() {
 
     mydashedline();
     cout << "Daten werden in Datei geschrieben" << endl;
-    nlohmann::json writefile;
+    nlohmann::json writefile = {
+        {
+            "data",
+            {
+                {
+                    {"title", ""},
+                    {"artist", ""},
+                    {"album", ""},
+                    {"date", nullptr},
+                    {"length", ""},
+                    {"genre", ""},
+                    {"explicit", ""}
+                }
+            }
+        }
+    };
 
+    cout << "test1";
     for(int i=0; i<length; i++) {
-        writefile[i]["title"] = title[i];
-        writefile[i]["artist"] = artist[i];
-        writefile[i]["album"] = album[i];
-        writefile[i]["date"] = year[i];
-        writefile[i]["length"] = duration[i];
-        writefile[i]["genre"] = genre[i];
-        writefile[i]["explicit"] = badwords[i];
+        writefile["data"][i]["title"] = title[i];
+        writefile["data"][i]["artist"] = artist[i];
+        writefile["data"][i]["album"] = album[i];
+        writefile["data"][i]["date"] = year[i];
+        writefile["data"][i]["length"] = duration[i];
+        writefile["data"][i]["genre"] = genre[i];
+        writefile["data"][i]["explicit"] = badwords[i];
     }
 
 
-
+    
     //daten werden in die datei answer3 geschrieben
-    std::ofstream file2(mypath + answer3);
-    file2 << writefile;
+    std::ofstream file2(mypath + filenamecreatefile);
+    cout << "test2: " << mypath+filenamecreatefile<<endl;
 
+    /*if (!file2.is_open()) {
+        cout << "Datei konnte nicht geoeffnet werden, um Dateien zu speichern! Fehlercode4" << endl;
+        main_menu();//vorerst zurueck zum mainmenu. speater muss hier eine loesung gefunden werden.
+        //zum beispiel erneute abfrage nach dateinamen und versuch die bereits eingelesenen daten dotz zu speichern.
+        //"wollen sie das speichern erneut versuchen? (ja/nein)"
+    }*/
+
+    file2 << writefile.dump(2);
+    cout << "test3";
     //feierabend! datei wird geschlossen
     file2.close();
 }

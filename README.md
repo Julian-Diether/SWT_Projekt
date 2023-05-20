@@ -67,3 +67,5 @@ todo: beim einlesen der dateien sonderzeichen herausfiltern! vllt noch einen hin
 
 todo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
 
+-funktionierendes dateien erstellen
+

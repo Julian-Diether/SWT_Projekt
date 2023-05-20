@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "album": "niveau_wesshab_warum",
+      "artist": "deichkind",
+      "date": 2015,
+      "explicit": false,
+      "genre": "elektro",
+      "length": "04_0204_22",
+      "title": "denken_sie_gross"
+    },
+    {
+      "album": "crab_rave",
+      "artist": "noisestorm",
+      "date": 2018,
+      "explicit": false,
+      "genre": "elektro",
+      "length": "04_22",
+      "title": "crab_rave"
+    }
+  ]
+}
