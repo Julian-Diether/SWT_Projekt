@@ -35,8 +35,12 @@ void myopenfile();
 void myprintfile();
 void mycreatefile();
 void mydeletefile();
+void mysearchfile();
 
+
+void myexit(char myinput[50]);//vsc hat sich beschwert (gelbe kringel linien), dass die definition zu mycheckifopen fehle, beeintraechtigt programm aber nicht
 void mywaitenter();
+void mycheckifopen(char myinput2[50]);//vsc hat sich beschwert (gelbe kringel linien), dass die definition zu mycheckifopen fehle, beeintraechtigt programm aber nicht
 void mydashedline();
 
 
@@ -111,14 +115,14 @@ void main_menu()
     cout << "Enter an option number: ";
     cout << "\n***********************\tHauptmenue\t**************************" << endl;*/
     cout << "\n***********************  Hauptmenue  **************************" << endl;
-    cout << "Aktuelle Playlist anzeigen - 1" << endl;
+    cout << "Aktuelle Playlist anzeigen  -  1" << endl;
     cout << "Gespeicherte Playlist oeffnen - 2" << endl;
-    cout << "Eine neue Playlist erstellen - 3" << endl;
+    cout << "Eine neue Playlist erstellen  -  3" << endl;
     cout << "Gespeicherte Playlist loeschen - 4" << endl;
-    cout << "Titel der Playlist verwalten - 5" << endl;
-    cout << "Aktuelle playlist durchsuchen - 6" << endl;
-    cout << "Den Musikplayer beenden  -  7" << endl;
-    cout << "Geben sie die entsprechende Zahl ein: "; 
+    cout << "Titel der Playlist verwalten  -  5" << endl;
+    cout << "Gespeicherte playlist durchsuchen - 6" << endl;
+    cout << "Den Musikplayer jetzt beenden  -  7" << endl;
+    cout << "--Geben sie die entsprechende Zahl ein: "; 
     int selection {0}; //User input
     int option_num {7}; //Number of options in the displayed menu
     selection = input_validation(option_num, true);
@@ -149,7 +153,7 @@ void main_menu()
         break;
         case 6:
             //song_management();      playlist durchsuchen
-
+            mysearchfile();
         break;
         case 7:
             //turn_off();

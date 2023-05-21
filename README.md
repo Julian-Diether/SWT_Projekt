@@ -48,7 +48,7 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
 ***Fehlercodes***
     -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
     -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
-    -03 --> user will datei ausgenen waehrend keine geoeffnet ist
+    -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
     -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
     -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
     -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0)
@@ -86,4 +86,21 @@ todo: beim auslesen der datei, alles schoen untereinander schreiben um lesbarkei
 
 todo:: ueberpruefen ob wir die ganzen bibliotheken brauchen oder funktionen auch in anderen gefunden werden koennen, um das programm einfacher/schneller/kleiner zu machen!!
 
+todo: ueberlegen ob sinnvoll, wenn ja ggfs eigene funktion fuer die ganzen (ja/nein) abfragen erstellen.
+
+todo: ich glaube mycheckifopen funktioniert im momment nicht. wahrscheinlich, weil es die .json endung enthaelt waehrend der user nur den namen der datei eingeben kann. 
+    -variable erstellen, die reinen dateinamen enthaelt, falls .json schon dabei ist ihn wieder herausfiltert.
+
+todo: input bei searchfile auf leerzeichen absichern! leerzeichen-->underscore! auch bei createfile und spaeter dort wo songs erstellt/umbenannt, etc werden
+
+-mysearchfile erstellt, ausgiebig getestet und abgesichert.
+    -noetige anpassung von menu.cpp
+
+!Fehler: Problem mit mycreatefile(). Datei mit 2 Songs erstellt, beim einlesen der laenge des 1. songs
+    in terminal eingegeben: 04:25
+    im code angekommen: 04_2505_54
+    -fuer song 2 war das kein problem!!
+    in terminal eingegeben: 05:54
+    im code angekommen: 05_54
+    datei: test10.json  immernoch unter playlist/ gespeichert!
 

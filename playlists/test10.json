@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "album": "bombastic",
+      "artist": "shaggy",
+      "date": 2000,
+      "explicit": true,
+      "genre": "reagy",
+      "length": "04_2505_54",
+      "title": "mrbombastic"
+    },
+    {
+      "album": "atemlos_single",
+      "artist": "helene_fischer",
+      "date": 2003,
+      "explicit": false,
+      "genre": "schlager",
+      "length": "05_54",
+      "title": "atemlos"
+    }
+  ]
+}

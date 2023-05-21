@@ -5,6 +5,7 @@
 #include <string> //??!?
 #include <string.h>
 #include <cstring>//fuer strchr in mycheckifopen()
+#include <cctype> // damit wir in mysearchfile() std::tolower() benutzen koennen. natuerlich gibt es einen weg das super einfach zu machen, aber er koennte nicht versteckter sein!!
 #include <cstdio>//fuer das loeschen von dateien
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
 #include <fstream>//benutzen wir um dateien zu lesen/schreiben
@@ -23,6 +24,7 @@ extern std::string mypath;
 //deklarierung eigener variablen
 std::string filename = "";
 nlohmann::json currentplaylist;
+nlohmann::json searchplaylist;//lieber eine neue erstellen, da currentplaylist in mehreren funktionen benuzt wird und dort genutzt wird um daten zwischen funktionen zu uebertragen. koennte am ende gecheckt werden um zu optimisieren! todo?
 char answer[50];
 bool repeat=true;
 bool repeat2=true;
@@ -36,9 +38,10 @@ void main_menu();
 void myinitialize();
 void myopenfile();
 void myprintfile();
-/*
 void mycreatefile();
-*/
+void mydeletefile();
+void mysearchfile();
+void myeditfile();
 void myexit(char myinput[50]);
 void mywaitenter();
 void mycheckifopen(char myinput2[50]);
@@ -192,6 +195,7 @@ void myopenfile() {
 void myprintfile() {
     //diese funkton soll saemtliche inhalte der aktuellen playlist ausgeben!
     //fehlermeldung falls keine playlist geoffnet ist (z.b. wenn keine initialisiert wurde aber im hauptmenue direkt ausgabe gefordet wurde)
+    mydashedline();
     if (filename=="") {
         cout << "Fehler! Momentan ist keine Datei geoeffnet. Fehlercode: 03" << endl;
         mydashedline();
@@ -200,7 +204,7 @@ void myprintfile() {
         main_menu();
     }
 
-    mydashedline();
+    
     //cout << "\t----------------------------------" << endl;
     cout << "\tDie Datei " << filename << " wird ausgegeben." << endl;//WARUM FUNKTIONIERT DAS NICHT???
     cout << "     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Jugendfrei"/*Explizit?*/"   |" << endl;
@@ -323,7 +327,7 @@ void mycreatefile() {
     repeat=true;
     while (repeat) {
         std::memset(answer, 0, sizeof(answer));
-        cout << length << " Songs werden zu " << filenamecreatefile << " hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
+        cout << length << " Songs werden zu >" << filenamecreatefile << "< hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
         cin >> answer;
         myexit(answer);//wurde "beenden" eingegeben?
         if (strcasecmp(answer, "ja") == 0) {
@@ -498,9 +502,11 @@ void mycreatefile() {
 
 void mydeletefile() {
     std::memset(answer, 0, sizeof(answer));//answer zuruecksetzen, weil sonst random sonderzeichen auftauchen
+    mydashedline();
     cout << "Name der zu loeschenden Playlist eingeben: ";
     cin >> answer;
-    
+    //hier nicht myexit(answer); - user soll eine playlist namens beenden loeschen duerfen. zurueck zum menue, dann beenden ist auch noch im naechsten schritt moeglich!
+
     std::string filenamedeletefile(answer);
     //da wir hier dateien loeschen mussen wir sehr vorsichtig sein!! der benutzer koennte auf andere ordner zugreifen!!!
     if (filenamedeletefile.find("/") != std::string::npos || filenamedeletefile.find("\\") != std::string::npos) {//zwei backslashes wil backslash benutzt wird um spezielle charakter darzustellen! '//' ==> /
@@ -508,13 +514,22 @@ void mydeletefile() {
         mywaitenter();
         main_menu();
     }
+
+    //.json an datei anfuegen, falls noch nicht vorhanden
+    if (filenamedeletefile.find(".json") != std::string::npos) {
+
+    } else {
+        filenamedeletefile = filenamedeletefile + ".json";
+    }
+    //pfad (playlists/) vor dateinamen anfuegen
     filenamedeletefile=mypath+filenamedeletefile;
     //cout << "test1231:" << filenamedeletefile;
 
     repeat=true;
     while(repeat) {
-        cout << "Die Playlist " << filenamedeletefile << " wird geloescht! Fortfahren? (Ja/Nein): ";
-
+        cout << "Die Playlist >" << filenamedeletefile << "< wird geloescht! Fortfahren? (Ja/Nein): ";
+        cin >> answer;
+        myexit(answer);
         if (strcasecmp(answer, "ja") == 0) {
             repeat = false;
             
@@ -527,7 +542,7 @@ void mydeletefile() {
     //hier wird geloescht   
     const char* filenamedeletefilec;
     filenamedeletefilec=filenamedeletefile.c_str();
-    cout <<"testtest: " << filenamedeletefilec << endl;//testtest
+    //cout <<"testtest: " << filenamedeletefilec << endl;//testtest
 
     if (std::remove(filenamedeletefilec) != 0) {
         cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << endl;
@@ -539,6 +554,333 @@ void mydeletefile() {
         mywaitenter();
         main_menu();    
     }
+}
+
+void mysearchfile() {
+    //dateien in arrays einlesen, oder direkt aus den dateien?
+    //wo lese ich die datei aus? erst hier und es koennten unerwartete fehler auftauchen, oder soll ich sie schon beim oeffnen auslesen???
+    //wenn wir schon eine datei einlesen muessen, sollen wir dann nicht nach dateinamen fragen, wie bei den anderen funktionen? etwas sinnlos und nicht sehr bedienfreundlich, dann auf die aktuelle datei zu bestehen, nicht?
+    //^^^^^so machen wir es!!
+    std::memset(answer, 0, sizeof(answer));
+    mydashedline();
+
+    
+    //gerade ist keine datei geoeffnet, was passiert hier aber, wenn eine ungueltige geoeffnet ist? nichts, da durch myopenfile() nur gueltige dateien geoeffnet werden koennen??
+    //if (filename=="") {
+    //    cout << "Fehler! Momentan ist keine Datei geoeffnet. Fehlercode: 03" << endl;
+    //    mydashedline();
+    //    mywaitenter();
+    //    main_menu();
+    //}
+    std::string filenamesearchfile;
+
+
+    repeat=true;//waere schon lustig wenn man das hier vergisst und dann an dem gesamten code zweifelt...
+    while (repeat) {
+
+        cout << "Name der zu durchsuchenden Playlist eingeben: ";
+        cin >> answer;
+        //hier myexit(answer); ???????
+
+        std::string filenamesearchfile2(answer);
+        filenamesearchfile = filenamesearchfile2;//komm schon c++, was fuer ein schwachsinn... nur dass die datei spaeter noch sichtbar ist
+        //.json an datei anfuegen, falls noch nicht vorhanden
+        if (filenamesearchfile.find(".json") != std::string::npos) {
+
+        } else {
+            filenamesearchfile = filenamesearchfile + ".json";
+        }//pfad (playlists/) vor dateinamen anfuegen
+        filenamesearchfile=mypath+filenamesearchfile;
+
+
+        std::memset(answer, 0, sizeof(answer));
+        repeat2=true;
+        while(repeat2) {
+            cout << "Die Datei >" << filenamesearchfile << "< wird durchsucht. Fortfahren? (ja/nein): ";
+            cin >> answer;
+            myexit(answer);
+            if (strcasecmp(answer, "ja") == 0) {
+                repeat2 = false;
+
+            } if (strcasecmp(answer, "nein") == 0) {
+                repeat2 = false;
+                main_menu();
+            }
+        }
+        //jetzt kann endlich durchsucht werden!!! NAJA, zuerst muss datei erfolgreich! geoeffnent werden!!
+
+        //mycheckifopen(tempfilenamechar);brauchen wir hier nicht, weil die datei ja sowieso ausgelesen werden muss!
+        cout << "Die Datei " << filenamesearchfile << " wird geoeffnet." << endl;
+        //stand jetzt haben wir einen vielleicht gueltigen dateiname. datei wird nun geoeffnet
+        try {
+            std::ifstream file(filenamesearchfile);//koennte es hier probleme geben, wenn die datei auch file heisst? Nein, sie ist lokal zum try block, wie auch die andere.
+            //oeffnen der .json datei^^ (in einem sicheren umfeld --> kein absturz)
+            if (!file.is_open()) {
+                std::cerr << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
+            } //fehler, wenn datei nicht geoeffnet werden konnte
+            repeat = false;
+
+            file >> searchplaylist;//Datei wird eingelesen
+            file.close();//Datei wird geschlossen
+            cout << "\tDie Datei wurde geoeffnet" << endl; //erst hier ist die datei erfolgreich geoeffnet!!
+            mydashedline();
+        } catch (const std::exception& e) {
+            repeat = true;//erneut versuchen, da fehler
+            cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << endl << e.what() << endl;
+            mydashedline();
+            //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
+            //("wenden sie sich mit folgender fehlermeldung an den support")?
+        }
+    }
+
+    //cout << "playlist zum test:" << searchplaylist << endl;
+
+    //jetzt koennen wir endlich durchsuchen!
+    repeat=true;
+    bool firstrun=true;
+    std::string searchstring;
+    while (repeat) {
+        
+        if(!firstrun) {
+            mydashedline();
+            repeat2=true;
+            while(repeat2) {
+                cout << "Datei >" << filenamesearchfile << "< erneut durchsuchen? (ja/nein): ";
+                cin >> answer;
+                myexit(answer);
+                if (strcasecmp(answer, "ja") == 0) {
+                    repeat2 = false;
+
+                } if (strcasecmp(answer, "nein") == 0) {
+                    repeat2 = false;
+                    main_menu();
+                }
+            }
+        }
+        firstrun=false;//nach dem ersten durchlauf wird jetzt grfragt, ob erneut durchsucht werden soll.
+
+        //cout << "testendeschleife" << searchplaylist << endl;
+        //while true schleife, um weitere suchen zu ermoeglichen! mit irgendeiner variable, damit beim ersten mal nicht gefragt wird ob man nochmal suchen will!
+        cout << "Achtung! Keine Sonderzeichen! Ausnahme Doppelpunkt." << endl;
+        //mydashedline();
+        cout << "Geben sie einen Suchbegriff ein: ";
+        cin >> answer;
+        searchstring = std::string(answer);//searchstring = "\"" + std::string(answer) + "\"";
+        std::memset(answer, 0, sizeof(answer));
+
+        std::replace(searchstring.begin(), searchstring.end(), ':', '_');//nun kann nach der laenge gesucht werden!
+        std::replace(searchstring.begin(), searchstring.end(), ' ', '_');//und nach alben/titeln, die mehrere woerter umfassen! /normalerweise wuerde das schiefgehen, weil mehrere schritte vorgesprungen wird. hier egal, da alle schritte gleich sind((ja/nein) abfrage)!
+        //cout << "--------" << searchstring << endl;
+
+        //cout << "test. laenge:" << searchplaylist.size() << endl;
+        //cout << searchstring << " | " << searchplaylist["data"][0]["artist"] << endl;
+        
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    //if(searchstring==searchplaylist["data"][i]["title"]) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    if(strcasecmp(searchstring, searchplaylist["data"][i]["title"])) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(strcasecmp(searchstring, searchplaylist["data"][i]["artist"])) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(strcasecmp(searchstring, searchplaylist["data"][i]["album"])) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    else if(strcasecmp(searchstring, searchplaylist["data"][i]["date"])) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(strcasecmp(searchstring, searchplaylist["data"][i]["length"])) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(strcasecmp(searchstring, searchplaylist["data"][i]["genre"])) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden!" << endl;}
+        //}//also muessen wir es doch auslesen??
+        
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    if(searchstring==searchplaylist["data"][i]["title"]) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(searchstring==searchplaylist["data"][i]["artist"]) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(searchstring==searchplaylist["data"][i]["album"]) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    //else if(searchstring==searchplaylist["data"][i]["date"]) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(searchstring==searchplaylist["data"][i]["length"]) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(searchstring==searchplaylist["data"][i]["genre"]) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden!" << endl;}
+        //}
+
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    if(searchplaylist["data"][i]["title"].find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(searchplaylist["data"][i]["artist"].find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(searchplaylist["data"][i]["album"].find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    else if(searchplaylist["data"][i]["date"].find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(searchplaylist["data"][i]["length"].find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(searchplaylist["data"][i]["genre"].find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden!" << endl;}
+        //}//ich fuerchte wir muessen es wirklich auslesen :(
+
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    std::string str1(searchplaylist["data"][i]["title"]);
+        //    std::string str2(searchplaylist["data"][i]["artist"]);
+        //    std::string str3(searchplaylist["data"][i]["album"]);
+        //    //std::string str4(searchplaylist["data"][i]["date"]);
+        //    std::string str5(searchplaylist["data"][i]["length"]);
+        //    std::string str6(searchplaylist["data"][i]["genre"]);
+        //    
+        //    if(str1.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(str2.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(str3.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(str5.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(str6.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+        //}//ahhhhh
+        
+        //const char* searchchar;
+        //searchchar = searchstring.c_str();
+        //cout << searchstring << endl;
+
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    //std::string str1(searchplaylist["data"][i]["title"]);
+        //    //std::string str2(searchplaylist["data"][i]["artist"]);
+        //    //std::string str3(searchplaylist["data"][i]["album"]);
+        //    //std::string str4(searchplaylist["data"][i]["date"]);
+        //    //std::string str5(searchplaylist["data"][i]["length"]);
+        //    //std::string str6(searchplaylist["data"][i]["genre"]);
+        //    
+        //    if(std::strchr(searchchar, searchplaylist["data"][i]["title"])!=nullptr) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(std::strchr(searchchar, searchplaylist["data"][i]["artist"])!=nullptr) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(std::strchr(searchchar, searchplaylist["data"][i]["album"])!=nullptr) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(std::strchr(searchchar, searchplaylist["data"][i]["length"])!=nullptr) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(std::strchr(searchchar, searchplaylist["data"][i]["genre"])!=nullptr) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+        //}//ahhhhh2
+
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    char char1 = searchplaylist["data"][i]["title"].get<std::string>()[0];
+        //    char char2 = searchplaylist["data"][i]["artist"].get<std::string>()[0];
+        //    char char3 = searchplaylist["data"][i]["album"].get<std::string>()[0];
+        //    //char char4 = searchplaylist["data"][i]["date"].get<std::string>()[0];
+        //    char char5 = searchplaylist["data"][i]["length"].get<std::string>()[0];
+        //    char char6 = searchplaylist["data"][i]["genre"].get<std::string>()[0];
+        //    
+        //    if(std::strchr(searchchar, char1)!=nullptr) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(std::strchr(searchchar, char2)!=nullptr) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(std::strchr(searchchar, char3)!=nullptr) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(std::strchr(searchchar, char5)!=nullptr) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(std::strchr(searchchar, char6)!=nullptr) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+        //}//ahhhhh3? NEIN! es funktioniert!!!!
+        //aber wir brauchen es non case-sensitive!!!!
+        
+        //const char* searchchar;
+        //searchchar = searchstring.c_str();
+        //cout << searchstring << endl;
+        //cout << searchchar << endl;
+        //char searchchar2 = *searchchar;
+//
+        //for(int i=0; i<(searchplaylist.size()+1); i++) {
+        //    searchchar2 = std::tolower(searchchar2);
+//
+        //    char charplaylist1=searchplaylist["data"][i]["title"].get<std::string>()[0];
+        //    char char1 = std::tolower(charplaylist1);
+        //    char charplaylist2=searchplaylist["data"][i]["artist"].get<std::string>()[0];
+        //    char char2 = std::tolower(charplaylist2) ;
+        //    char charplaylist3=searchplaylist["data"][i]["album"].get<std::string>()[0];
+        //    char char3 = std::tolower(charplaylist3);
+        //    //char char4 = searchplaylist["data"][i]["date"].get<std::string>()[0];
+        //    char charplaylist5=searchplaylist["data"][i]["length"].get<std::string>()[0];
+        //    char char5 = std::tolower(charplaylist5) ;
+        //    char charplaylist6=searchplaylist["data"][i]["genre"].get<std::string>()[0];
+        //    char char6 = std::tolower(charplaylist6);
+//
+//
+        //    //char char1 = std::tolower(searchplaylist["data"][i]["title"].get<std::string>()[0]);
+        //    //char char2 = std::tolower(searchplaylist["data"][i]["artist"].get<std::string>()[0]);
+        //    //char char3 = std::tolower(searchplaylist["data"][i]["album"].get<std::string>()[0]);
+        //    ////char char4 = searchplaylist["data"][i]["date"].get<std::string>()[0];
+        //    //char char5 = std::tolower(searchplaylist["data"][i]["length"].get<std::string>()[0]);
+        //    //char char6 = std::tolower(searchplaylist["data"][i]["genre"].get<std::string>()[0]);
+//
+        //    //const char* char1Str = std::string(1, char1).c_str();
+        //    //const char* char2Str = std::string(1, char2).c_str();
+        //    //const char* char3Str = std::string(1, char3).c_str();
+        //    ////const char* char4Str = std::string(1, char4).c_str();
+        //    //const char* char5Str = std::string(1, char5).c_str();
+        //    //const char* char6Str = std::string(1, char6).c_str();
+        //    
+        //    cout << searchchar2 << " | " << char1 << endl;
+//
+        //    if(searchchar2==char1) {cout<<"Gefunden! Suche entspricht dem Titel von Song Nr. "<<i+1<<endl;}
+        //    else if(searchchar2==char2) {cout<<"Gefunden! Suche entspricht dem Interpreten von Song Nr. "<<i+1<<endl;}
+        //    else if(searchchar2==char3) {cout<<"Gefunden! Suche entspricht dem Album von Song Nr. "<<i+1<<endl;}
+        //    //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+        //    else if(searchchar2==char5) {cout<<"Gefunden! Suche entspricht der Laenge von Song Nr. "<<i+1<<endl;}
+        //    else if(searchchar2==char6) {cout<<"Gefunden! Suche entspricht dem Genre von Song Nr. "<<i+1<<endl;}
+        //    //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+        //    else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+        //}//jetzt geht garnichts mehr
+
+
+        const char* searchchar;
+        searchchar = searchstring.c_str();
+        //cout << searchstring << endl;
+        //cout << searchstring << " | " << searchplaylist["data"][0]["artist"] << endl;
+        cout << "\t\t*******" << endl;
+        //hoffentlich letzter versuch. JAAAAA //playlist zum test ist in line 635 falls sie je wieder gebraucht wird
+        for(int i=0; i<(searchplaylist.size()+1); i++) {
+            std::transform(searchstring.begin(), searchstring.end(), searchstring.begin(), ::tolower);
+            //anfuehrungszeichen aus searchstring entfernen --> line 665 commented
+
+            std::string str1(searchplaylist["data"][i]["title"]);
+            std::transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
+            std::string str2(searchplaylist["data"][i]["artist"]);
+            std::transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
+            std::string str3(searchplaylist["data"][i]["album"]);
+            std::transform(str3.begin(), str3.end(), str3.begin(), ::tolower);
+            //char char4 = searchplaylist["data"][i]["date"].get<std::string>()[0];
+            std::string str5(searchplaylist["data"][i]["length"]);
+            std::transform(str5.begin(), str5.end(), str5.begin(), ::tolower);
+            std::string str6(searchplaylist["data"][i]["genre"]);
+            std::transform(str6.begin(), str6.end(), str6.begin(), ::tolower);
+            
+            //cout << str1 << " | " << searchstring << endl;//tettsetsetsetstetsettesttest
+
+            bool unabletolocate=true;//auf die art koennen mehrere eintraege durchsucht werden. zum beispiel titel und album
+            if(str1.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Titel von Song Nr. "<<i+1<<"! -- >"<<str1<<"<"<<endl; unabletolocate=false;}
+            if(str2.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Interpreten von Song Nr. "<<i+1<<"! -- >"<<str2<<"<"<<endl; unabletolocate=false;}
+            if(str3.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Album von Song Nr. "<<i+1<<"! -- >"<<str3<<"<"<<endl; unabletolocate=false;}
+            //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+            if(str5.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht der Laenge von Song Nr. "<<i+1<<"! -- >"<<str5<<"<"<<endl; unabletolocate=false;}
+            if(str6.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Genre von Song Nr. "<<i+1<<"! -- >"<<str6<<"<"<<endl; unabletolocate=false;}
+            //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+            if(unabletolocate) {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+
+            //if(str1.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Titel von Song Nr. "<<i+1<<"! >"<<str1<<"<"<<endl;}
+            //else if(str2.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Interpreten von Song Nr. "<<i+1<<"! >"<<str2<<"<"<<endl;}
+            //else if(str3.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Album von Song Nr. "<<i+1<<"! >"<<str3<<"<"<<endl;}
+            ////else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+            //else if(str5.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht der Laenge von Song Nr. "<<i+1<<"! >"<<str5<<"<"<<endl;}
+            //else if(str6.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Genre von Song Nr. "<<i+1<<"! >"<<str6<<"<"<<endl;}
+            ////else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
+            //else {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+        }//ahhhhh3? NEIN! es funktioniert!!!!??? JAAAAAAAAAAAAAA
+        
+
+    }
+
+    //ganz am ende zurueck zum hauptmenue
+    main_menu();
+}
+
+void myeditfile() {
+    //myprintfile direkt ausfuehren?
+
+    mydashedline();
+    cout << " \t-----Song-Editor-----" << endl;
+    cout << "Hier koennen die Details von Songs bearbeitet werden." << endl;
+    cout << "";
+    //numerierungen
+    //z.b. daten des songs bearbeiten - 1 |  song loeschen - 2 | haupemenue - 3
+    //fuer 1    Details editieren: titel - 1 | interpret - 2 | album - 3 | ...
+    //^^^diese werden dann umbenannt?! es wird nach einer eingabe gefragt, die den aktuellen wert ersetzt
+
+    //erneut die playlist aisgeben und zum start zurueckkehren!!
 }
 
 void myexit(char myinput[50]) {
