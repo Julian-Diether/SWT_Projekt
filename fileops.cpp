@@ -5,6 +5,7 @@
 #include <string> //??!?
 #include <string.h>
 #include <cstring>//fuer strchr in mycheckifopen()
+#include <cstdio>//fuer das loeschen von dateien
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
 #include <fstream>//benutzen wir um dateien zu lesen/schreiben
 #include "nlohmann/json.hpp"//nlohmann json bibliothek
@@ -17,10 +18,14 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-//deklarierung globaler variablen
+//deklarierung/inkludierung globaler variablen
 extern std::string mypath;
+//deklarierung eigener variablen
 std::string filename = "";
 nlohmann::json currentplaylist;
+char answer[50];
+bool repeat=true;
+bool repeat2=true;
 /*const char* mynein = "nein";
 const char* myja = "ja"; brauchen wir zum glueck doch nicht*/
 
@@ -34,17 +39,19 @@ void myprintfile();
 /*
 void mycreatefile();
 */
-void myexit(char input[100]);
+void myexit(char myinput[50]);
 void mywaitenter();
-void mycheckifopen(char input2[25]);
+void mycheckifopen(char myinput2[50]);
 void mydashedline();
 
 
 void myinitialize() {
-    char answer[50];
-    bool repeat = true;
+    //char answer[50];
+    //bool repeat = true;
     
     while (repeat) {
+        //answer="";    nein, das waere viel zu einfach!!
+        std::memset(answer, 0, sizeof(answer));
         // else if fuer nein und else danach mit "befehl nicht verstanden, playlist initialisieren (ja/nein)" einfuegen???
         cout << "Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ";
         cin >> answer; //if (strcasecmp(answer, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
@@ -72,14 +79,15 @@ void myinitialize() {
 }
 
 void myopenfile() {
-    bool repeat = true;
-    bool repeat2= true;
+    //bool repeat = true;
+    //bool repeat2= true;//hier brauchen wir tatsaechlich eine weitere repeat, da die beiden vernestet sind! wir machen sie global
     std::string filename2 = "";
     std::string tempfilename;
     //const char* myjson = ".json";//gibt es keinen besseren weg?
 
     mydashedline();
     //while schleife, bis die datei gueltig geoeffnet wurde
+    repeat=true;
     while (repeat) {
         cout << "Geben sie den Namen der zu oeffnenden Playlist ein: "; // spezifizieren, dass nur name der playlist und nicht .json eingegeben werden soll???
         cin >> tempfilename; //char answer2=filename.c_str();//if (strcasecmp(answer2, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
@@ -152,16 +160,18 @@ void myopenfile() {
 
         //datei ist geoeffnet und kann hier direkt ausgegeben werden
         if(!repeat) {
-        char answer3[50];
+        //char answer3[50];
+        std::memset(answer, 0, sizeof(answer));
+            repeat2=true;
             while (repeat2) {
             cout << "Soll die Playlist direkt angezeigt werden? (Ja/Nein): ";
-            cin >> answer3;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
-            myexit(answer3);//wurde "beenden" eingegeben?
+            cin >> answer;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+            myexit(answer);//wurde "beenden" eingegeben?
     
-                if (strcasecmp(answer3, "ja") == 0) {//if (answer == "ja") {
+                if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
                     repeat2 = false;
                     myprintfile();
-                } if (strcasecmp(answer3, "nein") == 0) {
+                } if (strcasecmp(answer, "nein") == 0) {
                     repeat2 = false;   
                     main_menu();//zurueck zum hauptmenue
                 }
@@ -204,9 +214,13 @@ void myprintfile() {
         currentplaylist["data"][i]["album"] << " | " <<
         currentplaylist["data"][i]["date"] << " |    " <<
         currentplaylist["data"][i]["length"] << " |    " <<
-        currentplaylist["data"][i]["genre"] << " |    " <<
-        currentplaylist["data"][i]["explicit"] << " | " <<
-        endl;
+        currentplaylist["data"][i]["genre"] << " |    ";// <<
+        if(currentplaylist["data"][i]["explicit"]==true) {
+            cout << "Nein";
+        } else {
+            cout <<"Ja";
+        }//currentplaylist["data"][i]["explicit"]
+        cout << "  | " << endl;
     }
 
     //cout << ">mit Enter zurueck zum Hauptmenue...";
@@ -219,12 +233,12 @@ void myprintfile() {
 }
 
 void mycreatefile() {
-    bool repeat3=true;
-    bool repeat6=true;
+    //bool repeat3=true;
+    //bool repeat6=true;
     //char answer3[50];
     char filenamecreatefile[50];
     //char answer3temp[50];
-    char answer6[50];
+    //char answer6[50];
     int length=0;
     
     //soll eine json datei mit bielibigem namen erstellen
@@ -236,6 +250,7 @@ void mycreatefile() {
     //cout << "createfile--------" << endl;
     
     mydashedline();
+    //std::memset(filenamecreatefile, 0, sizeof(filenamecreatefile));
     cout << "Name der neuen Playlist eingeben: ";
     cin >> filenamecreatefile;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
     myexit(filenamecreatefile);
@@ -270,13 +285,13 @@ void mycreatefile() {
     //    main_menu();
     //}
 
-    repeat3=true;
+    repeat=true;
     //hier sicherstellen, dass nur integer eingegeben werden, auf beenden pruefen vllt nicht moeglich
-    while (repeat3) {
+    while (repeat) {
         cout << "Wie viele Songs sollen hinzugefuegt werden?: ";
         if (cin >> length) {//integer wurde eingegeben
         //cout <<"111";//test
-            if(length>0) {repeat3=false;}//integer ist größer als 0
+            if(length>0) {repeat=false;}//integer ist größer als 0 -- also passt alles!!
         } else {
             //char tempchar[25];
             //cin >> tempchar;
@@ -305,14 +320,16 @@ void mycreatefile() {
     //gameplan:
     //abfragen, wie viele eintraege in die json datei geschrieben werden sollen = i
     //i mal jedes parameter nacheinander abfragen und in jeweiligen arrays speichern
-    while (repeat6) {
+    repeat=true;
+    while (repeat) {
+        std::memset(answer, 0, sizeof(answer));
         cout << length << " Songs werden zu " << filenamecreatefile << " hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
-        cin >> answer6;
-        myexit(answer6);//wurde "beenden" eingegeben?
-        if (strcasecmp(answer6, "ja") == 0) {
-            repeat6 = false;
-        } if (strcasecmp(answer6, "nein") == 0) {
-            repeat6 = false;
+        cin >> answer;
+        myexit(answer);//wurde "beenden" eingegeben?
+        if (strcasecmp(answer, "ja") == 0) {
+            repeat = false;
+        } if (strcasecmp(answer, "nein") == 0) {
+            repeat = false;
             main_menu();
         }
     }
@@ -331,9 +348,9 @@ void mycreatefile() {
         }
     }
 
-    bool repeat4=true;
-    bool repeat5=true;
-    char answer4[25];
+    //bool repeat4=true;
+    //bool repeat5=true;
+    //char answer4[25];
     int tempyear=0;
 
     mydashedline();
@@ -341,6 +358,7 @@ void mycreatefile() {
 
     //brauchen wir diesen zwischenschritt ueberhaupt oder koennen wir die daten direkt an writefile uebergeben??
     //fuer jetzt behalten wir ihn, da wir probleme mit dem schreiben in die datei haben!! vllt spaeter entfernen? stichwort 'optimisation'
+    std::memset(answer, 0, sizeof(answer));
     for(int i=0; i<length; i++) {
         //cout << "\t----------------------------------" << endl;
         mydashedline();
@@ -348,10 +366,10 @@ void mycreatefile() {
         cout << "Songname: "; cin >> title[i];
         cout << "Interpret: "; cin >> artist[i];
         cout << "Album: "; cin >> album[i];
-        repeat5=true;
-        while (repeat5) {cout << "Erscheinungsjahr: ";
+        repeat=true;
+        while (repeat) {cout << "Erscheinungsjahr: ";
             if (cin >> tempyear) {//integer wurde eingegeben
-                if(tempyear>0) {repeat5=false;year[i]=tempyear;}//success!
+                if(tempyear>0) {repeat=false;year[i]=tempyear;}//success!
             } else {
                 std::cin.clear();//input wird geloescht
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -360,11 +378,11 @@ void mycreatefile() {
         }
         cout << "Laenge [xx:xx]: "; cin >> duration[i];
         cout << "Musikrichtung: "; cin >> genre[i];
-        repeat4=true;
-        while (repeat4) {cout << "Jugendfrei (Ja/Nein): "; cin >> answer4;
+        repeat=true;
+        while (repeat) {cout << "Jugendfrei (Ja/Nein): "; cin >> answer;
             //myexit(answer4);//brauchen wir das? ich lasse es drin bis wir die bestaetigung am anfang haben?!
-            if (strcasecmp(answer4, "ja") == 0) {repeat4=false;badwords[i]=false;}
-            if (strcasecmp(answer4, "nein") == 0) {repeat4=false;badwords[i]=true;}
+            if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[i]=false;}
+            if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[i]=true;}
         }
     }
 
@@ -424,10 +442,12 @@ void mycreatefile() {
 
 
     
-    char answer8[50];
-    bool repeat7=true;
-    bool repeat8=true;
-    while(repeat7) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
+    //char answer8[50];
+    //bool repeat7=true;
+    //bool repeat8=true;
+    std::memset(answer, 0, sizeof(answer));
+    repeat=true;
+    while(repeat) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
         //daten werden in die datei file2 geschrieben
         std::ofstream file2(mypath + filenamecreatefile);
         //cout << "test2: " << mypath+filenamecreatefile<<endl;
@@ -438,14 +458,14 @@ void mycreatefile() {
             //zum beispiel erneute abfrage nach dateinamen und versuch die bereits eingelesenen daten dotz zu speichern.
             //"wollen sie das speichern erneut versuchen? (ja/nein)"
             
-
-        while(repeat8) {
+        repeat2=true;
+        while(repeat2) {
             cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
-            cin >> answer8;
-            myexit(answer8);
+            cin >> answer;
+            myexit(answer);
 
-            if (strcasecmp(answer8, "ja") == 0) {//er will es nochmal versuchen. viel glueck!
-                repeat8=false;
+            if (strcasecmp(answer, "ja") == 0) {//er will es nochmal versuchen. viel glueck!
+                repeat2=false;
                 std::string tempanswer;
                 cout << "Geben sie einen alternativen Dateinamen ein:";
                 cin >> tempanswer;
@@ -457,14 +477,14 @@ void mycreatefile() {
                     tempanswer = tempanswer + ".json";// an dateiname wird dateiendung .json angefuegt
                 }
             }
-            if (strcasecmp(answer8, "nein") == 0) {
-                repeat8=false;
+            if (strcasecmp(answer, "nein") == 0) {
+                repeat2=false;
                 main_menu();
             }
         }
         //dann zurueck in den loop und es klappt hoffentlich
         } else {
-            repeat7=false;
+            repeat=false;
             file2 << writefile.dump(2);
             //cout << "test3";
             //feierabend! datei wird geschlossen
@@ -476,7 +496,52 @@ void mycreatefile() {
 
 }
 
-void myexit(char myinput[100]) {
+void mydeletefile() {
+    std::memset(answer, 0, sizeof(answer));//answer zuruecksetzen, weil sonst random sonderzeichen auftauchen
+    cout << "Name der zu loeschenden Playlist eingeben: ";
+    cin >> answer;
+    
+    std::string filenamedeletefile(answer);
+    //da wir hier dateien loeschen mussen wir sehr vorsichtig sein!! der benutzer koennte auf andere ordner zugreifen!!!
+    if (filenamedeletefile.find("/") != std::string::npos || filenamedeletefile.find("\\") != std::string::npos) {//zwei backslashes wil backslash benutzt wird um spezielle charakter darzustellen! '//' ==> /
+        cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<endl;
+        mywaitenter();
+        main_menu();
+    }
+    filenamedeletefile=mypath+filenamedeletefile;
+    //cout << "test1231:" << filenamedeletefile;
+
+    repeat=true;
+    while(repeat) {
+        cout << "Die Playlist " << filenamedeletefile << " wird geloescht! Fortfahren? (Ja/Nein): ";
+
+        if (strcasecmp(answer, "ja") == 0) {
+            repeat = false;
+            
+        } if (strcasecmp(answer, "nein") == 0) {
+            repeat = false;
+            main_menu();
+        }
+    }
+
+    //hier wird geloescht
+    const char* filenamedeletefilec;
+    filenamedeletefilec=filenamedeletefile.c_str();
+    cout <<"testtest: " << filenamedeletefilec << endl;//testtest
+
+    if (std::remove(filenamedeletefilec) != 0) {
+        cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << endl;
+        mywaitenter();
+        main_menu
+    } else {
+        mydashedline();
+        std::cout << "\tDie Datei wurde erfolgreich geloescht!" << std::endl;
+        mywaitenter();
+        main_menu();    
+    }
+}
+
+void myexit(char myinput[50]) {
 //funktion ueberprueft inputs auf "beenden" und beendet dann das programm.
     //cout << "asdasdasd" << endl;//test
     //cout << myinput << endl;
@@ -494,7 +559,7 @@ void mywaitenter() {
     cin.get();
 }
 
-void mycheckifopen(char input2[25]) {
+void mycheckifopen(char myinput2[50]) {
     //std::string tempfilename = filename;    
     const char* tempfilename; tempfilename = filename.c_str();//AAAARRRGHHH
 
@@ -503,8 +568,8 @@ void mycheckifopen(char input2[25]) {
         *dotPos = '\0';//und loecshen alles danach!
     }
 
-    if(input2==filename || input2==tempfilename) {
-        cout << "Die Playlist: >" << input2 << "< ist bereits geoeffnet!"<< endl;
+    if(myinput2==filename || myinput2==tempfilename) {
+        cout << "Die Playlist: >" << myinput2 << "< ist bereits geoeffnet!"<< endl;
         cout << "Bearbeiten/Loeschen und weitere Funktionen ueber das Hauptmenue." << endl;
         mywaitenter();
         main_menu();

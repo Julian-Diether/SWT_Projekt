@@ -34,6 +34,10 @@ int input_validation(int option_num, bool bmainmenu);
 void myopenfile();
 void myprintfile();
 void mycreatefile();
+void mydeletefile();
+
+void mywaitenter();
+void mydashedline();
 
 
 //Main menu functions
@@ -110,12 +114,13 @@ void main_menu()
     cout << "Aktuelle Playlist anzeigen - 1" << endl;
     cout << "Gespeicherte Playlist oeffnen - 2" << endl;
     cout << "Eine neue Playlist erstellen - 3" << endl;
-    cout << "Titel der Playlist verwalten - 4" << endl;
-    cout << "Aktuelle playlist durchsuchen - 5" << endl;
-    cout << "Den Musikplayer beenden  -  6" << endl;
+    cout << "Gespeicherte Playlist loeschen - 4" << endl;
+    cout << "Titel der Playlist verwalten - 5" << endl;
+    cout << "Aktuelle playlist durchsuchen - 6" << endl;
+    cout << "Den Musikplayer beenden  -  7" << endl;
     cout << "Geben sie die entsprechende Zahl ein: "; 
     int selection {0}; //User input
-    int option_num {6}; //Number of options in the displayed menu
+    int option_num {7}; //Number of options in the displayed menu
     selection = input_validation(option_num, true);
     //cout << selection << endl;//test
 
@@ -134,15 +139,19 @@ void main_menu()
             mycreatefile();
         break;
         case 4:
+            //                      playlist loeschen
+            mydeletefile();
+        break;
+        case 5:
             //create_library();     titel verwalten
             song_management();
 
         break;
-        case 5:
+        case 6:
             //song_management();      playlist durchsuchen
 
         break;
-        case 6:
+        case 7:
             //turn_off();
             exit(0);
         break;

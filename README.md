@@ -50,6 +50,8 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
     -03 --> user will datei ausgenen waehrend keine geoeffnet ist
     -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
+    -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
+    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0)
 
 -git ignore hinzugefuegt
 
@@ -76,5 +78,12 @@ todo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeiche
 -datei erstellen deutlich besser abgesichert
 
 todo: die diversen checks und failsafes irgendwie ueberpruefen
+
+**21.05.**
+todo: beim auslesen der datei, alles schoen untereinander schreiben um lesbarkeit zu erhoehen!!
+
+-funktion vom loeschen von dateien hinzugefuegt und abgesichert
+
+todo:: ueberpruefen ob wir die ganzen bibliotheken brauchen oder funktionen auch in anderen gefunden werden koennen, um das programm einfacher/schneller/kleiner zu machen!!
 
 
