@@ -532,7 +532,7 @@ void mydeletefile() {
     if (std::remove(filenamedeletefilec) != 0) {
         cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << endl;
         mywaitenter();
-        main_menu
+        main_menu();
     } else {
         mydashedline();
         std::cout << "\tDie Datei wurde erfolgreich geloescht!" << std::endl;
