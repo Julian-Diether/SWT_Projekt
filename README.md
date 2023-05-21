@@ -43,10 +43,13 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     dateien sind leichter lesbar, dank warten auf enter druck vor rueckkehr zum haupemenue
     vereinfachung der oeffnen funktion
 
+**19.05**
+
 ***Fehlercodes***
     -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
     -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
     -03 --> user will datei ausgenen waehrend keine geoeffnet ist
+    -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
 
 -git ignore hinzugefuegt
 
@@ -67,5 +70,11 @@ todo: beim einlesen der dateien sonderzeichen herausfiltern! vllt noch einen hin
 
 todo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
 
+**20.05.**
 -funktionierendes dateien erstellen
+
+-datei erstellen deutlich besser abgesichert
+
+todo: die diversen checks und failsafes irgendwie ueberpruefen
+
 

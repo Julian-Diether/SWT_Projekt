@@ -240,7 +240,7 @@ void mycreatefile() {
     cin >> filenamecreatefile;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
     myexit(filenamecreatefile);
     //vllt schauen ob playlist gerade schon offen ist?DONE
-    cout << "davor: " << filenamecreatefile << endl;
+    //cout << "davor: " << filenamecreatefile << endl;
     std::string answer3str(filenamecreatefile);
     std::string answer3str2;//sonst bekommen wir irgendwelche schwachsinnigen emojis uns sonderzeichen.
     if (answer3str.find(".json") != std::string::npos) {
@@ -254,13 +254,13 @@ void mycreatefile() {
 
     std::copy(answer3str.begin(), answer3str.end(), filenamecreatefile);
     filenamecreatefile[answer3str.size()] = '\0';
-    myexit(filenamecreatefile);
+    myexit(filenamecreatefile);//schwachsinn
 
     //for (size_t i = 0; i < answer3str.length(); ++i) {
     //    filenamecreatefile[i] = answer3str[i];
     //}
     //----------------------------------------------------^^^absolutes chaos!! muss spaeter alles aufgeraeumt werden!!!!!
-    cout << "danach:" << filenamecreatefile << endl;
+    //cout << "danach:" << filenamecreatefile << endl;
 
     mycheckifopen(filenamecreatefile);
     //if(answer3==filename || answer3==) {
@@ -378,17 +378,17 @@ void mycreatefile() {
         }
     }
 
-
-    for (int i2 = 0; i2<length; i2++) {
-        for (int i = 0; i<5; i++) {
-            cout << "duration["<<i2<<"]["<<i<<"]:  ";
-            cout << duration[i2][i]<< endl;
-        }
-    }//testen ob es geklappt hat!   /eigentlich klappt es immer, der fehler muss irgendwo anders liegen!
+    //for (int i2 = 0; i2<length; i2++) {
+    //    for (int i = 0; i<5; i++) {
+    //        cout << "duration["<<i2<<"]["<<i<<"]:  ";
+    //        cout << duration[i2][i]<< endl;
+    //    }
+    //}//testen ob es geklappt hat!   /eigentlich klappt es immer, der fehler muss irgendwo anders liegen!
 
     mydashedline();
     cout << "Daten werden in Datei geschrieben" << endl;
-    nlohmann::json writefile = {
+    //try {
+    nlohmann::json writefile = {//reihenfolge scheint irrelevant zu sein, da die eintraege alphabetisch? sortiert werden.
         {
             "data",
             {
@@ -405,7 +405,7 @@ void mycreatefile() {
         }
     };
 
-    cout << "test1";
+    //cout << "test1";
     for(int i=0; i<length; i++) {
         writefile["data"][i]["title"] = title[i];
         writefile["data"][i]["artist"] = artist[i];
@@ -416,23 +416,64 @@ void mycreatefile() {
         writefile["data"][i]["explicit"] = badwords[i];
     }
 
+    //}
+    //catch(const std::exception& e) {
+    //    mydashedline();
+    //    cout << "Fehler beim schreiben in die Datei: " << e.what() << endl;
+    //}
+
 
     
-    //daten werden in die datei answer3 geschrieben
-    std::ofstream file2(mypath + filenamecreatefile);
-    cout << "test2: " << mypath+filenamecreatefile<<endl;
+    char answer8[50];
+    bool repeat7=true;
+    bool repeat8=true;
+    while(repeat7) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
+        //daten werden in die datei file2 geschrieben
+        std::ofstream file2(mypath + filenamecreatefile);
+        //cout << "test2: " << mypath+filenamecreatefile<<endl;
 
-    /*if (!file2.is_open()) {
-        cout << "Datei konnte nicht geoeffnet werden, um Dateien zu speichern! Fehlercode4" << endl;
-        main_menu();//vorerst zurueck zum mainmenu. speater muss hier eine loesung gefunden werden.
-        //zum beispiel erneute abfrage nach dateinamen und versuch die bereits eingelesenen daten dotz zu speichern.
-        //"wollen sie das speichern erneut versuchen? (ja/nein)"
-    }*/
+        if (!file2.is_open()) {
+            cout << "Datei konnte nicht geoeffnet werden, um Datenn zu speichern! Fehlercode: 04" << endl;
+            //main_menu();//vorerst zurueck zum mainmenu. speater muss hier eine loesung gefunden werden.
+            //zum beispiel erneute abfrage nach dateinamen und versuch die bereits eingelesenen daten dotz zu speichern.
+            //"wollen sie das speichern erneut versuchen? (ja/nein)"
+            
 
-    file2 << writefile.dump(2);
-    cout << "test3";
-    //feierabend! datei wird geschlossen
-    file2.close();
+        while(repeat8) {
+            cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
+            cin >> answer8;
+            myexit(answer8);
+
+            if (strcasecmp(answer8, "ja") == 0) {//er will es nochmal versuchen. viel glueck!
+                repeat8=false;
+                std::string tempanswer;
+                cout << "Geben sie einen alternativen Dateinamen ein:";
+                cin >> tempanswer;
+                //myexit(tempanswer.c_str());   geht nicht aber egal, da wir davor schon nach return zum mainmenu fragen
+                if (tempanswer.find(".json") != std::string::npos) {
+                    //cout << "test1 test1";
+                    //.json ist schon angefuegt! hier passiert alles
+                } else {
+                    tempanswer = tempanswer + ".json";// an dateiname wird dateiendung .json angefuegt
+                }
+            }
+            if (strcasecmp(answer8, "nein") == 0) {
+                repeat8=false;
+                main_menu();
+            }
+        }
+        //dann zurueck in den loop und es klappt hoffentlich
+        } else {
+            repeat7=false;
+            file2 << writefile.dump(2);
+            //cout << "test3";
+            //feierabend! datei wird geschlossen
+            file2.close();
+            main_menu();
+        }
+    }
+
+
 }
 
 void myexit(char myinput[100]) {
