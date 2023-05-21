@@ -524,7 +524,7 @@ void mydeletefile() {
         }
     }
 
-    //hier wird geloescht
+    //hier wird geloescht   
     const char* filenamedeletefilec;
     filenamedeletefilec=filenamedeletefile.c_str();
     cout <<"testtest: " << filenamedeletefilec << endl;//testtest
