@@ -23,6 +23,7 @@ using std::endl;
 extern std::string mypath;
 //deklarierung eigener variablen
 std::string filename = "";
+std::string tempfilename;
 nlohmann::json currentplaylist;
 nlohmann::json searchplaylist;//lieber eine neue erstellen, da currentplaylist in mehreren funktionen benuzt wird und dort genutzt wird um daten zwischen funktionen zu uebertragen. koennte am ende gecheckt werden um zu optimisieren! todo?
 char answer[50];
@@ -85,7 +86,7 @@ void myopenfile() {
     //bool repeat = true;
     //bool repeat2= true;//hier brauchen wir tatsaechlich eine weitere repeat, da die beiden vernestet sind! wir machen sie global
     std::string filename2 = "";
-    std::string tempfilename;
+    //std::string tempfilename;
     //const char* myjson = ".json";//gibt es keinen besseren weg?
 
     mydashedline();
@@ -912,13 +913,15 @@ void mycheckifopen(char myinput2[50]) {
     //if (dotPos != nullptr) {//falls es diese gibt
     //    *dotPos = '\0';//und loecshen alles danach!
     //}
+    
+    //initialisieren funktioniert nicht, da der filename ueberprueft wird waehrend der nutzer noch gar nicht gefragt wurde!!
 
-    if(myinput2==filename || myinput2==tempfilename) {
+    /*if(myinput2==filename || myinput2==tempfilename) {
         cout << "Die Playlist: >" << myinput2 << "< ist bereits geoeffnet!"<< endl;
         cout << "Bearbeiten/Loeschen und weitere Funktionen ueber das Hauptmenue." << endl;
         mywaitenter();
         main_menu();
-    }
+    }*/
 }
 
 void mydashedline() {
