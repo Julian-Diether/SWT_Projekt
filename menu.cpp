@@ -5,9 +5,9 @@
 #include <iostream>
 #include <fstream>
 #include "nlohmann/json.hpp"
-using std::cout; //('using namespace std;' fehlt auch)
-using std::cin;
-using std::endl;
+//using std::cout; //('using namespace std;' fehlt auch)
+//using std::cin;
+//using std::endl;
 using json = nlohmann::json;
 
 //globale variablen
@@ -25,17 +25,18 @@ void add_song();
 void modify_song();
 void search_song();
 void delete_song();
-void return_main();
+//void return_main();
 void main_menu();
 int input_validation(int option_num, bool bmainmenu);
 
 //initialisierung fremder funktionen (fileops.cpp)
 //void myinitialize();//brauchen wir nicht da in main initialisiert wird!
-void myopenfile();
-void myprintfile();
+void myopenfile(bool justprint2);
+void myprintfile(bool justprint);
 void mycreatefile();
 void mydeletefile();
 void mysearchfile();
+void myeditfile(int select);
 
 
 void myexit(char myinput[50]);//vsc hat sich beschwert (gelbe kringel linien), dass die definition zu mycheckifopen fehle, beeintraechtigt programm aber nicht
@@ -47,14 +48,14 @@ void mydashedline();
 //Main menu functions
 void welcome_msg()
 {
-    cout << "******************************************************************" << endl;
-    cout << "\t\t Willkommen zum Musikplayer!" << endl;
-    cout << "\t    - zum schliessen >beenden< eingeben -" << endl;
-    cout << "******************************************************************" << endl;
+    std::cout << "******************************************************************" << std::endl;
+    std::cout << "\t\t Willkommen zum Musikplayer!" << std::endl;
+    std::cout << "\t    - zum schliessen >beenden< eingeben -" << std::endl;
+    std::cout << "******************************************************************" << std::endl;
 }
 void run_last_library()
 {
-    cout << "Run last lib selected" << endl;
+    std::cout << "Run last lib selected" << std::endl;
     main_menu();
 }
 /*void load_library()
@@ -64,12 +65,12 @@ void run_last_library()
 }*/
 void add_library()
 {
-    cout << "Add lib selected" << endl;
+    std::cout << "Add lib selected" << std::endl;
     main_menu();
 }
 void create_library()
 {
-    cout << "Create lib selected" << endl;
+    std::cout << "Create lib selected" << std::endl;
     main_menu();
 }
 /*void turn_off()
@@ -79,28 +80,28 @@ void create_library()
 //Song functions
 void add_song()
 {
-    cout << "Add song selected" << endl;
+    std::cout << "Add song selected" << std::endl;
     song_management();
 }
 void modify_song()
 {
-    cout << "Mod song" << endl;
+    std::cout << "Mod song" << std::endl;
     song_management();
 }
 void search_song()
 {
-    cout << "Search song selected" << endl;
+    std::cout << "Search song selected" << std::endl;
     song_management();
 }
 void delete_song()
 {
-    cout << "Delete song selected" << endl;
+    std::cout << "Delete song selected" << std::endl;
     song_management();
 }
-void return_main()
-{
-    main_menu();
-}
+//void return_main()//redundant
+//{
+//    main_menu();
+//}
 
 //Options functions
 void main_menu()
@@ -114,15 +115,15 @@ void main_menu()
     cout << "Shut down app - 6" << endl;
     cout << "Enter an option number: ";
     cout << "\n***********************\tHauptmenue\t**************************" << endl;*/
-    cout << "\n***********************  Hauptmenue  **************************" << endl;
-    cout << "Aktuelle Playlist anzeigen  -  1" << endl;
-    cout << "Gespeicherte Playlist oeffnen - 2" << endl;
-    cout << "Eine neue Playlist erstellen  -  3" << endl;
-    cout << "Gespeicherte Playlist loeschen - 4" << endl;
-    cout << "Titel der Playlist verwalten  -  5" << endl;
-    cout << "Gespeicherte playlist durchsuchen - 6" << endl;
-    cout << "Den Musikplayer jetzt beenden  -  7" << endl;
-    cout << "--Geben sie die entsprechende Zahl ein: "; 
+    std::cout << "\n***********************  Hauptmenue  **************************" << std::endl;
+    std::cout << "Aktuelle Playlist anzeigen  -  1" << std::endl;
+    std::cout << "Gespeicherte Playlist oeffnen - 2" << std::endl;
+    std::cout << "Eine neue Playlist erstellen  -  3" << std::endl;
+    std::cout << "Gespeicherte Playlist loeschen - 4" << std::endl;
+    std::cout << "Titel der Playlist verwalten  -  5" << std::endl;
+    std::cout << "Gespeicherte playlist durchsuchen - 6" << std::endl;
+    std::cout << "Den Musikplayer jetzt beenden  -  7" << std::endl;
+    //cout << "--Geben sie die entsprechende Zahl ein: "; 
     int selection {0}; //User input
     int option_num {7}; //Number of options in the displayed menu
     selection = input_validation(option_num, true);
@@ -132,11 +133,11 @@ void main_menu()
     {
         case 1:
             //run_last_library();
-            myprintfile();
+            myprintfile(false);
         break;
         case 2:
             //load_library();
-            myopenfile();
+            myopenfile(false);
         break;
         case 3:
             //add_library();
@@ -165,13 +166,14 @@ void main_menu()
 }
 void song_management()
 {
-    cout << "\n*********************\tSong Manager\t***********************" << endl;
-    cout << "Add new song - 1" << endl;
-    cout << "Modify a song - 2" << endl;
-    cout << "Search a song - 3" << endl;
-    cout << "Delete a song - 4" << endl;
-    cout << "Return to main menu - 5" << endl;
-    cout << "Enter an option number:";
+    std::cout << "\n*********************\tSong Editor\t***********************" << std::endl;
+    std::cout << "Neuen Song hinzufuegen - 1" << std::endl;
+    std::cout << "Song bearbeiten - 2" << std::endl;
+    //std::cout << "Search a song - 3" << std::endl;//machen wir ueber das suchmenue (Nummer 6)
+    std::cout << "Song loeschen - 3" << std::endl;
+    std::cout << "Zurueck zum menue - 4" << std::endl;
+    std::cout << "Musikplayer beenden - 5" << std::endl;
+    //cout << "Enter an option number:";
     int selection {0}; //User input
     int option_num {5}; //Number of options in the displayed menu
     selection = input_validation(option_num, false); 
@@ -179,36 +181,58 @@ void song_management()
     switch(selection)
     {
         case 1:
-            add_song();
+            //add_song();
+            myeditfile(1);
         break;
         case 2:
-            modify_song();
+            //modify_song();
+            myeditfile(2);
         break;
         case 3:
-            search_song();
+            //search_song();
+            myeditfile(3);
         break;
         case 4:
-            delete_song();
+            //delete_song();
+            main_menu();
         break;
         case 5:
-            return_main();
+            //return_main();
+            exit(0);
         break;
         default:
-        break;
+        break;//koennten wir die fehler nicht hier haendeln?
     }
 }
 //Extra functions
 int input_validation(int option_num, bool bmainmenu)    //wenn input != int (buchstabe eingegeben) entstegt eine unendlich-schleife!!
 {
+    bool inputerror=false;
+    bool repeat=true;
     int selection{0};
     do
     {
-        cin >> selection;
-        if (selection <= 0 || selection > option_num)
-            cout << "Enter a valid option: ";
+        repeat=true;
+        while(repeat) {
+            std::cout << "--Geben sie die entsprechende Zahl ein: "; 
+            cin >> selection;
+            if(std::cin.fail()) {//oder if(cin>>selection)???
+                //cout << "FEHLERFEHLERFEHLERFEHLERFEHLER---------------" << endl;
+                inputerror=true;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "\tBuchstaben sind nicht zulaessig!" << std::endl;
+                //std::cout << "Geben sie eine gueltige Zahl ein: ";//user soll erneut eingeben, weil buchstabe eingegeben wurde
+                repeat=false;
+            } else {repeat=false;}
+        }
+        //cout << "testtesttest";
+        if (selection <= 0 || selection > option_num || inputerror)
+        {
+            std::cout << "\tGeben sie eine gueltige Zahl ein!" << std::endl;;//user soll erneut eingegeben, weil ungueltige zahl eingegeben wurde
             
             counter++;
-            if(counter>4) {//nach 5 fehlerhaften eingaben wird mainmenu bzw. songmanagement erneut angezeigt
+            if(counter>3) {//nach 4 fehlerhaften eingaben wird mainmenu bzw. songmanagement erneut angezeigt. fuer bessere lesbarkeit!
                 counter=0;
                 if(bmainmenu) {
                     main_menu();
@@ -216,9 +240,12 @@ int input_validation(int option_num, bool bmainmenu)    //wenn input != int (buc
                     song_management();
                 }
             }
+        }
     }
-    while (selection <= 0 || selection > option_num);
-    return selection;
+    while (selection <= 0 || selection > option_num || inputerror);
+    {
+        return selection;
+    }
 }
 
 /*
@@ -351,4 +378,5 @@ bool myinitialize(char *pointerFile) {
     initFile = fopen(pointerFile, "r");
 
 }*/
+
 

@@ -104,3 +104,30 @@ todo: input bei searchfile auf leerzeichen absichern! leerzeichen-->underscore! 
     im code angekommen: 05_54
     datei: test10.json  immernoch unter playlist/ gespeichert!
 
+-jedes cin, cout und endl mit std:: erhaenzt um moegliche fehler zu vermeiden.
+
+-absicherung des Hauptmenue, damit buchstaben nicht mehr zu fehlern fuehren
+
+todo: herausfinden, ob es zu problemen kommen kann, dass currentplaylist waehrend nutzung des programms offen bleibt (kein file.close();)
+^^NEIN! currentplaylist ist jediglich eine lokale nlohman::json. die datei selbst (file) wird direkt wieder geschlossen!
+
+todo: mycheckifopen() reparieren, oder wenn nicht hilfreich/benoetigt abschaffen.
+
+todo: herausfinden, ob beim loeschen von songs irgendwie der ganze eintrag der json datei geloscht werden kann!!
+    -ansonsten gibt es danach einen leeren eintrag und playlist.size() ist nicht mehr aussagekraeftig.
+
+todo: herausfinden, ob in dem funktiontsteil in mycreatefile(), der das leerzeichen ersetzt auch unterstriche verwendet wereden!!
+    -falls ja: nach anderen zeichen suchen, da doppelpunkte auch durch unterstriche ersetzt werden!!
+    -IST DAS UEBERHAUPT EIN PROBLEM??? oder werden die inputs nicht seperat zugewiesen?? vielleicht braucht man es doch nicht...
+
+todo: bei eingabe des jahres (in mycreatefile() und myeditfile()) negative zahlen nicht zulassen?
+    ggfs. inputs<1500 und >2100  auch nicht zulassen?
+
+todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
+    -sollte das programm deutlich vereinfachen!
+
+-myeditfile() groessten teils fertig gestellt
+
+-menu.cpp gegen falsche inputs abgesichert
+
+

@@ -15,9 +15,9 @@
 using json = nlohmann::json;
 //cpp sachen??!
 using namespace std;
-using std::cout;
-using std::cin;
-using std::endl;
+//using std::cout;
+//using std::cin;
+//using std::endl;
 //initialisierung eigener funktionen
 /*void myinitialize();
 void myopenfile();brauchenwirnicht*/

@@ -15,9 +15,9 @@
 using json = nlohmann::json;
 //cpp sachen??!
 using namespace std;
-using std::cout;
-using std::cin;
-using std::endl;
+//using std::cout;
+//using std::cin;
+//using std::endl;
 
 //deklarierung/inkludierung globaler variablen
 extern std::string mypath;
@@ -26,6 +26,8 @@ std::string filename = "";
 std::string tempfilename;
 nlohmann::json currentplaylist;
 nlohmann::json searchplaylist;//lieber eine neue erstellen, da currentplaylist in mehreren funktionen benuzt wird und dort genutzt wird um daten zwischen funktionen zu uebertragen. koennte am ende gecheckt werden um zu optimisieren! todo?
+//nlohmann::json editplaylist;
+
 char answer[50];
 bool repeat=true;
 bool repeat2=true;
@@ -34,15 +36,17 @@ const char* myja = "ja"; brauchen wir zum glueck doch nicht*/
 
 //deklarierung GLOBALER funktionen
 void main_menu();
+void song_management();
 //void turn_off();  // turn_off(); anstatt exit(0); funktioniert in komplexen schleifen nicht, exit(0); scheint einfacher
 
 void myinitialize();
-void myopenfile();
-void myprintfile();
+void myopenfile(bool justprint);
+void myprintfile(bool justprint2);
 void mycreatefile();
 void mydeletefile();
 void mysearchfile();
-void myeditfile();
+void myeditfile(int select);
+
 void myexit(char myinput[50]);
 void mywaitenter();
 void mycheckifopen(char myinput2[50]);
@@ -67,7 +71,7 @@ void myinitialize() {
         if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
             repeat = false;
             //bibliothek initialisieren
-            myopenfile();
+            myopenfile(false);
             //cout << "\nGeben sie den Namen der zu initialisierenden Playlist ein:\n" << endl; // sprache zu kompliziert fuer den benutzer??
             //cout << "answer=ja" << endl; //testtest
             
@@ -82,7 +86,7 @@ void myinitialize() {
     }
 }
 
-void myopenfile() {
+void myopenfile(bool justprint2) {
     //bool repeat = true;
     //bool repeat2= true;//hier brauchen wir tatsaechlich eine weitere repeat, da die beiden vernestet sind! wir machen sie global
     std::string filename2 = "";
@@ -93,8 +97,12 @@ void myopenfile() {
     //while schleife, bis die datei gueltig geoeffnet wurde
     repeat=true;
     while (repeat) {
-        cout << "Geben sie den Namen der zu oeffnenden Playlist ein: "; // spezifizieren, dass nur name der playlist und nicht .json eingegeben werden soll???
-        cin >> tempfilename; //char answer2=filename.c_str();//if (strcasecmp(answer2, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+        if(justprint2) {
+            std::cout << "Geben sie den Namen der zu bearbeitenden Playlist ein: ";
+        } else {
+            std::cout << "Geben sie den Namen der zu oeffnenden Playlist ein: "; // spezifizieren, dass nur name der playlist und nicht .json eingegeben werden soll???
+        }
+        std::cin >> tempfilename; //char answer2=filename.c_str();//if (strcasecmp(answer2, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
         //WARUM IST ALLES SO UNNOETIG KOMPLKIZIERT?!?!?!?!?!? funktionier doch einfach
         char tempfilenamechar[tempfilename.size() + 1];//wer kommt auf so etwas?
         std::copy(tempfilename.begin(), tempfilename.end(), tempfilenamechar);
@@ -126,7 +134,7 @@ void myopenfile() {
             filename = filename2 + ".json";// an dateiname wird dateiendung .json angefuegt
             //cout << filename;//test
         }
-        cout << "\tDie Datei " << filename << " wird geoeffnet." << endl;
+       std::cout << "\tDie Datei " << filename << " wird geoeffnet." << std::endl;
 
         //stand jetzt haben wir einen vielleicht gueltigen dateiname. datei wird nun geoeffnet
         try {
@@ -143,19 +151,22 @@ void myopenfile() {
             //datei ist gueltig also kann sie als variable an andere funktionen uebergeben werden
             file >> currentplaylist;
             file.close();
-            cout << "\t\tPlaylist wurde geoeffnet" << endl; //erst hier ist die datei erfolgreich geoeffnet!!
+            std::cout << "\t   Playlist erfolgreich geoeffnet" << std::endl; //erst hier ist die datei erfolgreich geoeffnet!!
+            //std::cout << "CURRENTPLAYLIST.SIZE =" << currentplaylist["data"].size() << std::endl;
             //wie genau benenne ich die dateitypen?? mit namen oder dateitypen? muss ich das ganze in eine ober kategorie??
             //wie suche ich spaeter die einzelnen metadaten?? muss ich die werte fuer die liste 'sterilisieren' um probleme zu verhindern?
 
             //damit das programm weitergeht, gehen wir zurueck zum mainmenu oder lesen die datei direkt aus
             
-            mydashedline();
+            if(!justprint2) {
+                mydashedline();
+            }
             //cout << "\t----------------------------------" << endl;
 
 
         } catch (const std::exception& e) {
             repeat = true;
-            cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << endl << e.what() << endl;
+            std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << e.what() << std::endl;
             mydashedline();
             //cout << "\t----------------------------------" << endl;
             //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
@@ -163,18 +174,18 @@ void myopenfile() {
         }
 
         //datei ist geoeffnet und kann hier direkt ausgegeben werden
-        if(!repeat) {
+        if(!repeat && !justprint2) {
         //char answer3[50];
         std::memset(answer, 0, sizeof(answer));
             repeat2=true;
             while (repeat2) {
-            cout << "Soll die Playlist direkt angezeigt werden? (Ja/Nein): ";
-            cin >> answer;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+            std::cout << "Soll die Playlist direkt angezeigt werden? (Ja/Nein): ";
+            std::cin >> answer;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
             myexit(answer);//wurde "beenden" eingegeben?
     
                 if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
                     repeat2 = false;
-                    myprintfile();
+                    myprintfile(false);
                 } if (strcasecmp(answer, "nein") == 0) {
                     repeat2 = false;   
                     main_menu();//zurueck zum hauptmenue
@@ -193,12 +204,12 @@ void myopenfile() {
     //ist es schlecht, die datei offen zu lassen??  was wenn das programm abstuerzt? kann ich die datei davor noch schliesssen??
 }
 
-void myprintfile() {
+void myprintfile(bool justprint) {
     //diese funkton soll saemtliche inhalte der aktuellen playlist ausgeben!
     //fehlermeldung falls keine playlist geoffnet ist (z.b. wenn keine initialisiert wurde aber im hauptmenue direkt ausgabe gefordet wurde)
     mydashedline();
     if (filename=="") {
-        cout << "Fehler! Momentan ist keine Datei geoeffnet. Fehlercode: 03" << endl;
+        std::cout << "Fehler! Momentan ist keine Datei geoeffnet. Fehlercode: 03" << std::endl;
         mydashedline();
         //cout << "\t----------------------------------" << endl;
         mywaitenter();
@@ -207,13 +218,16 @@ void myprintfile() {
 
     
     //cout << "\t----------------------------------" << endl;
-    cout << "\tDie Datei " << filename << " wird ausgegeben." << endl;//WARUM FUNKTIONIERT DAS NICHT???
-    cout << "     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Jugendfrei"/*Explizit?*/"   |" << endl;
+    if(!justprint) {
+        std::cout << "\tDie Datei " << filename << " wird ausgegeben." << std::endl;//WARUM FUNKTIONIERT DAS NICHT???
+    }
+    std::cout << " Nr. |     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Jugendfrei"/*Explizit?*/"   |" << std::endl;
 
     //cout <<currentplaylist["data"][0]["title"] <<currentplaylist["data"][0]["artist"] <<currentplaylist["data"][0]["album"] <<currentplaylist["data"][0]["date"] <<currentplaylist["data"][0]["length"] <<currentplaylist["data"][0]["genre"] <<currentplaylist["data"][0]["explicit"] <<endl;
 
-    for(int i=0; i<(currentplaylist.size()+1); i++) {
-        cout <<
+    for(int i=0; i<currentplaylist["data"].size(); i++) {
+        std::cout <<
+        "  " << (i+1) << " |  " <<
         currentplaylist["data"][i]["title"] << " | " <<
         currentplaylist["data"][i]["artist"] << " | " <<
         currentplaylist["data"][i]["album"] << " | " <<
@@ -221,20 +235,21 @@ void myprintfile() {
         currentplaylist["data"][i]["length"] << " |    " <<
         currentplaylist["data"][i]["genre"] << " |    ";// <<
         if(currentplaylist["data"][i]["explicit"]==true) {
-            cout << "Nein";
+            std::cout << "Nein";
         } else {
-            cout <<"Ja";
+            std::cout <<"Ja";
         }//currentplaylist["data"][i]["explicit"]
-        cout << "  | " << endl;
+        std::cout << "  | " << std::endl;
     }
 
     //cout << ">mit Enter zurueck zum Hauptmenue...";
     //std::string temp;
     //cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     //cin.get();
-    mywaitenter();
-
-    main_menu();
+    if(!justprint) {
+        mywaitenter();
+        main_menu();
+    }
 }
 
 void mycreatefile() {
@@ -256,8 +271,8 @@ void mycreatefile() {
     
     mydashedline();
     //std::memset(filenamecreatefile, 0, sizeof(filenamecreatefile));
-    cout << "Name der neuen Playlist eingeben: ";
-    cin >> filenamecreatefile;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
+    std::cout << "Name der neuen Playlist eingeben: ";
+    std::cin >> filenamecreatefile;//if (strcasecmp(answer3, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
     myexit(filenamecreatefile);
     //vllt schauen ob playlist gerade schon offen ist?DONE
     //cout << "davor: " << filenamecreatefile << endl;
@@ -293,8 +308,8 @@ void mycreatefile() {
     repeat=true;
     //hier sicherstellen, dass nur integer eingegeben werden, auf beenden pruefen vllt nicht moeglich
     while (repeat) {
-        cout << "Wie viele Songs sollen hinzugefuegt werden?: ";
-        if (cin >> length) {//integer wurde eingegeben
+        std::cout << "Wie viele Songs sollen hinzugefuegt werden?: ";
+        if (std::cin >> length) {//integer wurde eingegeben
         //cout <<"111";//test
             if(length>0) {repeat=false;}//integer ist größer als 0 -- also passt alles!!
         } else {
@@ -315,9 +330,9 @@ void mycreatefile() {
             //if(length<=0) {cout << "Fehlerhafte Eingabe! Bitte geben sie eine gueltige Zahl ein: " << endl;}
             std::cin.clear();
             //^^input wird geloescht
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             //^^input wird ignoriert. warum schon wieder so kompliziert??!?
-            cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << endl;
+            std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
         }
     }
     //cin >> length;
@@ -328,8 +343,8 @@ void mycreatefile() {
     repeat=true;
     while (repeat) {
         std::memset(answer, 0, sizeof(answer));
-        cout << length << " Songs werden zu >" << filenamecreatefile << "< hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
-        cin >> answer;
+        std::cout << length << " Songs werden zu >" << filenamecreatefile << "< hinzugefuegt. Fortfahren? (Ja/Nein):";//fragen, ob er fortfahren will?
+        std::cin >> answer;
         myexit(answer);//wurde "beenden" eingegeben?
         if (strcasecmp(answer, "ja") == 0) {
             repeat = false;
@@ -359,7 +374,7 @@ void mycreatefile() {
     int tempyear=0;
 
     mydashedline();
-    cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << endl;
+    std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
 
     //brauchen wir diesen zwischenschritt ueberhaupt oder koennen wir die daten direkt an writefile uebergeben??
     //fuer jetzt behalten wir ihn, da wir probleme mit dem schreiben in die datei haben!! vllt spaeter entfernen? stichwort 'optimisation'
@@ -367,24 +382,24 @@ void mycreatefile() {
     for(int i=0; i<length; i++) {
         //cout << "\t----------------------------------" << endl;
         mydashedline();
-        cout << "Informationen fuer Song [" << i+1 << "] eingeben:" << endl;
-        cout << "Songname: "; cin >> title[i];
-        cout << "Interpret: "; cin >> artist[i];
-        cout << "Album: "; cin >> album[i];
+        std::cout << "Informationen fuer Song [" << i+1 << "] eingeben:" << std::endl;
+        std::cout << "Songname: "; std::cin >> title[i];
+        std::cout << "Interpret: "; std::cin >> artist[i];
+        std::cout << "Album: "; std::cin >> album[i];
         repeat=true;
-        while (repeat) {cout << "Erscheinungsjahr: ";
-            if (cin >> tempyear) {//integer wurde eingegeben
+        while (repeat) {std::cout << "Erscheinungsjahr: ";
+            if (std::cin >> tempyear) {//integer wurde eingegeben
                 if(tempyear>0) {repeat=false;year[i]=tempyear;}//success!
             } else {
                 std::cin.clear();//input wird geloescht
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 //^^input wird ignoriert. warum schon wieder so kompliziert??!? / und ist er nicht eigentlich schon geloescht??
-                cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << endl;}
+                std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;}
         }
-        cout << "Laenge [xx:xx]: "; cin >> duration[i];
-        cout << "Musikrichtung: "; cin >> genre[i];
+        std::cout << "Laenge [xx:xx]: "; std::cin >> duration[i];
+        std::cout << "Musikrichtung: "; std::cin >> genre[i];
         repeat=true;
-        while (repeat) {cout << "Jugendfrei (Ja/Nein): "; cin >> answer;
+        while (repeat) {std::cout << "Jugendfrei (Ja/Nein): "; std::cin >> answer;
             //myexit(answer4);//brauchen wir das? ich lasse es drin bis wir die bestaetigung am anfang haben?!
             if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[i]=false;}
             if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[i]=true;}
@@ -409,7 +424,7 @@ void mycreatefile() {
     //}//testen ob es geklappt hat!   /eigentlich klappt es immer, der fehler muss irgendwo anders liegen!
 
     mydashedline();
-    cout << "Daten werden in Datei geschrieben" << endl;
+    std::cout << "Daten werden in Datei geschrieben" << std::endl;
     //try {
     nlohmann::json writefile = {//reihenfolge scheint irrelevant zu sein, da die eintraege alphabetisch? sortiert werden.
         {
@@ -458,22 +473,22 @@ void mycreatefile() {
         //cout << "test2: " << mypath+filenamecreatefile<<endl;
 
         if (!file2.is_open()) {
-            cout << "Datei konnte nicht geoeffnet werden, um Datenn zu speichern! Fehlercode: 04" << endl;
+            std::cout << "Datei konnte nicht geoeffnet werden, um Datenn zu speichern! Fehlercode: 04" << std::endl;
             //main_menu();//vorerst zurueck zum mainmenu. speater muss hier eine loesung gefunden werden.
             //zum beispiel erneute abfrage nach dateinamen und versuch die bereits eingelesenen daten dotz zu speichern.
             //"wollen sie das speichern erneut versuchen? (ja/nein)"
             
         repeat2=true;
         while(repeat2) {
-            cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
-            cin >> answer;
+            std::cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
+            std::cin >> answer;
             myexit(answer);
 
             if (strcasecmp(answer, "ja") == 0) {//er will es nochmal versuchen. viel glueck!
                 repeat2=false;
                 std::string tempanswer;
-                cout << "Geben sie einen alternativen Dateinamen ein:";
-                cin >> tempanswer;
+                std::cout << "Geben sie einen alternativen Dateinamen ein:";
+                std::cin >> tempanswer;
                 //myexit(tempanswer.c_str());   geht nicht aber egal, da wir davor schon nach return zum mainmenu fragen
                 if (tempanswer.find(".json") != std::string::npos) {
                     //cout << "test1 test1";
@@ -504,14 +519,14 @@ void mycreatefile() {
 void mydeletefile() {
     std::memset(answer, 0, sizeof(answer));//answer zuruecksetzen, weil sonst random sonderzeichen auftauchen
     mydashedline();
-    cout << "Name der zu loeschenden Playlist eingeben: ";
-    cin >> answer;
+    std::cout << "Name der zu loeschenden Playlist eingeben: ";
+    std::cin >> answer;
     //hier nicht myexit(answer); - user soll eine playlist namens beenden loeschen duerfen. zurueck zum menue, dann beenden ist auch noch im naechsten schritt moeglich!
 
     std::string filenamedeletefile(answer);
     //da wir hier dateien loeschen mussen wir sehr vorsichtig sein!! der benutzer koennte auf andere ordner zugreifen!!!
     if (filenamedeletefile.find("/") != std::string::npos || filenamedeletefile.find("\\") != std::string::npos) {//zwei backslashes wil backslash benutzt wird um spezielle charakter darzustellen! '//' ==> /
-        cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<endl;
+        std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
         mywaitenter();
         main_menu();
     }
@@ -528,8 +543,8 @@ void mydeletefile() {
 
     repeat=true;
     while(repeat) {
-        cout << "Die Playlist >" << filenamedeletefile << "< wird geloescht! Fortfahren? (Ja/Nein): ";
-        cin >> answer;
+        std::cout << "Die Playlist >" << filenamedeletefile << "< wird geloescht! Fortfahren? (Ja/Nein): ";
+        std::cin >> answer;
         myexit(answer);
         if (strcasecmp(answer, "ja") == 0) {
             repeat = false;
@@ -546,7 +561,7 @@ void mydeletefile() {
     //cout <<"testtest: " << filenamedeletefilec << endl;//testtest
 
     if (std::remove(filenamedeletefilec) != 0) {
-        cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << endl;
+        std::cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << std::endl;
         mywaitenter();
         main_menu();
     } else {
@@ -579,8 +594,8 @@ void mysearchfile() {
     repeat=true;//waere schon lustig wenn man das hier vergisst und dann an dem gesamten code zweifelt...
     while (repeat) {
 
-        cout << "Name der zu durchsuchenden Playlist eingeben: ";
-        cin >> answer;
+        std::cout << "Name der zu durchsuchenden Playlist eingeben: ";
+        std::cin >> answer;
         //hier myexit(answer); ???????
 
         std::string filenamesearchfile2(answer);
@@ -597,8 +612,8 @@ void mysearchfile() {
         std::memset(answer, 0, sizeof(answer));
         repeat2=true;
         while(repeat2) {
-            cout << "Die Datei >" << filenamesearchfile << "< wird durchsucht. Fortfahren? (ja/nein): ";
-            cin >> answer;
+            std::cout << "Die Datei >" << filenamesearchfile << "< wird durchsucht. Fortfahren? (ja/nein): ";
+            std::cin >> answer;
             myexit(answer);
             if (strcasecmp(answer, "ja") == 0) {
                 repeat2 = false;
@@ -611,7 +626,7 @@ void mysearchfile() {
         //jetzt kann endlich durchsucht werden!!! NAJA, zuerst muss datei erfolgreich! geoeffnent werden!!
 
         //mycheckifopen(tempfilenamechar);brauchen wir hier nicht, weil die datei ja sowieso ausgelesen werden muss!
-        cout << "Die Datei " << filenamesearchfile << " wird geoeffnet." << endl;
+        std::cout << "Die Datei " << filenamesearchfile << " wird geoeffnet." << std::endl;
         //stand jetzt haben wir einen vielleicht gueltigen dateiname. datei wird nun geoeffnet
         try {
             std::ifstream file(filenamesearchfile);//koennte es hier probleme geben, wenn die datei auch file heisst? Nein, sie ist lokal zum try block, wie auch die andere.
@@ -623,11 +638,11 @@ void mysearchfile() {
 
             file >> searchplaylist;//Datei wird eingelesen
             file.close();//Datei wird geschlossen
-            cout << "\tDie Datei wurde geoeffnet" << endl; //erst hier ist die datei erfolgreich geoeffnet!!
+            std::cout << "\tDie Datei wurde geoeffnet" << std::endl; //erst hier ist die datei erfolgreich geoeffnet!!
             mydashedline();
         } catch (const std::exception& e) {
             repeat = true;//erneut versuchen, da fehler
-            cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << endl << e.what() << endl;
+            std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << e.what() << std::endl;
             mydashedline();
             //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
             //("wenden sie sich mit folgender fehlermeldung an den support")?
@@ -646,8 +661,8 @@ void mysearchfile() {
             mydashedline();
             repeat2=true;
             while(repeat2) {
-                cout << "Datei >" << filenamesearchfile << "< erneut durchsuchen? (ja/nein): ";
-                cin >> answer;
+                std::cout << "Datei >" << filenamesearchfile << "< erneut durchsuchen? (ja/nein): ";
+                std::cin >> answer;
                 myexit(answer);
                 if (strcasecmp(answer, "ja") == 0) {
                     repeat2 = false;
@@ -662,10 +677,10 @@ void mysearchfile() {
 
         //cout << "testendeschleife" << searchplaylist << endl;
         //while true schleife, um weitere suchen zu ermoeglichen! mit irgendeiner variable, damit beim ersten mal nicht gefragt wird ob man nochmal suchen will!
-        cout << "Achtung! Keine Sonderzeichen! Ausnahme Doppelpunkt." << endl;
+        std::cout << "Achtung! Keine Sonderzeichen! Ausnahme Doppelpunkt." << std::endl;
         //mydashedline();
-        cout << "Geben sie einen Suchbegriff ein: ";
-        cin >> answer;
+        std::cout << "Geben sie einen Suchbegriff ein: ";
+        std::cin >> answer;
         searchstring = std::string(answer);//searchstring = "\"" + std::string(answer) + "\"";
         std::memset(answer, 0, sizeof(answer));
 
@@ -822,7 +837,7 @@ void mysearchfile() {
         searchchar = searchstring.c_str();
         //cout << searchstring << endl;
         //cout << searchstring << " | " << searchplaylist["data"][0]["artist"] << endl;
-        cout << "\t\t*******" << endl;
+        std::cout << "\t\t*******" << std::endl;
         //hoffentlich letzter versuch. JAAAAA //playlist zum test ist in line 635 falls sie je wieder gebraucht wird
         for(int i=0; i<(searchplaylist.size()+1); i++) {
             std::transform(searchstring.begin(), searchstring.end(), searchstring.begin(), ::tolower);
@@ -843,14 +858,14 @@ void mysearchfile() {
             //cout << str1 << " | " << searchstring << endl;//tettsetsetsetstetsettesttest
 
             bool unabletolocate=true;//auf die art koennen mehrere eintraege durchsucht werden. zum beispiel titel und album
-            if(str1.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Titel von Song Nr. "<<i+1<<"! -- >"<<str1<<"<"<<endl; unabletolocate=false;}
-            if(str2.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Interpreten von Song Nr. "<<i+1<<"! -- >"<<str2<<"<"<<endl; unabletolocate=false;}
-            if(str3.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Album von Song Nr. "<<i+1<<"! -- >"<<str3<<"<"<<endl; unabletolocate=false;}
+            if(str1.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Titel von Song Nr. "<<i+1<<"! -- >"<<str1<<"<"<<std::endl; unabletolocate=false;}
+            if(str2.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Interpreten von Song Nr. "<<i+1<<"! -- >"<<str2<<"<"<<std::endl; unabletolocate=false;}
+            if(str3.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Album von Song Nr. "<<i+1<<"! -- >"<<str3<<"<"<<std::endl; unabletolocate=false;}
             //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
-            if(str5.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht der Laenge von Song Nr. "<<i+1<<"! -- >"<<str5<<"<"<<endl; unabletolocate=false;}
-            if(str6.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Genre von Song Nr. "<<i+1<<"! -- >"<<str6<<"<"<<endl; unabletolocate=false;}
+            if(str5.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht der Laenge von Song Nr. "<<i+1<<"! -- >"<<str5<<"<"<<std::endl; unabletolocate=false;}
+            if(str6.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Genre von Song Nr. "<<i+1<<"! -- >"<<str6<<"<"<<std::endl; unabletolocate=false;}
             //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
-            if(unabletolocate) {cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << endl;}
+            if(unabletolocate) {std::cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << std::endl;}
 
             //if(str1.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Titel von Song Nr. "<<i+1<<"! >"<<str1<<"<"<<endl;}
             //else if(str2.find(searchchar) != std::string::npos) {cout<<"Suchbegriff entspricht dem Interpreten von Song Nr. "<<i+1<<"! >"<<str2<<"<"<<endl;}
@@ -869,20 +884,340 @@ void mysearchfile() {
     main_menu();
 }
 
-void myeditfile() {
+void myeditfile(int select) {
     //myprintfile direkt ausfuehren?
-
-    mydashedline();
-    cout << " \t-----Song-Editor-----" << endl;
-    cout << "Hier koennen die Details von Songs bearbeitet werden." << endl;
-    cout << "";
+    //std::cout << "Hier koennen die Details von Songs bearbeitet werden." << std::endl;
+    
     //numerierungen
     //z.b. daten des songs bearbeiten - 1 |  song loeschen - 2 | haupemenue - 3
     //fuer 1    Details editieren: titel - 1 | interpret - 2 | album - 3 | ...
     //^^^diese werden dann umbenannt?! es wird nach einer eingabe gefragt, die den aktuellen wert ersetzt
+    
+    //HIER GEHT DIE FUNKTION LOS
+    std::string filenameeditfile;
+    
+    myopenfile(true);
+    //std:cout << "CURRENTPLAYLIST.SIZE =" << currentplaylist["data"].size() << std::endl;
+    
+    //myprintfile(true);
+    mydashedline();
+    //std::cout << "testestetsetstestestetsetstetsetstestetst" << std::endl;
+    /*
+    repeat=true;
+    while (repeat) {
+        std::memset(answer, 0, sizeof(answer));
+        std::cout << "Name der zu bearbeitenden Playlist eingeben: ";
+        std::cin >> answer;
+        
+        std::string filenameeditfile2(answer);
+        filenameeditfile = filenameeditfile2;
+        //.json an datei anfuegen, falls noch nicht vorhanden
+        if (filenameeditfile.find(".json") != std::string::npos) {
 
-    //erneut die playlist ausgeben und zum start zurueckkehren!
+        } else {
+            filenameeditfile = filenameeditfile + ".json";
+        }//pfad (playlists/) vor dateinamen anfuegen
+        filenameeditfile=mypath+filenameeditfile;
 
+
+        //std::memset(answer, 0, sizeof(answer));
+        //repeat2=true;
+        //while(repeat2) {
+        //    std::cout << "Die Datei >" << filenameeditfile << "< wird durchsucht. Fortfahren? (ja/nein): ";
+        //    std::cin >> answer;
+        //    myexit(answer);
+        //    if (strcasecmp(answer, "ja") == 0) {
+        //        repeat2 = false;
+//
+        //    } if (strcasecmp(answer, "nein") == 0) {
+        //        repeat2 = false;
+        //        main_menu();
+        //    }
+        //}
+
+        std::cout << "Die Datei " << filenameeditfile << " wird geoeffnet." << std::endl;
+        //stand jetzt haben wir einen vielleicht gueltigen dateiname. datei wird nun geoeffnet
+        try {
+            std::ifstream file(filenameeditfile);//koennte es hier probleme geben, wenn die datei auch file heisst? Nein, sie ist lokal zum try block, wie auch die andere.
+            //oeffnen der .json datei^^ (in einem sicheren umfeld --> kein absturz)
+            if (!file.is_open()) {
+                std::cerr << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
+            } //fehler, wenn datei nicht geoeffnet werden konnte
+            repeat = false;
+
+            file >> currentplaylist;//Datei wird eingelesen
+            //file.close();//Datei wird  NEIN! wir brauchen die datei ja noch!
+            std::cout << "\tDie Datei wurde geoeffnet" << std::endl; //erst hier ist die datei erfolgreich geoeffnet!!
+            mydashedline();
+        } catch (const std::exception& e) {
+            repeat = true;//erneut versuchen, da fehler
+            std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << e.what() << std::endl;
+            mydashedline();
+            //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
+            //("wenden sie sich mit folgender fehlermeldung an den support")?
+        }
+    }
+    */
+    //std::cout << "TEST laeuft es noch?" << std::endl;
+
+    int playlistsize = currentplaylist["data"].size();
+    if(!select==1) {playlistsize-=1;}
+    
+    std::cout << "playlistsize:" << playlistsize << std::endl;
+    //brauchen wir nur bei >songs hinzufuegen. koennen wir das nicht auch direkt in die datei schreiben??
+    char title[playlistsize+1][25] = {};
+    char artist[playlistsize+1][25] = {};
+    char album[playlistsize+1][25] = {};
+    int year[playlistsize+1];// int erscheinungsjahr
+    char duration[playlistsize+1][5] = {};
+    char genre[playlistsize+1][25] = {};
+    bool badwords[playlistsize+1];//    true/false
+
+    for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
+        for (int f2 = 0; f2<5; f2++) {
+            duration[f][f2]='\0';
+        }
+    }
+    //----------------------------------------------------------------------------------------------------------------------
+    /*for (int e = 0; e < playlistsize; e++) {
+    mydashedline();
+    std::cout << "Output for i=" << e << std::endl;
+    std::cout << "title[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << title[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "artist[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << artist[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "album[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << album[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "year[" << e << "]: " << year[e] << std::endl;
+
+    std::cout << "duration[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << duration[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "genre[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << genre[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "badwords[" << e << "]: " << badwords[e] << std::endl;
+}*/
+
+    //----------------------------------------------------------------------------------------------------------------------
+
+    int songposition=0;
+    if(select==2||select==3) {
+        myprintfile(true);
+        repeat=true;
+        while(repeat) {
+            //std::memset(answer, 0, sizeof(answer));
+            if(select==2) {
+                std::cout << "Welcher Songnummer soll bearbeitet werden?: ";
+            } else {
+                std::cout << "welcher Songnummer soll geloescht werden?: ";
+            }
+            if(std::cin >> songposition) {
+                if(songposition>0) {//Zahlen positiv
+                    //if(songposition<(currentplaylist.size()+1)) {//passt doch.
+                    if(songposition<currentplaylist["data"].size()+1) {
+                        repeat=false;
+                        songposition-=1;//sehr wichtig, da die zahlen in c++ bei 0, nicht 1 beginnen!!!!!
+                    } else {//Zahl groesser als anzahl der eintraege in der Playlist
+                        std::cout << "\tEingegebene Zahl ist zu gross!" << std::endl;
+                    }
+                } else {//Zahlen negativ
+                    std::cout << "\tNegative Zahlen sind nicht zulaessig!" << std::endl;
+                }
+            } else {
+                std::cin.clear();//hier muss der input ignoriert werden, damit c++ nicht ausrastet (char assigned to int)
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "\t Buchstaben/Sonderzeichen sind nicht zulaessig!" << std::endl;
+            }
+            
+            //if(answer>0 && answer<(currentplaylist.size()+1)) {
+            //repeat=false;
+        }
+        std::cout << "Songposition: " << songposition << std::endl;
+        
+/*
+while (repeat) {
+        std::cout << "Wie viele Songs sollen hinzugefuegt werden?: ";
+        if (std::cin >> length) {//integer wurde eingegeben
+        //cout <<"111";//test
+            if(length>0) {repeat=false;}//integer ist größer als 0 -- also passt alles!!
+        } else {
+            std::cin.clear();
+            //^^input wird geloescht
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            //^^input wird ignoriert. warum schon wieder so kompliziert??!?
+            std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
+        }
+    }
+*/
+
+    }
+
+
+
+    int tempyear=0;
+    //int tempi=currentplaylist.size();//current playlist.size gibt groesse beginnend mit 0 aus. z.B. 5 elemente (0 bis 4) = 5. Wir sind also schon am schluss und brauchen keine weiteren schritte!!
+    //int tempi=currentplaylist["data"].size();//^^falsch!
+    int tempi =playlistsize;
+    switch(select) {
+        case 1:
+        //song hinzufuegen
+        //song wird einfach am ende angefuegt, muss nicht hochkomplex werden, wenn es auch einfach geht!!
+        //mydashedline();
+        std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
+
+
+        std::memset(answer, 0, sizeof(answer));
+
+        mydashedline();
+        std::cout << "Informationen fuer neuen Song eingeben:" << std::endl;
+        std::cout << "Songname: "; std::cin >> title[tempi];
+        std::cout << "Interpret: "; std::cin >> artist[tempi];
+        std::cout << "Album: "; std::cin >> album[tempi];
+        repeat=true;
+        while (repeat) {std::cout << "Erscheinungsjahr: ";
+            if (std::cin >> tempyear) {//zahl eingegebe
+                if(tempyear>0) {repeat=false;year[tempi]=tempyear;}//success!n
+            } else {
+                std::cin.clear();//input wird geloescht
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                //input ignorieren, falls keine zahl
+                std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;}
+        }
+        std::cout << "Laenge [xx:xx]: "; std::cin >> duration[tempi];
+        std::cout << "Musikrichtung: "; std::cin >> genre[tempi];
+        repeat=true;
+        while (repeat) {std::cout << "Jugendfrei (Ja/Nein): "; std::cin >> answer;
+            //myexit(answer4);//brauchen wir das? ich lasse es drin bis wir die bestaetigung am anfang haben?!
+            if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[tempi]=false;}
+            if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[tempi]=true;}
+        }
+
+            for (int i = 0; i<5; i++) {
+                if (duration[tempi][i] == ':') {
+                    duration[tempi][i] = '_'; // Replace colon with underscore
+                }
+            }
+        
+            mydashedline();
+            //mydashedline();
+            //for (int i = 0; i<5; i++) {
+            //    cout << "duration["<<tempi<<"]["<<i<<"]:  ";
+            //    cout << duration[tempi][i]<< endl;
+            //}
+            //mydashedline();
+
+
+        break;
+        case 2:
+        //song bearbeiten
+
+        break;
+        case 3:
+        //song loeschen
+        //myprintfile(true);
+        break;
+        default:
+        song_management();
+        break;//???
+    }//         ----------------------------    stimmt hier etwas nicht???  Ja. jetzt behoben
+
+
+
+
+for (int e = 0; e < playlistsize+1; e++) {
+    mydashedline();
+    std::cout << "Output for i=" << e << std::endl;
+    std::cout << "title[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << title[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "artist[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << artist[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "album[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << album[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "year[" << e << "]: " << year[e] << std::endl;
+
+    std::cout << "duration[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << duration[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "genre[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << genre[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "badwords[" << e << "]: " << badwords[e] << std::endl;
+}
+
+
+
+
+    //for(int e=0; e<currentplaylist.size(); e++) {
+    //        mydashedline();
+    //        std::cout << "Output fuer i=" << e << std::endl;
+    //        std::cout << "title["<<e<<"]: " << for(int e2=0; e2<25; e2++) {title[e][e2]}<< std::endl;
+    //        std::cout << "artist["<<e<<"]: " << for(int e2=0; e2<25; e2++) {artist[e][e2]}<< std::endl;
+    //        std::cout << "album["<<e<<"]: " << for(int e2=0; e2<25; e2++) {album[e][e2]}<< std::endl;
+    //        std::cout << "year["<<e<<"]: " <<year[e]<< std::endl;
+    //        std::cout << "duration["<<e<<"]: " << for(int e2=0; e2<25; e2++) {duration[e][e2]} << std::endl;
+    //        std::cout << "genre["<<e<<"]: " << for(int e2=0; e2<25; e2++) {genre[e][e2]}<< std::endl;
+    //        std::cout << "badwords["<<e<<"]: " <<badwords[e]<< std::endl;
+    //    }
+    //}
+    
+
+
+
+
+/*
+    std::cout << "Aenderungen werden in die Datei geschrieben" << std::endl;
+    for(int i=0; i<currentplaylist.size(); i++) {
+        currentplaylist["data"][i]["title"] = title[i];
+        currentplaylist["data"][i]["artist"] = artist[i];
+        currentplaylist["data"][i]["album"] = album[i];
+        currentplaylist["data"][i]["date"] = year[i];
+        currentplaylist["data"][i]["length"] = duration[i];
+        currentplaylist["data"][i]["genre"] = genre[i];
+        currentplaylist["data"][i]["explicit"] = badwords[i];
+    }
+
+    std::cout << "---Aenderungen wurden gespeichert---" << std::endl;
+*/
+
+    //erneut die playlist ausgeben und zum start zurueckkehren! ???
+    mywaitenter();
     //am ende zurueck zum hauptmenue
     main_menu();
 }
@@ -892,17 +1227,17 @@ void myexit(char myinput[50]) {
     //cout << "asdasdasd" << endl;//test
     //cout << myinput << endl;
     if(strcasecmp(myinput, "beenden")==0) {//hier koennen sehr leicht andere woerter, wie "exit" oder "schliessen" ergaenzt werden
-        cout << "" << endl;           //was machen wir bei der eingabe von titel, interpret, album, ...? was wenn dort "beenden" auftaucht?
-        cout << "\tDer Musikplayer wurde vom Benutzer beendet." << endl;
+        std::cout << "" << std::endl;           //was machen wir bei der eingabe von titel, interpret, album, ...? was wenn dort "beenden" auftaucht?
+        std::cout << "\tDer Musikplayer wurde vom Benutzer beendet." << std::endl;
         exit(0);
     }
 }
 
 void mywaitenter() {
-    cout << ">mit Enter zurueck zum Hauptmenue...";
+    std::cout << ">mit Enter zurueck zum Hauptmenue...";
     std::string temp;
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    cin.get();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
 }
 
 void mycheckifopen(char myinput2[50]) {
@@ -917,15 +1252,15 @@ void mycheckifopen(char myinput2[50]) {
     //initialisieren funktioniert nicht, da der filename ueberprueft wird waehrend der nutzer noch gar nicht gefragt wurde!!
 
     /*if(myinput2==filename || myinput2==tempfilename) {
-        cout << "Die Playlist: >" << myinput2 << "< ist bereits geoeffnet!"<< endl;
-        cout << "Bearbeiten/Loeschen und weitere Funktionen ueber das Hauptmenue." << endl;
+        std::cout << "Die Playlist: >" << myinput2 << "< ist bereits geoeffnet!"<< std::endl;
+        std::cout << "Bearbeiten/Loeschen und weitere Funktionen ueber das Hauptmenue." << std::endl;
         mywaitenter();
         main_menu();
     }*/
 }
 
 void mydashedline() {
-        cout << "\t----------------------------------" << endl;
+        std::cout << "\t----------------------------------" << std::endl;
 }
 
 
