@@ -115,7 +115,7 @@ void myopenfile() {
         mycheckifopen(tempfilenamechar);
         //alles gut?!   filename wird uebergeben und es geht
         filename = tempfilename;
-        tempfilename = "";
+        //tempfilename = "";
 
         if (filename.find(".json") != std::string::npos) {
             //cout << "test1 test1";
@@ -880,7 +880,10 @@ void myeditfile() {
     //fuer 1    Details editieren: titel - 1 | interpret - 2 | album - 3 | ...
     //^^^diese werden dann umbenannt?! es wird nach einer eingabe gefragt, die den aktuellen wert ersetzt
 
-    //erneut die playlist aisgeben und zum start zurueckkehren!!
+    //erneut die playlist ausgeben und zum start zurueckkehren!
+
+    //am ende zurueck zum hauptmenue
+    main_menu();
 }
 
 void myexit(char myinput[50]) {
@@ -903,12 +906,12 @@ void mywaitenter() {
 
 void mycheckifopen(char myinput2[50]) {
     //std::string tempfilename = filename;    
-    const char* tempfilename; tempfilename = filename.c_str();//AAAARRRGHHH
+    //const char* tempfilename; tempfilename = filename.c_str();//AAAARRRGHHH
 
-    char* dotPos = std::strrchr(tempfilename, '.');//wir finden die stelle, an der der punkt ist
-    if (dotPos != nullptr) {//falls es diese gibt
-        *dotPos = '\0';//und loecshen alles danach!
-    }
+    //char* dotPos = std::strrchr(tempfilename, '.');//wir finden die stelle, an der der punkt ist
+    //if (dotPos != nullptr) {//falls es diese gibt
+    //    *dotPos = '\0';//und loecshen alles danach!
+    //}
 
     if(myinput2==filename || myinput2==tempfilename) {
         cout << "Die Playlist: >" << myinput2 << "< ist bereits geoeffnet!"<< endl;
