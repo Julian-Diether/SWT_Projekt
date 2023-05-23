@@ -113,7 +113,7 @@ void myopenfile() {
         //    cout << "Die Playlist: >" << filename << "< ist bereits geoeffnet!"<< endl;
         //    main_menu();
         //}
-        mycheckifopen(tempfilenamechar);
+        //mycheckifopen(tempfilename);
         //alles gut?!   filename wird uebergeben und es geht
         filename = tempfilename;
         //tempfilename = "";
