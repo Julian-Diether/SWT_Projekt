@@ -52,6 +52,7 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
     -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
     -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0)
+    -07 --> fehler, datei existiert bereits (in mycreatefile())
 
 -git ignore hinzugefuegt
 
@@ -133,5 +134,21 @@ todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
 -myeditfile() hinzufuegen komplett, bearbeiten teilweise.
 
 todo: finden, wo beim einlesen aus der .json datei fehler entstehen!! vor allem bei songlaenge und erscheinungsjahr extrem haeufig/auffaellig/stoerend/destruktiv! unbeding finden
+
+-check, ob datei die erstellt werden soll, bereits existiert. wenn ja fehlercode07!
+
+todo: spacing/padding bei myprintfile() abhaengig von groesse des groessten jeweiligen elements in der playlist machen (sofern das keine informatik masterarbeit wird)
+
+-myprintfile() ueberarbeitet, dass die ausgaben jetzt sehr viel uebersichtlicher sind
+    -ausgaben sind jetzt immer (ausser eine element ist ungewoehnlich gross) buendig untereinander geschrieben
+
+-in myprintfile() eine zweite legende unten hinzugefuegt, wenn mehr als 6 songs in einer playlist sind.
+
+-fehlermeldung hinzugefuegt, falls der user versucht einen song aus einer playlist zu loeschen, die nur einen song enthaelt.
+    -es kann beim oeffnen leerer, dateien zu fehlern kommen. alle elemente auf null zu setzen waere eine option
+    -user kann anschliessen direkt in das mydeletefile(); menue
+
+todo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
+
 
 

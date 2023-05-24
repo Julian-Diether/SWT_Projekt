@@ -4,27 +4,27 @@
 #include <string> //string.h und stdio.h fehlen hier! scheint kein problem zu sein?!
 #include <iostream>
 #include <fstream>
-#include "nlohmann/json.hpp"
+//#include "nlohmann/json.hpp"
 //using std::cout; //('using namespace std;' fehlt auch)
 //using std::cin;
 //using std::endl;
-using json = nlohmann::json;
+//using json = nlohmann::json;
 
 //globale variablen
 int counter=0; // wird benutzt um nach 10 fehleingaben das hauptmenue erneut anzuzeigen. verbessert sichtbarkeit (siehe input_validation)
 
 //initialisierung eigener funktionen
 void welcome_msg();
-void run_last_library();
-//void load_library();
-void add_library();
-void create_library();
-void song_management();
+//void run_last_library();
+////void load_library();
+//void add_library();
+//void create_library();
+//void song_management();
 //void turn_off();
-void add_song();
-void modify_song();
-void search_song();
-void delete_song();
+//void add_song();
+//void modify_song();
+//void search_song();
+//void delete_song();
 //void return_main();
 void main_menu();
 int input_validation(int option_num, bool bmainmenu);
@@ -53,56 +53,57 @@ void welcome_msg()
     std::cout << "\t    - zum schliessen >beenden< eingeben -" << std::endl;
     std::cout << "******************************************************************" << std::endl;
 }
-void run_last_library()
-{
-    std::cout << "Run last lib selected" << std::endl;
-    main_menu();
-}
-/*void load_library()
+/*
+//void run_last_library()
+//{
+//    std::cout << "Run last lib selected" << std::endl;
+//    main_menu();
+//}
+void load_library()
 {
     cout << "Load lib selected" << endl;
     main_menu();
-}*/
-void add_library()
-{
-    std::cout << "Add lib selected" << std::endl;
-    main_menu();
 }
-void create_library()
-{
-    std::cout << "Create lib selected" << std::endl;
-    main_menu();
-}
-/*void turn_off()
+//void add_library()
+//{
+//    std::cout << "Add lib selected" << std::endl;
+//    main_menu();
+//}
+//void create_library()
+//{
+//    std::cout << "Create lib selected" << std::endl;
+//    main_menu();
+//}
+void turn_off()
 {
     cout << "Good Bye" << endl;
-}*/
+}
 //Song functions
-void add_song()
-{
-    std::cout << "Add song selected" << std::endl;
-    song_management();
-}
-void modify_song()
-{
-    std::cout << "Mod song" << std::endl;
-    song_management();
-}
-void search_song()
-{
-    std::cout << "Search song selected" << std::endl;
-    song_management();
-}
-void delete_song()
-{
-    std::cout << "Delete song selected" << std::endl;
-    song_management();
-}
+//void add_song()
+//{
+//    std::cout << "Add song selected" << std::endl;
+//    song_management();
+//}
+//void modify_song()
+//{
+//    std::cout << "Mod song" << std::endl;
+//    song_management();
+//}
+//void search_song()
+//{
+//    std::cout << "Search song selected" << std::endl;
+//    song_management();
+//}
+//void delete_song()
+//{
+//    std::cout << "Delete song selected" << std::endl;
+//    song_management();
+//}
 //void return_main()//redundant
 //{
 //    main_menu();
 //}
-
+*/
 //Options functions
 void main_menu()
 {

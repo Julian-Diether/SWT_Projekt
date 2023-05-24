@@ -1,10 +1,11 @@
 //brauchen wir hier wohl auch:
 //inkludieren saemtlicher bibliotheken
-#include <stdio.h>
+#include <stdio.h>//brauchen wir das????
 #include <cstdlib>
-#include <string> //??!?
-#include <string.h>
+//#include <string> //??!?
+#include <cstring>
 //#include <conio.h>//fuer getch() (get characters, die gerade eingetippt wurden)
+#include <iomanip>//um die darstellung in myprintfile() zu vereinfachen
 
 #include <cstring>//fuer strchr in mycheckifopen()
 #include <cctype> // damit wir in mysearchfile() std::tolower() benutzen koennen. natuerlich gibt es einen weg das super einfach zu machen, aber er koennte nicht versteckter sein!!
@@ -223,32 +224,94 @@ void myprintfile(bool justprint) {
     if(!justprint) {
         std::cout << "\tDie Datei " << filename << " wird ausgegeben." << std::endl;//WARUM FUNKTIONIERT DAS NICHT???
     }
-    std::cout << " Nr. |     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Jugendfrei"/*Explizit?*/"   |" << std::endl;
+    //std::cout << " Nr. |     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Jugendfrei"/*Explizit?*/"   |" << std::endl;
+    //std::cout << " ";
+    std::cout << std::left << std::setw(6) <<" Nr." <<
+    std::setw(26) << "Titel" <<
+    std::setw(26) << "Interpret" <<
+    std::setw(28) << "Album" <<
+    std::setw(20) << "Erscheinungsjahr" <<
+    std::setw(10) << "Laenge" <<
+    std::setw(14) << "Genre" <<
+    std::setw(10) << "Jugendfrei" << std::endl;
 
     //cout <<currentplaylist["data"][0]["title"] <<currentplaylist["data"][0]["artist"] <<currentplaylist["data"][0]["album"] <<currentplaylist["data"][0]["date"] <<currentplaylist["data"][0]["length"] <<currentplaylist["data"][0]["genre"] <<currentplaylist["data"][0]["explicit"] <<endl;
 
     for(int i=0; i<currentplaylist["data"].size(); i++) {
-        std::cout <<
-        "  " << (i+1) << " |  " <<
-        currentplaylist["data"][i]["title"] << " | " <<
-        currentplaylist["data"][i]["artist"] << " | " <<
-        currentplaylist["data"][i]["album"] << " | " <<
-        currentplaylist["data"][i]["date"] << " |    " <<
-        currentplaylist["data"][i]["length"] << " |    " <<
-        currentplaylist["data"][i]["genre"] << " |    ";// <<
-        if(currentplaylist["data"][i]["explicit"]==true) {
-            std::cout << "Nein";
-        } else {
-            std::cout <<"Ja";
-        }//currentplaylist["data"][i]["explicit"]
-        std::cout << "  | " << std::endl;
+
+    std::string title = currentplaylist["data"][i]["title"];//warum sollte ich sie nicht direkt ausgeben koennen???? warum muss alles so kompliziert sein???
+    std::string artist = currentplaylist["data"][i]["artist"];
+    std::string album = currentplaylist["data"][i]["album"];
+    int date = currentplaylist["data"][i]["date"];
+    std::string length = currentplaylist["data"][i]["length"];
+    std::string genre = currentplaylist["data"][i]["genre"];
+
+    for(int i=0; i<currentplaylist["data"].size(); i++) {
+        std::replace(length.begin(), length.end(), '_', ':');
     }
+    //std::string genre = currentplaylist["data"][i]["genre"];
+
+        std::cout << " ";
+        std::cout << std::left << std::setw(6) << std::setfill(' ') << (i + 1)
+          << std::setw(26) << std::setfill(' ') << title
+          << std::setw(26) << std::setfill(' ') << artist
+          << std::setw(28) << std::setfill(' ') << album
+          << std::setw(20) << std::setfill(' ') << date
+          << std::setw(10) << std::setfill(' ') << length
+          << std::setw(14) << genre;// << std::endl;
+
+
+        //std::cout << std::left << std::setw(1) << (i+1) <<
+        //std::setw(20) << currentplaylist["data"][i]["title"] <<
+        //std::setw(16) << currentplaylist["data"][i]["artist"] <<
+        //std::setw(16) << currentplaylist["data"][i]["album"] <<
+        //std::setw(7) << currentplaylist["data"][i]["date"] <<
+        //std::setw(12) << currentplaylist["data"][i]["length"] <<
+        //currentplaylist["data"][i]["genre"];
+        
+        if(currentplaylist["data"][i]["explicit"]==true) {
+            std::cout << std::setw(10) << "Nein" << std::endl;
+        } else {
+            std::cout << std::setw(10) << "Ja" << std::endl;
+        }//currentplaylist["data"][i]["explicit"]
+        //std::cout << "  | " << std::endl;
+    }
+
+    //wenn es mehr als 6 entries in der .json datei (also songs) gibt, wird die legende unten erneut angezeigt, um die lesbarkeit bei grossen playlisten zu erhoehen!!
+    if(currentplaylist["data"].size()>6) {
+        std::cout << std::left << std::setw(6) <<" Nr." <<
+        std::setw(26) << "Titel" <<
+        std::setw(26) << "Interpret" <<
+        std::setw(28) << "Album" <<
+        std::setw(20) << "Erscheinungsjahr" <<
+        std::setw(10) << "Laenge" <<
+        std::setw(14) << "Genre" <<
+        std::setw(10) << "Jugendfrei" << std::endl;
+    }
+
+    //for(int i=0; i<currentplaylist["data"].size(); i++) {
+    //    std::cout <<
+    //    "  " << (i+1) << " |  " <<
+    //    currentplaylist["data"][i]["title"] << " | " <<
+    //    currentplaylist["data"][i]["artist"] << " | " <<
+    //    currentplaylist["data"][i]["album"] << " | " <<
+    //    currentplaylist["data"][i]["date"] << " |    " <<
+    //    currentplaylist["data"][i]["length"] << " |    " <<
+    //    currentplaylist["data"][i]["genre"] << " |    ";// <<
+    //    if(currentplaylist["data"][i]["explicit"]==true) {
+    //        std::cout << "Nein";
+    //    } else {
+    //        std::cout <<"Ja";
+    //    }//currentplaylist["data"][i]["explicit"]
+    //    std::cout << "  | " << std::endl;
+    //}
 
     //cout << ">mit Enter zurueck zum Hauptmenue...";
     //std::string temp;
     //cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     //cin.get();
     if(!justprint) {
+        mydashedline();
         mywaitenter();
         main_menu();
     }
@@ -307,6 +370,13 @@ void mycreatefile() {
     //    main_menu();
     //}
 
+    if (std::filesystem::exists( mypath + filenamecreatefile)) {
+        mydashedline();
+        std::cout << "Die Datei existiert bereits! Fehlercode: 07" << std::endl;
+        mywaitenter();
+        main_menu();
+    }
+
     repeat=true;
     //hier sicherstellen, dass nur integer eingegeben werden, auf beenden pruefen vllt nicht moeglich
     while (repeat) {
@@ -360,7 +430,7 @@ void mycreatefile() {
     char artist[length][25];
     char album[length][25];
     int year[length];// int erscheinungsjahr
-    char duration[length][5] = {};
+    char duration[length][5];
     char genre[length][25];
     bool badwords[length];//    true/false
 
@@ -841,7 +911,7 @@ void mysearchfile() {
         //cout << searchstring << " | " << searchplaylist["data"][0]["artist"] << endl;
         std::cout << "\t\t*******" << std::endl;
         //hoffentlich letzter versuch. JAAAAA //playlist zum test ist in line 635 falls sie je wieder gebraucht wird
-        for(int i=0; i<(searchplaylist.size()+1); i++) {
+        for(int i=0; i<(searchplaylist["data"].size()); i++) {
             std::transform(searchstring.begin(), searchstring.end(), searchstring.begin(), ::tolower);
             //anfuehrungszeichen aus searchstring entfernen --> line 665 commented
 
@@ -970,26 +1040,31 @@ void myeditfile(int select) {
 
     //brauchen wir nur bei >songs hinzufuegen. koennen wir das nicht auch direkt in die datei schreiben??
     //direkt in myopenfile() auslesen geht nicht, da wir hier ggfs. groesse der arrays erhoehen muessen!!!
-    char title[playlistsize+1][25] = {};
-    char artist[playlistsize+1][25] = {};
-    char album[playlistsize+1][25] = {};
+    char title[playlistsize+1][25];
+    char artist[playlistsize+1][25];
+    char album[playlistsize+1][25];
     int year[playlistsize+1];// int erscheinungsjahr
-    char duration[playlistsize+1][5] = {};
-    char genre[playlistsize+1][25] = {};
+    //char duration[playlistsize+1][5];
+    std::string duration[playlistsize+1];
+    char genre[playlistsize+1][25];
     bool badwords[playlistsize+1];//    true/false
     //std::cout <<"testtesttest" << std::endl;
-    for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
-        for (int f2 = 0; f2<5; f2++) {
-            duration[f][f2]='\0';
-        }
-    }
-
+    //for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
+    //    for (int f2 = 0; f2<5; f2++) {
+    //        duration[f][f2]='\0';
+    //        std::cout << "duration[" << f << "][" << f2 << "]: " << duration[f][f2] << std::endl;
+    //    }
+    //}
+    
     
     std::string temptitle;
     std::string tempartist;
     std::string tempalbum;
-    std::string tempduration;
+    //int tempyear;
+
     std::string tempgenre;
+    //
+    //std::cout << "test" << std::endl;
     for(int i=0; i<(playlistsize); i++) {//+1); i++) {//playlistsize+1 ist groesse des arrays! Wir koennen aber nicht mit ihr auslesen, da das letzte element der song ist, der hier hinzugefuegt werden soll!!
         temptitle = currentplaylist["data"][i]["title"];
         std::strcpy(title[i], temptitle.c_str());
@@ -1000,12 +1075,27 @@ void myeditfile(int select) {
         tempalbum = currentplaylist["data"][i]["album"];
         std::strcpy(album[i], tempalbum.c_str());
         //std::cout << "test3" << std::endl;
-        tempduration = currentplaylist["data"][i]["length"];
+        year[i] = currentplaylist["data"][i]["date"];
+        //std::cout << "test3.25" << std::endl;
+
+        duration[i] = currentplaylist["data"][i]["length"];
+        //tempduration.copy(duration[i], 5);
+        //std::cout << "tempuration["<<i<<"]:" << duration[i] << std::endl;
+        //for(int i2=0; i2<5; i2++) {
+        //    tempduration[i2] = currentplaylist["data"][i]["length"][i2];
+        //    //std::strcpy(duration[i], tempduration.c_str());
+        //    duration[i][i2] = tempduration[i][i2];
+        //}
         //std::cout << "test3.5" << std::endl;
-        std::strcpy(duration[i], tempduration.c_str());
+        
         //std::cout << "test4" << std::endl;
         tempgenre = currentplaylist["data"][i]["genre"];
         std::strcpy(genre[i], tempgenre.c_str());
+        if(currentplaylist["data"][i]["explicit"]) {
+            badwords[i]=true;
+        } else {
+            badwords[i]=false;
+        }
         //std::cout << "test5" << std::endl;
 
         //for(int i2=0; i2<25; i2++) {
@@ -1016,6 +1106,13 @@ void myeditfile(int select) {
         //    genre[i][i2]=tempgenre[i2];
         //}
     }
+
+    //for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
+    //    for (int f2 = 0; f2<5; f2++) {
+    //        std::cout << "duration[" << f << "][" << f2 << "]: " << duration[f][f2] << std::endl;
+    //    }
+    //    mydashedline();
+    //}
     //std::cout << "test2--test2" << std::endl;
     
 
@@ -1060,7 +1157,6 @@ void myeditfile(int select) {
 }
 */
     //----------------------------------------------------------------------------------------------------------------------
-
 
 
     int songposition=0;
@@ -1112,7 +1208,7 @@ while (repeat) {
         }
     }
 */
-
+            
     }
 
 
@@ -1158,8 +1254,11 @@ while (repeat) {
             for (int i = 0; i<5; i++) {
                 if (duration[tempi][i] == ':') {
                     duration[tempi][i] = '_'; // Replace colon with underscore
+                    mydashedline();
+                    
                 }
             }
+            //std::cout << "durationafterreplaceingcolon:"<< duration[playlistsize] << std::endl;
         
             mydashedline();
             //mydashedline();
@@ -1184,9 +1283,11 @@ while (repeat) {
         break;//???
     }//         ----------------------------    stimmt hier etwas nicht???  Ja. jetzt behoben
 
+
+    std::memset(answer, 0, sizeof(answer)); 
+
     if(select==2) {
         
-
         
         //songposition gibt position des songs (vgl. i) an
         mydashedline();
@@ -1219,7 +1320,6 @@ while (repeat) {
                 }
             }
         
-        
         std::cout << std::endl;
         std::cout << "      test: " << title[songposition] << std::endl;
         std::strcpy(title[songposition], tempstr.c_str());
@@ -1227,10 +1327,10 @@ while (repeat) {
     //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
         
     //------------------------------------------------------------------------------------------------------------------------------------    
-
+    /*
         std::cout << "Interpret: " << artist[songposition] << std::endl;
         std::cout << artist[songposition];
-        /*
+        
         while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
             if (ch == '\b') { // zurueck taste/backspace
                 if (!tempstr.empty()) {
@@ -1364,7 +1464,66 @@ while (repeat) {
     //------------------------------------------------------------------------------------------------------------------------------------    
     }//ende if(select==2)
 
-    
+    if(select==3) {//wollte den code eigentlich in den switch block schreiben, visual studio code hat etwas dagegen, warum es dann bei case 1 funktioniert versteht keiner
+        
+        if(currentplaylist["data"].size()<2) {
+            mydashedline();
+            std::cout << "\tAchtung, die ausgewaehlte Playlist enthaelt nur einen Song" << std::endl;
+
+            repeat=true;
+            while(repeat) {
+                std::cout << "Mit loeschen der gesamten Playlist fortfahren? (Ja/Nein): ";
+                std::cin >> answer;
+                    
+                if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
+                    repeat = false;
+                    mydeletefile();
+                }
+                if (strcasecmp(answer, "nein") == 0) {
+                    repeat = false;
+                    //zum song editor zurueckkehren
+                    song_management();
+                }
+            }
+        }
+        
+        repeat=true;
+        while(repeat) {
+            std::cout << "ACHTUNG! Soll song Nr. " << (songposition+1) << " wirklich geloscht werden? (Ja/Nein):";
+            std::cin >> answer;
+
+            if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") {
+                repeat = false;
+            }
+            if (strcasecmp(answer, "nein") == 0) {
+                repeat = false;
+                //zurueck zum song editor. vermutlich wurde etwas falsches ausgewaehlt, ausserdem kann von dort direkt ins hauptmenue, oder das programm beendet werden
+                song_management();
+            }
+        }
+            //playlistsize ist eins kleiner, als anzahl elemente mommentan gespeichert.
+            //also muessen alle elemente (ausser das geloeschte --> songposition) hier in die arrays,
+            //sodass sie anschliessend gespeichert werden koennen
+            if(songposition==0) {
+                //fuer den ersten song muessen nur alle anderen positionen mit 1 subtrahiert werden.
+                for(int i=1; i<(playlistsize+1); i++) {
+                    
+                    year[i-1] = year[i];
+                    duration[i-1] = duration[i];
+                    badwords[i-1] = badwords[i];
+
+                    for(int i2=0; i2<25; i2++) {
+                        title[i-1][i2] = title[i][i2];
+                        artist[i-1][i2] = artist[i][i2];
+                        album[i-1][i2] = album[i][i2];
+                        genre[i-1][i2] = genre[i][i2];
+                    }
+                }
+            }
+            //sonst wird es komplizierter! int 0 kann seine position behalten, aber alle anderen muessen wieder kleiner werden
+            //vielleicht ein weiteres hard case fuer songposition==1 und alle anderen ueber eine dynamische schleife??
+
+    }
 
 
 
@@ -1425,7 +1584,7 @@ for (int e = 0; e < playlistsize+1; e++) {
     
 
 
-
+    //std::cout << "test" << std::endl;
     nlohmann::json writefile = {//reihenfolge egal??!
         {
             "data",
@@ -1451,6 +1610,20 @@ for (int e = 0; e < playlistsize+1; e++) {
     };
 
 
+    ////DAMIT DURATION NICHT LAENGER ALS 5 ZEICHE WERDEN KANN!!
+    //for(int i=0;i<(playlistsize+1); i++) {
+    //    duration[i][5] = '\0';
+    //}
+    //mydashedline();
+    //for(int i=0;i<(playlistsize+1); i++) {
+    //    for (int i2=0; i2<10; i2++) {
+    //        std::cout << "duration ["<<i<<"]["<<i2<<"]:" << duration[i][i2] << std::endl;
+    //        
+    //    }
+    //mydashedline();
+    //}
+
+
     //int testint =0;
     //testint = currentplaylist["data"].size();//warum auch immer brauchen wir diesen tempraeren integer. geben wir das argument direkt an die schleife, wird sie endlos
     //testint+=1;
@@ -1462,12 +1635,30 @@ for (int e = 0; e < playlistsize+1; e++) {
         writefile["data"][i]["title"] = title[i];
         //std::cout << "asdasdasd" << std::endl;//testtestte
         writefile["data"][i]["artist"] = artist[i];
+        std::cout << "test1" << std::endl;
         writefile["data"][i]["album"] = album[i];
+        //std::cout << "test2" << std::endl;
         writefile["data"][i]["date"] = year[i];
-        writefile["data"][i]["length"] = duration[i];
+        //std::cout << "test3" << std::endl;
+        //writefile["data"][i]["length"] = duration[i];
         writefile["data"][i]["genre"] = genre[i];
+        //std::cout << "test4" << std::endl;
         writefile["data"][i]["explicit"] = badwords[i];
+
+        //writefile["data"][i]["length"] = duration[i];
+        //std::string durationstr = duration[i];
+        writefile["data"][i]["length"] = duration[i];//durationstr.substr(0, 5);
+        //cout << "test: duration["<<i<<"]: " << duration[i] << std::endl;
+        //std::string tempstr1 str(duration[i]);
+        //temp
+        //writefile["data"][i]["length"] str(duration[i]);
+
+        //for(int i2=0; i2<5; i2++) {
+        //    writefile["data"][i]["length"][i2] str(duration[i][i2];
+        //}
     }
+
+    
 
     //nicht nur werden die aenderungen in der datei gepeichert, sondern auch lokal im programm. so koennen sie direkt im menue durch myprintfile() ausgegeben werden!!
     currentplaylist = writefile;

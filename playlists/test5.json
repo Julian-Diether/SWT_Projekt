@@ -3,20 +3,29 @@
     {
       "album": "ungasda3",
       "artist": "ung",
-      "date": -1005185296,
+      "date": 1997,
       "explicit": true,
       "genre": "sddd",
-      "length": "45",
+      "length": "01_45",
       "title": "asd"
     },
     {
-      "album": "",
-      "artist": "",
-      "date": 544,
+      "album": "dsa",
+      "artist": "dsa",
+      "date": 2003,
+      "explicit": true,
+      "genre": "dsa",
+      "length": "06_18",
+      "title": "dsa"
+    },
+    {
+      "album": "asdasd",
+      "artist": "dsadas",
+      "date": 1987,
       "explicit": false,
-      "genre": "",
-      "length": "",
-      "title": ""
+      "genre": "dsadasd",
+      "length": "02_57",
+      "title": "adasd"
     }
   ]
 }

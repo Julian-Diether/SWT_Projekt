@@ -444,3 +444,23 @@ void mycreatefile() {
 }
 */
 
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+
+int main() {
+    std::string name = "John";
+    int age = 25;
+    double height = 175.5;
+
+    std::cout << std::left << std::setw(10) << "Name"
+              << std::setw(10) << "Age"
+              << std::setw(10) << "Height" << std::endl;
+
+    std::cout << std::left << std::setw(10) << name
+              << std::setw(10) << age
+              << std::setw(10) << height << std::endl;
+
+    return 0;
+}
