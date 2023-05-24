@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <string> //??!?
 #include <string.h>
-#include <conio.h>//fuer getch() (get characters, die gerade eingetippt wurden)
+//#include <conio.h>//fuer getch() (get characters, die gerade eingetippt wurden)
+
 #include <cstring>//fuer strchr in mycheckifopen()
 #include <cctype> // damit wir in mysearchfile() std::tolower() benutzen koennen. natuerlich gibt es einen weg das super einfach zu machen, aber er koennte nicht versteckter sein!!
 #include <cstdio>//fuer das loeschen von dateien
@@ -1184,6 +1185,9 @@ while (repeat) {
     }//         ----------------------------    stimmt hier etwas nicht???  Ja. jetzt behoben
 
     if(select==2) {
+
+        
+        /*
         //songposition gibt position des songs (vgl. i) an
         mydashedline();
         std::cout << "---Daten von Song Nr. " << (songposition+1) << " aendern oder bestaetigen(Enter)---" << std::endl;//  +1 von computer zaehlen in menschen zaehlen!!
@@ -1345,7 +1349,7 @@ while (repeat) {
         //strcsecmp von eingang und "ja"/"nein", wieder mit schleife, bis ein gueltiger wert kommt.
         //std::strcpy(badwords[songposition], tempstr.c_str());
     //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
-        
+    */
     //------------------------------------------------------------------------------------------------------------------------------------    
     }//ende if(select==2)
 

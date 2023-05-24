@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <string> //??!?
 #include <string.h>
-#include <conio.h>//fuer getch() (get characters, die gerade eingetippt wurden)
 #include <cstring>
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
 #include <fstream>
