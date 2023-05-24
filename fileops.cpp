@@ -1185,30 +1185,41 @@ while (repeat) {
     }//         ----------------------------    stimmt hier etwas nicht???  Ja. jetzt behoben
 
     if(select==2) {
+        
 
         
-        /*
         //songposition gibt position des songs (vgl. i) an
         mydashedline();
         std::cout << "---Daten von Song Nr. " << (songposition+1) << " aendern oder bestaetigen(Enter)---" << std::endl;//  +1 von computer zaehlen in menschen zaehlen!!
         //      Abfrage, ob fortgefahren werden soll???---
         std::string tempstr;
         char ch;
-
-        std::cout << "Titel: " << title[songposition] << std::endl;
-        std::cout << title[songposition];
+        bool abort=false;
+        //repeat=true;
         
-        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
-            if (ch == '\b') { // zurueck taste/backspace
-                if (!tempstr.empty()) {
-                    std::cout << "\b \b"; // Clear the last character on the terminal
-                    tempstr.pop_back(); // Remove the last character from the title
+            std::cout << "Titel: " << title[songposition] << std::endl;
+            std::cout << title[songposition];
+
+            while(std::cin.get(ch)) { // schleife, bis
+                if (ch == '\n') { // wenn enter taste
+                    break;//schleife wird unterbrochen und momentaner string (ueberprueft) und dann eingelesen
+                } else if (ch == '\033') { // besondere faelle, wie pfeiltasten
+                    abort = true;
+                } else if (abort) {
+                    // pfeiltasten
+                    abort = false;
+                } else if (ch == '\b') { // zurzeck taste/backspace
+                    if (!tempstr.empty()) {//wenn noch buchstaben vorhanden sind
+                        tempstr.pop_back();//werden sie aus dem string
+                        std::cout << "\b \b"; // und dann aus dem terminal geloescht
+                    }
+                } else {
+                    tempstr += ch;
+                    std::cout << ch;
                 }
-            } else {
-                std::cout << ch;
-                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
             }
-        }
+        
+        
         std::cout << std::endl;
         std::cout << "      test: " << title[songposition] << std::endl;
         std::strcpy(title[songposition], tempstr.c_str());
@@ -1219,7 +1230,7 @@ while (repeat) {
 
         std::cout << "Interpret: " << artist[songposition] << std::endl;
         std::cout << artist[songposition];
-        
+        /*
         while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
             if (ch == '\b') { // zurueck taste/backspace
                 if (!tempstr.empty()) {
