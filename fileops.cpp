@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string> //??!?
 #include <string.h>
+#include <conio.h>//fuer getch() (get characters, die gerade eingetippt wurden)
 #include <cstring>//fuer strchr in mycheckifopen()
 #include <cctype> // damit wir in mysearchfile() std::tolower() benutzen koennen. natuerlich gibt es einen weg das super einfach zu machen, aber er koennte nicht versteckter sein!!
 #include <cstdio>//fuer das loeschen von dateien
@@ -141,7 +142,7 @@ void myopenfile(bool justprint2) {
             std::ifstream file(mypath + filename);
             //oeffnen der .json datei^^ (in einem sicheren umfeld --> kein absturz)
             if (!file.is_open()) {
-                std::cerr << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
+                std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
             } //fehler, wenn datei nicht geoeffnet werden konnte
             
             repeat = false; //erst nachden file.is_open = true ist. danach bei fehler wieder geaendert
@@ -960,11 +961,14 @@ void myeditfile(int select) {
     */
     //std::cout << "TEST laeuft es noch?" << std::endl;
 
-    int playlistsize = currentplaylist["data"].size();
-    if(!select==1) {playlistsize-=1;}
+    int playlistsize = currentplaylist["data"].size();//playlistgroesse fuer song hinzufuegen
+    if(select==2) {playlistsize-=1;}//                  -----------||----------   bearbeiten
+    if(select==3) {playlistsize-=2;}//                  -----------||----------   loeschen
     
     std::cout << "playlistsize:" << playlistsize << std::endl;
+
     //brauchen wir nur bei >songs hinzufuegen. koennen wir das nicht auch direkt in die datei schreiben??
+    //direkt in myopenfile() auslesen geht nicht, da wir hier ggfs. groesse der arrays erhoehen muessen!!!
     char title[playlistsize+1][25] = {};
     char artist[playlistsize+1][25] = {};
     char album[playlistsize+1][25] = {};
@@ -972,14 +976,51 @@ void myeditfile(int select) {
     char duration[playlistsize+1][5] = {};
     char genre[playlistsize+1][25] = {};
     bool badwords[playlistsize+1];//    true/false
-
+    //std::cout <<"testtesttest" << std::endl;
     for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
         for (int f2 = 0; f2<5; f2++) {
             duration[f][f2]='\0';
         }
     }
+
+    
+    std::string temptitle;
+    std::string tempartist;
+    std::string tempalbum;
+    std::string tempduration;
+    std::string tempgenre;
+    for(int i=0; i<(playlistsize); i++) {//+1); i++) {//playlistsize+1 ist groesse des arrays! Wir koennen aber nicht mit ihr auslesen, da das letzte element der song ist, der hier hinzugefuegt werden soll!!
+        temptitle = currentplaylist["data"][i]["title"];
+        std::strcpy(title[i], temptitle.c_str());
+        //std::cout << "test1" << std::endl;
+        tempartist = currentplaylist["data"][i]["artist"];
+        std::strcpy(artist[i], tempartist.c_str());
+        //std::cout << "test2" << std::endl;
+        tempalbum = currentplaylist["data"][i]["album"];
+        std::strcpy(album[i], tempalbum.c_str());
+        //std::cout << "test3" << std::endl;
+        tempduration = currentplaylist["data"][i]["length"];
+        //std::cout << "test3.5" << std::endl;
+        std::strcpy(duration[i], tempduration.c_str());
+        //std::cout << "test4" << std::endl;
+        tempgenre = currentplaylist["data"][i]["genre"];
+        std::strcpy(genre[i], tempgenre.c_str());
+        //std::cout << "test5" << std::endl;
+
+        //for(int i2=0; i2<25; i2++) {
+        //    title[i][i2]=temptitle[i2];
+        //    artist[i][i2]=tempartist[i2];
+        //    album[i][i2]=tempalbum[i2];
+        //    duration[i][i2]=tempduration[i2];
+        //    genre[i][i2]=tempgenre[i2];
+        //}
+    }
+    //std::cout << "test2--test2" << std::endl;
+    
+
     //----------------------------------------------------------------------------------------------------------------------
-    /*for (int e = 0; e < playlistsize; e++) {
+/*
+    for (int e = 0; e < playlistsize; e++) {
     mydashedline();
     std::cout << "Output for i=" << e << std::endl;
     std::cout << "title[" << e << "]: ";
@@ -1015,9 +1056,11 @@ void myeditfile(int select) {
     std::cout << std::endl;
 
     std::cout << "badwords[" << e << "]: " << badwords[e] << std::endl;
-}*/
-
+}
+*/
     //----------------------------------------------------------------------------------------------------------------------
+
+
 
     int songposition=0;
     if(select==2||select==3) {
@@ -1026,9 +1069,9 @@ void myeditfile(int select) {
         while(repeat) {
             //std::memset(answer, 0, sizeof(answer));
             if(select==2) {
-                std::cout << "Welcher Songnummer soll bearbeitet werden?: ";
+                std::cout << "Welche Songnummer soll bearbeitet werden?: ";
             } else {
-                std::cout << "welcher Songnummer soll geloescht werden?: ";
+                std::cout << "welche Songnummer soll geloescht werden?: ";
             }
             if(std::cin >> songposition) {
                 if(songposition>0) {//Zahlen positiv
@@ -1128,8 +1171,8 @@ while (repeat) {
 
         break;
         case 2:
-        //song bearbeiten
-
+      //song bearbeiten
+        
         break;
         case 3:
         //song loeschen
@@ -1140,15 +1183,183 @@ while (repeat) {
         break;//???
     }//         ----------------------------    stimmt hier etwas nicht???  Ja. jetzt behoben
 
+    if(select==2) {
+        //songposition gibt position des songs (vgl. i) an
+        mydashedline();
+        std::cout << "---Daten von Song Nr. " << (songposition+1) << " aendern oder bestaetigen(Enter)---" << std::endl;//  +1 von computer zaehlen in menschen zaehlen!!
+        //      Abfrage, ob fortgefahren werden soll???---
+        std::string tempstr;
+        char ch;
+
+        std::cout << "Titel: " << title[songposition] << std::endl;
+        std::cout << title[songposition];
+        
+        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // Clear the last character on the terminal
+                    tempstr.pop_back(); // Remove the last character from the title
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        std::cout << "      test: " << title[songposition] << std::endl;
+        std::strcpy(title[songposition], tempstr.c_str());
+        std::cout << "      test: " << title[songposition] << std::endl;
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+        
+    //------------------------------------------------------------------------------------------------------------------------------------    
+
+        std::cout << "Interpret: " << artist[songposition] << std::endl;
+        std::cout << artist[songposition];
+        
+        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // wenn eingabe noch nicht leer ist wird im terminal ein charakter geloescht
+                    tempstr.pop_back(); //  -----------------------||---------------- string ein charakter geloescht
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        std::cout << "      test: " << artist[songposition] << std::endl;
+        std::strcpy(artist[songposition], tempstr.c_str());
+        std::cout << "      test: " << artist[songposition] << std::endl;
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+        
+    //------------------------------------------------------------------------------------------------------------------------------------    
+
+        std::cout << "Album: " << album[songposition] << std::endl;
+        std::cout << album[songposition];
+        
+        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // wenn eingabe noch nicht leer ist wird im terminal ein charakter geloescht
+                    tempstr.pop_back(); //  -----------------------||---------------- string ein charakter geloescht
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        std::cout << "      test: " << album[songposition] << std::endl;
+        std::strcpy(album[songposition], tempstr.c_str());
+        std::cout << "      test: " << album[songposition] << std::endl;
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+        
+    //------------------------------------------------------------------------------------------------------------------------------------    
+
+        std::cout << "Erscheinungsjahr: " << year[songposition] << std::endl;
+        std::cout << year[songposition];
+        
+        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // wenn eingabe noch nicht leer ist wird im terminal ein charakter geloescht
+                    tempstr.pop_back(); //  -----------------------||---------------- string ein charakter geloescht
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        //std::strcpy(year[songposition], tempstr.c_str());
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+
+
+    //wie wandle ich den integer jetzt um? muss ich wieder eine schleife erstellen, bis ein gueltiget wert vorhanden ist? geht wahrscheinlich nicht anders
+
+    //------------------------------------------------------------------------------------------------------------------------------------    
+
+        std::cout << "Songlaenge: " << duration[songposition] << std::endl;
+        std::cout << duration[songposition];
+
+        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // wenn eingabe noch nicht leer ist wird im terminal ein charakter geloescht
+                    tempstr.pop_back(); //  -----------------------||---------------- string ein charakter geloescht
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        std::strcpy(duration[songposition], tempstr.c_str());
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+        
+    //------------------------------------------------------------------------------------------------------------------------------------    
+
+
+        std::cout << "Genre: " << genre[songposition] << std::endl;
+        std::cout << genre[songposition];
+
+        while ((ch = getch()) != '\r') { //enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // wenn eingabe noch nicht leer ist wird im terminal ein charakter geloescht
+                    tempstr.pop_back(); //  -----------------------||---------------- string ein charakter geloescht
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        std::strcpy(genre[songposition], tempstr.c_str());
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+        
+    //------------------------------------------------------------------------------------------------------------------------------------    
+
+
+        std::cout << "Jugendfrei: " << badwords[songposition] << std::endl;
+        //std::cout << badwords[songposition];
+        if(badwords[songposition]) {
+            std::cout << "Nein";
+        } else {
+            std::cout << "Ja";
+        }
+
+        while ((ch = getch()) != '\r') { // enter beendet die schleife, und damit auch die eingabe!
+            if (ch == '\b') { // zurueck taste/backspace
+                if (!tempstr.empty()) {
+                    std::cout << "\b \b"; // wenn eingabe noch nicht leer ist wird im terminal ein charakter geloescht
+                    tempstr.pop_back(); //  -----------------------||---------------- string ein charakter geloescht
+                }
+            } else {
+                std::cout << ch;
+                tempstr += ch; // kein backspace --> eingabe. eingabe wird angefuegt/.
+            }
+        }
+        std::cout << std::endl;
+        //strcsecmp von eingang und "ja"/"nein", wieder mit schleife, bis ein gueltiger wert kommt.
+        //std::strcpy(badwords[songposition], tempstr.c_str());
+    //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
+        
+    //------------------------------------------------------------------------------------------------------------------------------------    
+    }//ende if(select==2)
+
+    
 
 
 
+/*
 for (int e = 0; e < playlistsize+1; e++) {
     mydashedline();
     std::cout << "Output for i=" << e << std::endl;
     std::cout << "title[" << e << "]: ";
     for (int e2 = 0; e2 < 25; e2++) {
-        std::cout << title[e][e2];
+        //std::cout << title[e][e2];
     }
     std::cout << std::endl;
 
@@ -1180,7 +1391,7 @@ for (int e = 0; e < playlistsize+1; e++) {
 
     std::cout << "badwords[" << e << "]: " << badwords[e] << std::endl;
 }
-
+*/
 
 
 
@@ -1200,21 +1411,99 @@ for (int e = 0; e < playlistsize+1; e++) {
 
 
 
+    nlohmann::json writefile = {//reihenfolge egal??!
+        {
+            "data",
+            {
+                {
+                    //{"title", ""},
+                    //{"artist", ""},
+                    //{"album", ""},
+                    //{"date", nullptr},
+                    //{"length", ""},
+                    //{"genre", ""},
+                    //{"explicit", ""}
+                    {"album", ""},
+                    {"artist", ""},
+                    {"date", nullptr},
+                    {"explicit", ""},
+                    {"genre", ""},
+                    {"length", ""},
+                    {"title", ""}
+                }
+            }
+        }
+    };
 
-/*
+
+    //int testint =0;
+    //testint = currentplaylist["data"].size();//warum auch immer brauchen wir diesen tempraeren integer. geben wir das argument direkt an die schleife, wird sie endlos
+    //testint+=1;
+    //std::cout << (currentplaylist["data"].size()+1) << std::endl;
+    //std::cout << title[1]<<title[2]<<title[3]<<title[4] << std::endl;
     std::cout << "Aenderungen werden in die Datei geschrieben" << std::endl;
-    for(int i=0; i<currentplaylist.size(); i++) {
-        currentplaylist["data"][i]["title"] = title[i];
-        currentplaylist["data"][i]["artist"] = artist[i];
-        currentplaylist["data"][i]["album"] = album[i];
-        currentplaylist["data"][i]["date"] = year[i];
-        currentplaylist["data"][i]["length"] = duration[i];
-        currentplaylist["data"][i]["genre"] = genre[i];
-        currentplaylist["data"][i]["explicit"] = badwords[i];
+    //try{
+    for(int i=0; i<(playlistsize+1); i++) {//hier alerdings wollen wir bis currentplaylist.size()+1 gehen!!
+        writefile["data"][i]["title"] = title[i];
+        //std::cout << "asdasdasd" << std::endl;//testtestte
+        writefile["data"][i]["artist"] = artist[i];
+        writefile["data"][i]["album"] = album[i];
+        writefile["data"][i]["date"] = year[i];
+        writefile["data"][i]["length"] = duration[i];
+        writefile["data"][i]["genre"] = genre[i];
+        writefile["data"][i]["explicit"] = badwords[i];
     }
 
-    std::cout << "---Aenderungen wurden gespeichert---" << std::endl;
-*/
+    //nicht nur werden die aenderungen in der datei gepeichert, sondern auch lokal im programm. so koennen sie direkt im menue durch myprintfile() ausgegeben werden!!
+    currentplaylist = writefile;
+    //}
+    //catch(std::exception& e) {
+    //    std::cout << "FEHLER BEIM SPEICHERN DER DATEI! FEHLER:" << std::endl << e.what() << std::endl;
+    //}
+    //std::cout << "\t-----zwischenschritt 1-----" << std::endl;
+
+
+
+
+std::memset(answer, 0, sizeof(answer));
+    repeat=true;
+    while(repeat) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
+        //daten werden in die datei file2 geschrieben
+        //std::cout << filename << std::endl;
+        std::ofstream file2(mypath + filename);
+        //std::cout << "test2: " << mypath+filename<<std::endl;
+
+        if (!file2.is_open()) {
+            std::cout << "Datei konnte nicht geoeffnet werden, um Datenn zu speichern! Fehlercode: 04" << std::endl;
+            //main_menu();//vorerst zurueck zum mainmenu. speater muss hier eine loesung gefunden werden.
+            //zum beispiel erneute abfrage nach dateinamen und versuch die bereits eingelesenen daten dotz zu speichern.
+            //"wollen sie das speichern erneut versuchen? (ja/nein)"
+            
+        repeat2=true;
+        while(repeat2) {
+            std::cout << "\tErneut versuchen? (Ja/Nein): ";
+            std::cin >> answer;
+            if (strcasecmp(answer, "ja") == 0) {//er will es nochmal versuchen. viel glueck!
+                repeat2=false;
+            }
+            if (strcasecmp(answer, "nein") == 0) {
+                repeat2=false;
+                repeat=false;
+                song_management();
+            }
+        }
+        //dann zurueck in den loop und es klappt hoffentlich
+        } else {
+            repeat=false;
+            file2 << writefile.dump(2);
+            //cout << "test3";
+            //feierabend! datei wird geschlossen
+            file2.close();
+            //main_menu();
+            std::cout << "---Aenderungen erfolgreich gespeichert---" << std::endl;
+        }
+    }
+
 
     //erneut die playlist ausgeben und zum start zurueckkehren! ???
     mywaitenter();

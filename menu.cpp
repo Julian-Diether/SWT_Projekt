@@ -215,7 +215,7 @@ int input_validation(int option_num, bool bmainmenu)    //wenn input != int (buc
         repeat=true;
         while(repeat) {
             std::cout << "--Geben sie die entsprechende Zahl ein: "; 
-            cin >> selection;
+            std::cin >> selection;
             if(std::cin.fail()) {//oder if(cin>>selection)???
                 //cout << "FEHLERFEHLERFEHLERFEHLERFEHLER---------------" << endl;
                 inputerror=true;

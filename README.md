@@ -130,4 +130,8 @@ todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
 
 -menu.cpp gegen falsche inputs abgesichert
 
+-myeditfile() hinzufuegen komplett, bearbeiten teilweise.
+
+todo: finden, wo beim einlesen aus der .json datei fehler entstehen!! vor allem bei songlaenge und erscheinungsjahr extrem haeufig/auffaellig/stoerend/destruktiv! unbeding finden
+
 
