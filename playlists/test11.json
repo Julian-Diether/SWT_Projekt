@@ -56,12 +56,12 @@
     },
     {
       "album": "keinemusik",
-      "artist": "tester",
-      "date": 2011,
-      "explicit": false,
-      "genre": "test",
-      "length": "05_34",
-      "title": "testsong0"
+      "artist": "der__tester0",
+      "date": 2012,
+      "explicit": true,
+      "genre": "tests",
+      "length": "05_35",
+      "title": "testsong_ultimate"
     },
     {
       "album": "atemlos_das_album",

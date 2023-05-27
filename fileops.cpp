@@ -7,7 +7,7 @@
 //#include <conio.h>//fuer getch() (get characters, die gerade eingetippt wurden)
 #include <iomanip>//um die darstellung in myprintfile() zu vereinfachen
 
-#include <cstring>//fuer strchr in mycheckifopen()
+//#include <cstring>//fuer strchr in mycheckifopen() -- wird nicht benutzt, wird also auskommentiert
 #include <cctype> // damit wir in mysearchfile() std::tolower() benutzen koennen. natuerlich gibt es einen weg das super einfach zu machen, aber er koennte nicht versteckter sein!!
 #include <cstdio>//fuer das loeschen von dateien
 #include <iostream> //brauchen wir das alles? macht es das programm zu langsam/grosss?
@@ -107,7 +107,10 @@ void myopenfile(bool justprint2) {
         }
         std::cin >> tempfilename; //char answer2=filename.c_str();//if (strcasecmp(answer2, "beenden") == 0) {exit(0);}//programm beenden! ------------ DAS HIER UEBERALL KOPIEREN WO TEXT EINGELESEN WIRD!!
         //WARUM IST ALLES SO UNNOETIG KOMPLKIZIERT?!?!?!?!?!? funktionier doch einfach
-        char tempfilenamechar[tempfilename.size() + 1];//wer kommt auf so etwas?
+        //int tempint; -- unused variable
+        //tempint = (filename.size() + 1);// -- ISO C++ forbids variable length array
+        //char tempfilenamechar[tempint];//wer kommt auf so etwas?
+        char tempfilenamechar[(filename.size() + 1)];
         std::copy(tempfilename.begin(), tempfilename.end(), tempfilenamechar);
         tempfilenamechar[tempfilename.size()] = '\0';
         myexit(tempfilenamechar);//string wird hier ueber 5000 hochkomplexe schritte in einen char umgewandelt damit wir schauen koennen ob beenden geschrieben wurde
@@ -227,17 +230,18 @@ void myprintfile(bool justprint) {
     //std::cout << " Nr. |     Titel     |   Interpret   |     Album     |  Erscheinungsjahr  |   Laenge   |   Genre   |   Jugendfrei"/*Explizit?*/"   |" << std::endl;
     //std::cout << " ";
     std::cout << std::left << std::setw(6) <<" Nr." <<
-    std::setw(26) << "Titel" <<
-    std::setw(26) << "Interpret" <<
-    std::setw(28) << "Album" <<
+    std::setw(28) << "Titel" <<
+    std::setw(28) << "Interpret" <<
+    std::setw(30) << "Album" <<
     std::setw(20) << "Erscheinungsjahr" <<
     std::setw(10) << "Laenge" <<
-    std::setw(14) << "Genre" <<
+    std::setw(15) << "Genre" <<
     std::setw(10) << "Jugendfrei" << std::endl;
 
     //cout <<currentplaylist["data"][0]["title"] <<currentplaylist["data"][0]["artist"] <<currentplaylist["data"][0]["album"] <<currentplaylist["data"][0]["date"] <<currentplaylist["data"][0]["length"] <<currentplaylist["data"][0]["genre"] <<currentplaylist["data"][0]["explicit"] <<endl;
 
-    for(int i=0; i<currentplaylist["data"].size(); i++) {
+    //for(int i=0; i<currentplaylist["data"].size(); i++) {
+    for(nlohmann::json::size_type i = 0; i<currentplaylist["data"].size(); i++) {
 
     std::string title = currentplaylist["data"][i]["title"];//warum sollte ich sie nicht direkt ausgeben koennen???? warum muss alles so kompliziert sein???
     std::string artist = currentplaylist["data"][i]["artist"];
@@ -246,19 +250,20 @@ void myprintfile(bool justprint) {
     std::string length = currentplaylist["data"][i]["length"];
     std::string genre = currentplaylist["data"][i]["genre"];
 
-    for(int i=0; i<currentplaylist["data"].size(); i++) {
+    //for(int i=0; i<currentplaylist["data"].size(); i++) {
+    for(nlohmann::json::size_type i = 0; i<currentplaylist["data"].size(); i++) {
         std::replace(length.begin(), length.end(), '_', ':');
     }
     //std::string genre = currentplaylist["data"][i]["genre"];
 
         std::cout << " ";
         std::cout << std::left << std::setw(6) << std::setfill(' ') << (i + 1)
-          << std::setw(26) << std::setfill(' ') << title
-          << std::setw(26) << std::setfill(' ') << artist
-          << std::setw(28) << std::setfill(' ') << album
+          << std::setw(28) << std::setfill(' ') << title
+          << std::setw(28) << std::setfill(' ') << artist
+          << std::setw(30) << std::setfill(' ') << album
           << std::setw(20) << std::setfill(' ') << date
           << std::setw(10) << std::setfill(' ') << length
-          << std::setw(14) << genre;// << std::endl;
+          << std::setw(15) << genre;// << std::endl;
 
 
         //std::cout << std::left << std::setw(1) << (i+1) <<
@@ -280,12 +285,12 @@ void myprintfile(bool justprint) {
     //wenn es mehr als 6 entries in der .json datei (also songs) gibt, wird die legende unten erneut angezeigt, um die lesbarkeit bei grossen playlisten zu erhoehen!!
     if(currentplaylist["data"].size()>6) {
         std::cout << std::left << std::setw(6) <<" Nr." <<
-        std::setw(26) << "Titel" <<
-        std::setw(26) << "Interpret" <<
-        std::setw(28) << "Album" <<
+        std::setw(28) << "Titel" <<
+        std::setw(28) << "Interpret" <<
+        std::setw(30) << "Album" <<
         std::setw(20) << "Erscheinungsjahr" <<
         std::setw(10) << "Laenge" <<
-        std::setw(14) << "Genre" <<
+        std::setw(15) << "Genre" <<
         std::setw(10) << "Jugendfrei" << std::endl;
     }
 
@@ -426,6 +431,7 @@ void mycreatefile() {
         }
     }
 
+    //ISO C++ forbids variable length array...aber das ist UNMOEGLICH zu beheben... toll!
     char title[length][25];
     char artist[length][25];
     char album[length][25];
@@ -911,7 +917,8 @@ void mysearchfile() {
         //cout << searchstring << " | " << searchplaylist["data"][0]["artist"] << endl;
         std::cout << "\t\t*******" << std::endl;
         //hoffentlich letzter versuch. JAAAAA //playlist zum test ist in line 635 falls sie je wieder gebraucht wird
-        for(int i=0; i<(searchplaylist["data"].size()); i++) {
+        //for(int i=0; i<(searchplaylist["data"].size()); i++) {
+        for(nlohmann::json::size_type i = 0; i<searchplaylist["data"].size(); i++) {
             std::transform(searchstring.begin(), searchstring.end(), searchstring.begin(), ::tolower);
             //anfuehrungszeichen aus searchstring entfernen --> line 665 commented
 
@@ -972,7 +979,10 @@ void myeditfile(int select) {
     //std:cout << "CURRENTPLAYLIST.SIZE =" << currentplaylist["data"].size() << std::endl;
     
     //myprintfile(true);
-    mydashedline();
+    //mydashedline(); hier gibt es sonst zwei linien, brauchen wir nicht!
+    if(select==1) {
+        mydashedline();//okay, hier brauchen wir die trennlinie fuer bessere uebersicht. sie kommt dann wohl beim ausgeben der datei, dass es nur bei bearneiten und loeschen gibt
+    }
     //std::cout << "testestetsetstestestetsetstetsetstestetst" << std::endl;
     /*
     repeat=true;
@@ -1033,21 +1043,32 @@ void myeditfile(int select) {
     //std::cout << "TEST laeuft es noch?" << std::endl;
 
     int playlistsize = currentplaylist["data"].size();//playlistgroesse fuer song hinzufuegen
-    if(select==2) {playlistsize-=1;}//                  -----------||----------   bearbeiten
-    if(select==3) {playlistsize-=2;}//                  -----------||----------   loeschen
+    //if(select==1) {playlistsize+=1;}//                      -----------||---------   hinzufuegen
+    //if(select==2) {playlistsize-=0;}//                  -----------||----------   bearbeiten
+    //if(select==3) {playlistsize-=1;}//                  -----------||----------   loeschen
     
-    std::cout << "playlistsize:" << playlistsize << std::endl;
+    //std::cout << "playlistsize:" << playlistsize << std::endl;
+
+    int playlistsize1;
+    if(select==1) {playlistsize1=(playlistsize+1);}//hinzufuegen
+    if(select==2) {playlistsize1=playlistsize;}//bearbeiten
+    if(select==3) {playlistsize1=playlistsize;}//loeschen
 
     //brauchen wir nur bei >songs hinzufuegen. koennen wir das nicht auch direkt in die datei schreiben??
     //direkt in myopenfile() auslesen geht nicht, da wir hier ggfs. groesse der arrays erhoehen muessen!!!
-    char title[playlistsize+1][25];
-    char artist[playlistsize+1][25];
-    char album[playlistsize+1][25];
-    int year[playlistsize+1];// int erscheinungsjahr
-    //char duration[playlistsize+1][5];
-    std::string duration[playlistsize+1];
-    char genre[playlistsize+1][25];
-    bool badwords[playlistsize+1];//    true/false
+    //char title[playlistsize][25];
+    std::string title[playlistsize1];
+    //char artist[playlistsize][25];
+    std::string artist[playlistsize1];
+    //char album[playlistsize][25];
+    std::string album[playlistsize1];
+    int year[playlistsize1];// int erscheinungsjahr
+    ////char duration[playlistsize+1][5];
+    std::string duration[playlistsize1];
+    //std::string duration[playlistsize];
+    //char genre[playlistsize][25];
+    std::string genre[playlistsize1];
+    bool badwords[playlistsize1];//    true/false
     //std::cout <<"testtesttest" << std::endl;
     //for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
     //    for (int f2 = 0; f2<5; f2++) {
@@ -1066,14 +1087,17 @@ void myeditfile(int select) {
     //
     //std::cout << "test" << std::endl;
     for(int i=0; i<(playlistsize); i++) {//+1); i++) {//playlistsize+1 ist groesse des arrays! Wir koennen aber nicht mit ihr auslesen, da das letzte element der song ist, der hier hinzugefuegt werden soll!!
-        temptitle = currentplaylist["data"][i]["title"];
-        std::strcpy(title[i], temptitle.c_str());
+        //temptitle = 
+        title[i] = currentplaylist["data"][i]["title"];
+        //std::strcpy(title[i], temptitle.c_str());
         //std::cout << "test1" << std::endl;
-        tempartist = currentplaylist["data"][i]["artist"];
-        std::strcpy(artist[i], tempartist.c_str());
+        //tempartist = 
+        artist[i] = currentplaylist["data"][i]["artist"];
+        //td::strcpy(artist[i], tempartist.c_str());
         //std::cout << "test2" << std::endl;
-        tempalbum = currentplaylist["data"][i]["album"];
-        std::strcpy(album[i], tempalbum.c_str());
+        //tempalbum = 
+        album[i] = currentplaylist["data"][i]["album"];
+        //std::strcpy(album[i], tempalbum.c_str());
         //std::cout << "test3" << std::endl;
         year[i] = currentplaylist["data"][i]["date"];
         //std::cout << "test3.25" << std::endl;
@@ -1089,8 +1113,9 @@ void myeditfile(int select) {
         //std::cout << "test3.5" << std::endl;
         
         //std::cout << "test4" << std::endl;
-        tempgenre = currentplaylist["data"][i]["genre"];
-        std::strcpy(genre[i], tempgenre.c_str());
+        genre[i] = currentplaylist["data"][i]["genre"];
+        //tempgenre = currentplaylist["data"][i]["genre"];
+        //std::strcpy(genre[i], tempgenre.c_str());
         if(currentplaylist["data"][i]["explicit"]) {
             badwords[i]=true;
         } else {
@@ -1106,6 +1131,7 @@ void myeditfile(int select) {
         //    genre[i][i2]=tempgenre[i2];
         //}
     }
+    //std::cout << "test6" << std::endl;
 
     //for (int f = 0; f<playlistsize; f++) {//ich versuche sicherzustellen, dass es keine probleme beim speichern gibt
     //    for (int f2 = 0; f2<5; f2++) {
@@ -1157,7 +1183,7 @@ void myeditfile(int select) {
 }
 */
     //----------------------------------------------------------------------------------------------------------------------
-
+    
 
     int songposition=0;
     if(select==2||select==3) {
@@ -1191,7 +1217,7 @@ void myeditfile(int select) {
             //if(answer>0 && answer<(currentplaylist.size()+1)) {
             //repeat=false;
         }
-        std::cout << "Songposition: " << songposition << std::endl;
+        //std::cout << "Songposition: " << songposition << std::endl;
         
 /*
 while (repeat) {
@@ -1211,12 +1237,13 @@ while (repeat) {
             
     }
 
-
+    if(select==1) {playlistsize+=1;}//????__----------------------------------------------------------___?????___-------------------------------------------------------------------------------------------------------------------------------??????___--
 
     int tempyear=0;
     //int tempi=currentplaylist.size();//current playlist.size gibt groesse beginnend mit 0 aus. z.B. 5 elemente (0 bis 4) = 5. Wir sind also schon am schluss und brauchen keine weiteren schritte!!
     //int tempi=currentplaylist["data"].size();//^^falsch!
-    int tempi =playlistsize;
+    int tempi =(playlistsize-1);
+    //std::cout << tempi << std::endl;
     switch(select) {
         case 1:
         //song hinzufuegen
@@ -1230,6 +1257,7 @@ while (repeat) {
         mydashedline();
         std::cout << "Informationen fuer neuen Song eingeben:" << std::endl;
         std::cout << "Songname: "; std::cin >> title[tempi];
+        //std::cout << "test" << std::endl;
         std::cout << "Interpret: "; std::cin >> artist[tempi];
         std::cout << "Album: "; std::cin >> album[tempi];
         repeat=true;
@@ -1254,8 +1282,8 @@ while (repeat) {
             for (int i = 0; i<5; i++) {
                 if (duration[tempi][i] == ':') {
                     duration[tempi][i] = '_'; // Replace colon with underscore
-                    mydashedline();
-                    
+                    //mydashedline();
+
                 }
             }
             //std::cout << "durationafterreplaceingcolon:"<< duration[playlistsize] << std::endl;
@@ -1284,23 +1312,248 @@ while (repeat) {
     }//         ----------------------------    stimmt hier etwas nicht???  Ja. jetzt behoben
 
 
-    std::memset(answer, 0, sizeof(answer)); 
+/*
+for (int e = 0; e < playlistsize+1; e++) {
+    mydashedline();
+    std::cout << "Output for i=" << e << std::endl;
+    std::cout << "title[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        //std::cout << title[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "artist[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << artist[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "album[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << album[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "year[" << e << "]: " << year[e] << std::endl;
+
+    std::cout << "duration[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << duration[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "genre[" << e << "]: ";
+    for (int e2 = 0; e2 < 25; e2++) {
+        std::cout << genre[e][e2];
+    }
+    std::cout << std::endl;
+
+    std::cout << "badwords[" << e << "]: " << badwords[e] << std::endl;
+}
+*/
+
+
+    //for(int e=0; e<currentplaylist.size(); e++) {
+    //        mydashedline();
+    //        std::cout << "Output fuer i=" << e << std::endl;
+    //        std::cout << "title["<<e<<"]: " << for(int e2=0; e2<25; e2++) {title[e][e2]}<< std::endl;
+    //        std::cout << "artist["<<e<<"]: " << for(int e2=0; e2<25; e2++) {artist[e][e2]}<< std::endl;
+    //        std::cout << "album["<<e<<"]: " << for(int e2=0; e2<25; e2++) {album[e][e2]}<< std::endl;
+    //        std::cout << "year["<<e<<"]: " <<year[e]<< std::endl;
+    //        std::cout << "duration["<<e<<"]: " << for(int e2=0; e2<25; e2++) {duration[e][e2]} << std::endl;
+    //        std::cout << "genre["<<e<<"]: " << for(int e2=0; e2<25; e2++) {genre[e][e2]}<< std::endl;
+    //        std::cout << "badwords["<<e<<"]: " <<badwords[e]<< std::endl;
+    //    }
+    //}
+    
+
+
+    //std::cout << "test" << std::endl;
+    nlohmann::json writefile = {//reihenfolge egal??!
+        {
+            "data",
+            {
+                {
+                    //{"title", ""},
+                    //{"artist", ""},
+                    //{"album", ""},
+                    //{"date", nullptr},
+                    //{"length", ""},
+                    //{"genre", ""},
+                    //{"explicit", ""}
+                    {"album", ""},
+                    {"artist", ""},
+                    {"date", nullptr},
+                    {"explicit", ""},
+                    {"genre", ""},
+                    {"length", ""},
+                    {"title", ""}
+                }
+            }
+        }
+    };
+
+
+std::memset(answer, 0, sizeof(answer)); 
 
     if(select==2) {
         
         
         //songposition gibt position des songs (vgl. i) an
         mydashedline();
-        std::cout << "---Daten von Song Nr. " << (songposition+1) << " aendern oder bestaetigen(Enter)---" << std::endl;//  +1 von computer zaehlen in menschen zaehlen!!
+        //std::cout << "---Daten von Song Nr. " << (songposition+1) << " aendern oder bestaetigen(Enter)---" << std::endl;//  +1 von computer zaehlen in menschen zaehlen!!
         //      Abfrage, ob fortgefahren werden soll???---
         std::string tempstr;
-        char ch;
-        bool abort=false;
+        //char ch; -- unused variable
+        //bool abort=false; -- unused variable
         //repeat=true;
         
-            std::cout << "Titel: " << title[songposition] << std::endl;
-            std::cout << title[songposition];
+        //std::cout << "Titel: " << title[songposition] << std::endl;
+        //std::cout << title[songposition];
 
+
+
+        std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
+        std::cout << "**Eintrag aendern, oder mit der Enter Taste beibehalten**" << std::endl;
+
+        for (int i = 0; i<5; i++) {
+                if (duration[songposition][i] == '_') {
+                    duration[songposition][i] = ':';//zum ausgeben des momentanwerts in derm terminal
+
+                }
+            }
+
+        //std::memset(answer, 0, sizeof(answer));
+        std::string tempanswer;
+
+        mydashedline();
+        /*
+        //std::cout << "Informationen fuer neuen Song eingeben:" << std::endl;
+        std::cout << "Songname: " << title[songposition] << std::endl;
+        std::cout << ">";
+        std::getline(std::cin, tempanswer);
+        std::cout << "input: " << tempanswer << std::endl;
+        if (!tempanswer.empty()) {//nur in zwischenspeicher speichern, wenn nicht enter eingegeben wurde!
+            title[songposition] = tempanswer;
+            std::cout << "testnichtleer" << std::endl;
+        } else {std::cout << "testleer" << std::endl;}
+        //HILFE!!!! er ignoriert einfach meinen code! es klappt alles bei nachfolgenden abfragen, aber nie bei der ersten...
+        */
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+
+        std::cout << "Songname: " << title[songposition] << std::endl << ">";
+        std::getline(std::cin, tempanswer);
+        if (!tempanswer.empty()) {
+            title[songposition] = tempanswer;
+        }
+
+
+        //std::cout << "test" << std::endl;
+        std::cout << "Interpret: " << artist[songposition] << std::endl << ">";
+        std::getline(std::cin, tempanswer);
+        if (!tempanswer.empty()) {
+            artist[songposition] = tempanswer;
+        }
+
+        std::cout << "Album: " << album[songposition] << std::endl << ">";
+        std::getline(std::cin, tempanswer);
+        if (!tempanswer.empty()) {
+            album[songposition] = tempanswer;
+        }
+
+        std::cout << "Erscheinungsjahr: " << year[songposition] << std::endl;;
+        repeat=true;
+        while (repeat) {
+            std::cout << ">";
+            std::getline(std::cin, tempanswer);
+            if (tempanswer.empty()) {
+                //enter
+                repeat=false;
+                //std::cout << "enterbeierscheinungsjahr" << std::endl;//testtest
+            } else {
+            
+                try //(tempyear= std::stoi(tempanswer)) {//std::cin >> tempyear) {//zahl eingegebe
+                    {
+                    tempyear= std::stoi(tempanswer);
+                    if(tempyear>0) {//sicherstellen, dass zahl auch positiv ist! ggfs. koennten hier checks wie kleiner als 2100, usw. hinzugefuegt werden
+                        repeat=false;year[songposition]=tempyear;
+                    }//success!n
+                } catch(std::invalid_argument()) {//falls keine zahl eingegeben wurde 
+                    std::cerr << "Fehler!" << std::endl;
+                    std::cin.clear();//input wird geloescht
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    tempanswer="";
+                    //input ignorieren, falls keine zahl
+                    std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
+                }
+            }
+        }
+        /*
+        repeat=true;
+        while (repeat) {std::cout << "Erscheinungsjahr: " << year[songposition] << std::endl << ">";
+            if (std::cin >> tempyear) {//zahl eingegebe
+                if(tempyear>0) {repeat=false;year[songposition]=tempyear;}//success!n
+            } else {
+                std::cin.clear();//input wird geloescht
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                //input ignorieren, falls keine zahl
+                std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;}
+        }*/
+
+        std::cout << "Laenge [xx:xx]: " << duration[songposition] << std::endl << ">";// std::cin >> duration[songposition];
+        std::getline(std::cin, tempanswer);
+        if (!tempanswer.empty()) {
+            duration[songposition] = tempanswer;
+        }
+
+        std::cout << "Musikrichtung: " << genre[songposition] << std::endl << ">";// std::cin >> genre[songposition];
+        std::getline(std::cin, tempanswer);
+        if (!tempanswer.empty()) {
+            genre[songposition] = tempanswer;
+        }
+
+        repeat=true;
+        if(badwords[songposition]) {std::cout << "Jugendfrei (Ja/Nein): " << "Nein" << std::endl;} else {std::cout << "Jugendfrei (Ja/Nein): " << "Ja" << std::endl;}
+        while (repeat) {std::cout << ">";
+            //std::cin >> answer;
+            std::getline(std::cin, tempanswer);
+            //if (!answer.empty()) {
+            //std::cout << "test: " << tempanswer << std::endl;
+            //geht fuer char Arrays nicht!!
+            //if(!answer[0] == '\0') {//wenn erster eintrag des Arrays newline ist wurde enter gedrueckt und das assignment wird hier uebersprungen --> alter wert wird beibehalten
+            //^^gibt einen fehler, wenn europaeische anfuehrungszeichen verwendet werden (""), aber nicht bei amerikanischen (''). Interessant
+            //das funktioniert nicht... kann nicht verstehen warum, muessen es eben wieder ueber 30 unnoetige umwandlungen machen :(
+            if(!tempanswer.empty()) {
+                std::copy(tempanswer.begin(), tempanswer.end(), answer);
+                
+                //myexit(answer4);//brauchen wir das? ich lasse es drin bis wir die bestaetigung am anfang haben?!
+                if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[songposition]=false;}
+                if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[songposition]=true;}
+            } else {
+                //enter wurde gedrueckt, also wird der input ignoriert und der alte wert beibehalten
+                repeat=false;
+                //std::cout << "test2 (enter)" << std::endl;
+            }
+        }
+
+        for (int i = 0; i<5; i++) {
+            if (duration[songposition][i] == ':') {
+                duration[songposition][i] = '_'; // Replace colon with underscore
+                //mydashedline();
+
+            }
+        }//ist ja nicht schlimm, dass das auch durchlaeuft, wenn nichts geaendert wurde.
+            //std::cout << "durationafterreplaceingcolon:"<< duration[playlistsize] << std::endl;
+        //std::cout << "test3" << std::endl;
+        std::cout << "test4" << std::endl;
+        //std::cin.get();
+        //sicherstellen, dass spaeter (bei mit enter zurueck zum hauptmenue) nur einmal enter gedrueckt werden muss anstatt zweimal
+        //kann (zumindest hier) nicht behoben werden!
+
+        mydashedline();
+        
+        /*
             while(std::cin.get(ch)) { // schleife, bis
                 if (ch == '\n') { // wenn enter taste
                     break;//schleife wird unterbrochen und momentaner string (ueberprueft) und dann eingelesen
@@ -1322,12 +1575,13 @@ while (repeat) {
         
         std::cout << std::endl;
         std::cout << "      test: " << title[songposition] << std::endl;
-        std::strcpy(title[songposition], tempstr.c_str());
+        //std::strcpy(title[songposition], tempstr.c_str());
+        title[songposition] = tempstr;
         std::cout << "      test: " << title[songposition] << std::endl;
     //fertig, pruefen, ob dateiname gueltig ist (keine leerzeichen, sonderzeichen)/oder diese direkt ersetzen, statt fehler zu werdfen!
         
     //------------------------------------------------------------------------------------------------------------------------------------    
-    /*
+    
         std::cout << "Interpret: " << artist[songposition] << std::endl;
         std::cout << artist[songposition];
         
@@ -1504,110 +1758,31 @@ while (repeat) {
             //playlistsize ist eins kleiner, als anzahl elemente mommentan gespeichert.
             //also muessen alle elemente (ausser das geloeschte --> songposition) hier in die arrays,
             //sodass sie anschliessend gespeichert werden koennen
-            if(songposition==0) {
-                //fuer den ersten song muessen nur alle anderen positionen mit 1 subtrahiert werden.
-                for(int i=1; i<(playlistsize+1); i++) {
-                    
-                    year[i-1] = year[i];
-                    duration[i-1] = duration[i];
-                    badwords[i-1] = badwords[i];
-
-                    for(int i2=0; i2<25; i2++) {
-                        title[i-1][i2] = title[i][i2];
-                        artist[i-1][i2] = artist[i][i2];
-                        album[i-1][i2] = album[i][i2];
-                        genre[i-1][i2] = genre[i][i2];
-                    }
-                }
-            }
+            //if(songposition==0) {
+            //    //fuer den ersten song muessen nur alle anderen positionen mit 1 subtrahiert werden.
+            //    for(int i=1; i<(playlistsize+1); i++) {
+            //        
+            //        year[i-1] = year[i];
+            //        duration[i-1] = duration[i];
+            //        badwords[i-1] = badwords[i];
+            //
+            //        for(int i2=0; i2<25; i2++) {
+            //            title[i-1][i2] = title[i][i2];
+            //            artist[i-1][i2] = artist[i][i2];
+            //            album[i-1][i2] = album[i][i2];
+            //            genre[i-1][i2] = genre[i][i2];
+            //        }
+            //    }
+            //}
             //sonst wird es komplizierter! int 0 kann seine position behalten, aber alle anderen muessen wieder kleiner werden
             //vielleicht ein weiteres hard case fuer songposition==1 und alle anderen ueber eine dynamische schleife??
 
+            //kreative, interessante und vielleicht sogar funktionsfaehige loesung
+            //oder...
+
     }
 
 
-
-/*
-for (int e = 0; e < playlistsize+1; e++) {
-    mydashedline();
-    std::cout << "Output for i=" << e << std::endl;
-    std::cout << "title[" << e << "]: ";
-    for (int e2 = 0; e2 < 25; e2++) {
-        //std::cout << title[e][e2];
-    }
-    std::cout << std::endl;
-
-    std::cout << "artist[" << e << "]: ";
-    for (int e2 = 0; e2 < 25; e2++) {
-        std::cout << artist[e][e2];
-    }
-    std::cout << std::endl;
-
-    std::cout << "album[" << e << "]: ";
-    for (int e2 = 0; e2 < 25; e2++) {
-        std::cout << album[e][e2];
-    }
-    std::cout << std::endl;
-
-    std::cout << "year[" << e << "]: " << year[e] << std::endl;
-
-    std::cout << "duration[" << e << "]: ";
-    for (int e2 = 0; e2 < 25; e2++) {
-        std::cout << duration[e][e2];
-    }
-    std::cout << std::endl;
-
-    std::cout << "genre[" << e << "]: ";
-    for (int e2 = 0; e2 < 25; e2++) {
-        std::cout << genre[e][e2];
-    }
-    std::cout << std::endl;
-
-    std::cout << "badwords[" << e << "]: " << badwords[e] << std::endl;
-}
-*/
-
-
-
-    //for(int e=0; e<currentplaylist.size(); e++) {
-    //        mydashedline();
-    //        std::cout << "Output fuer i=" << e << std::endl;
-    //        std::cout << "title["<<e<<"]: " << for(int e2=0; e2<25; e2++) {title[e][e2]}<< std::endl;
-    //        std::cout << "artist["<<e<<"]: " << for(int e2=0; e2<25; e2++) {artist[e][e2]}<< std::endl;
-    //        std::cout << "album["<<e<<"]: " << for(int e2=0; e2<25; e2++) {album[e][e2]}<< std::endl;
-    //        std::cout << "year["<<e<<"]: " <<year[e]<< std::endl;
-    //        std::cout << "duration["<<e<<"]: " << for(int e2=0; e2<25; e2++) {duration[e][e2]} << std::endl;
-    //        std::cout << "genre["<<e<<"]: " << for(int e2=0; e2<25; e2++) {genre[e][e2]}<< std::endl;
-    //        std::cout << "badwords["<<e<<"]: " <<badwords[e]<< std::endl;
-    //    }
-    //}
-    
-
-
-    //std::cout << "test" << std::endl;
-    nlohmann::json writefile = {//reihenfolge egal??!
-        {
-            "data",
-            {
-                {
-                    //{"title", ""},
-                    //{"artist", ""},
-                    //{"album", ""},
-                    //{"date", nullptr},
-                    //{"length", ""},
-                    //{"genre", ""},
-                    //{"explicit", ""}
-                    {"album", ""},
-                    {"artist", ""},
-                    {"date", nullptr},
-                    {"explicit", ""},
-                    {"genre", ""},
-                    {"length", ""},
-                    {"title", ""}
-                }
-            }
-        }
-    };
 
 
     ////DAMIT DURATION NICHT LAENGER ALS 5 ZEICHE WERDEN KANN!!
@@ -1630,12 +1805,15 @@ for (int e = 0; e < playlistsize+1; e++) {
     //std::cout << (currentplaylist["data"].size()+1) << std::endl;
     //std::cout << title[1]<<title[2]<<title[3]<<title[4] << std::endl;
     std::cout << "Aenderungen werden in die Datei geschrieben" << std::endl;
+    //std::cout << playlistsize1 << std::endl;
+    //std::cout << title << std::endl;
     //try{
-    for(int i=0; i<(playlistsize+1); i++) {//hier alerdings wollen wir bis currentplaylist.size()+1 gehen!!
+        //if(select==3) { playlistsize+=1;}//NEIN?!?!? es muss doch eigentlich klappen
+    for(int i=0; i<(playlistsize1); i++) {//hier alerdings wollen wir bis currentplaylist.size()+1 gehen!!
         writefile["data"][i]["title"] = title[i];
         //std::cout << "asdasdasd" << std::endl;//testtestte
         writefile["data"][i]["artist"] = artist[i];
-        std::cout << "test1" << std::endl;
+        //std::cout << "test1" << std::endl;
         writefile["data"][i]["album"] = album[i];
         //std::cout << "test2" << std::endl;
         writefile["data"][i]["date"] = year[i];
@@ -1648,7 +1826,7 @@ for (int e = 0; e < playlistsize+1; e++) {
         //writefile["data"][i]["length"] = duration[i];
         //std::string durationstr = duration[i];
         writefile["data"][i]["length"] = duration[i];//durationstr.substr(0, 5);
-        //cout << "test: duration["<<i<<"]: " << duration[i] << std::endl;
+        //std::cout << "test: duration["<<i<<"]: " << duration[i] << std::endl;
         //std::string tempstr1 str(duration[i]);
         //temp
         //writefile["data"][i]["length"] str(duration[i]);
@@ -1657,8 +1835,68 @@ for (int e = 0; e < playlistsize+1; e++) {
         //    writefile["data"][i]["length"][i2] str(duration[i][i2];
         //}
     }
+    /*if(select==3) {
+        //std::cout << "not yet" << std::endl;
+        writefile["data"].erase(songposition);
+        std::cout << "earase done" << std::endl;
+        //^^das funktioniert eigentlich immer, die probleme kommen, wenn nachfolgend die eintraege durchgetauscht werden
 
-    
+        //problem ist: es bleibt eine luecke!!
+        if(songposition==0) {
+            for(int i=1; i<playlistsize; i++) {
+                title[i-1]=title[i];
+                artist[i-1]=artist[i];
+                album[i-1]=album[i];
+                year[i-1]=year[i];
+                duration[i-1]=duration[i];
+                genre[i-1]=genre[i];
+                badwords[i-1]=badwords[i];
+            }
+        }
+
+        if(songposition==1) {
+            for(int i=2; i<playlistsize; i++) {
+                title[i-1]=title[i];
+                artist[i-1]=artist[i];
+                album[i-1]=album[i];
+                year[i-1]=year[i];
+                duration[i-1]=duration[i];
+                genre[i-1]=genre[i];
+                badwords[i-1]=badwords[i];
+            }
+        }
+        std::cout << "songpos:" << (songposition) << "playlists:" << (playlistsize) << std::endl;
+        for(int i=(songposition); i<(playlistsize); i++) {//oder einfach (int i=0; i<playlistsize); i++) und dann title[i]=title[i+1]
+            //funktion, die immer richtig verschiebt. hier sind keine individuellen faelle notwendig!!!
+                title[i]=title[i+1];
+                std::cout << "test11 - " << i << std::endl;
+                artist[i]=artist[i+1];
+                std::cout << "test12 - " << i << std::endl;
+                album[i]=album[i+1];
+                std::cout << "test13 - " << i << std::endl;
+                year[i]=year[i+1];
+                std::cout << "test14 - " << i << std::endl;
+                duration[i]=duration[i+1];
+                std::cout << "test15 - " << i << std::endl;
+                genre[i]=genre[i+1];
+                std::cout << "test16 - " << i << std::endl;
+                badwords[i]=badwords[i+1];
+                std::cout << "test17 - " << i << std::endl;
+        }//jetzt bleibt keine luecke mehr!
+        std::cout << "test6.5" << std::endl;
+    }*/
+
+        //std::cout << "asd:" << writefile << std::endl;
+
+        //std::cout << "asda:" << writefile << std::endl;
+        //currentplaylist.erase(songposition);
+        //currentplaylist.erase(currentplaylist.begin() + songposition);
+        if(select==3) {
+            writefile["data"].erase(writefile["data"].begin() + songposition);
+        }
+        //std::cout << "earase done" << std::endl;
+        //std::cout << "asda:" << writefile << std::endl;
+
 
     //nicht nur werden die aenderungen in der datei gepeichert, sondern auch lokal im programm. so koennen sie direkt im menue durch myprintfile() ausgegeben werden!!
     currentplaylist = writefile;
@@ -1668,10 +1906,10 @@ for (int e = 0; e < playlistsize+1; e++) {
     //}
     //std::cout << "\t-----zwischenschritt 1-----" << std::endl;
 
+    //std::cout << "--testtest7--" << std::endl;
+    //std::cout << "asda:" << writefile << std::endl;
 
-
-
-std::memset(answer, 0, sizeof(answer));
+    std::memset(answer, 0, sizeof(answer));
     repeat=true;
     while(repeat) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
         //daten werden in die datei file2 geschrieben
@@ -1712,7 +1950,16 @@ std::memset(answer, 0, sizeof(answer));
 
 
     //erneut die playlist ausgeben und zum start zurueckkehren! ???
-    mywaitenter();
+    if(select==2) {
+        //std::cout << "testtestentertest" << std::endl;
+        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << ">mit Enter zurueck zum Hauptmenue...";
+        std::string temp;
+        std::getline(std::cin, temp);//ich hasse c++
+    } else {
+        mywaitenter();
+    }
+    //mywaitenter();
     //am ende zurueck zum hauptmenue
     main_menu();
 }
@@ -1729,10 +1976,13 @@ void myexit(char myinput[50]) {
 }
 
 void mywaitenter() {
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//damit nach dem bearbeiten eines songs nicht mehrmals enter gedrueckt werden muss?!
     std::cout << ">mit Enter zurueck zum Hauptmenue...";
     std::string temp;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cin.get();
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//es koenten, noch enters uebrig sein wenn der nutzer vom bearbeiten kommt, diese werden entfernt
+    //std::cin.clear();//dann wird der input geloescht
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//und dann kommt das eigentliche warten auf enter um zum hauptmenue zurueck zu kehren
+    std::cin.get();             //^^ nein nichts davon funktioniert und nichts ergibt sinn. wir benutzen eine andere funktion fuer diese ausnahme.
 }
 
 void mycheckifopen(char myinput2[50]) {

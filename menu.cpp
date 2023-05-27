@@ -217,7 +217,9 @@ int input_validation(int option_num, bool bmainmenu)    //wenn input != int (buc
         while(repeat) {
             std::cout << "--Geben sie die entsprechende Zahl ein: "; 
             std::cin >> selection;
+            //std::cout << selection << std::endl;
             if(std::cin.fail()) {//oder if(cin>>selection)???
+            //if(!cin>>selection) {//
                 //cout << "FEHLERFEHLERFEHLERFEHLERFEHLER---------------" << endl;
                 inputerror=true;
                 std::cin.clear();
@@ -225,7 +227,7 @@ int input_validation(int option_num, bool bmainmenu)    //wenn input != int (buc
                 std::cout << "\tBuchstaben sind nicht zulaessig!" << std::endl;
                 //std::cout << "Geben sie eine gueltige Zahl ein: ";//user soll erneut eingeben, weil buchstabe eingegeben wurde
                 repeat=false;
-            } else {repeat=false;}
+            } else {repeat=false; inputerror=false;}//inputerror=false; fehlte und fuehrte dazu dass richtige eingaben nach fehlern ignoriert wurden
         }
         //cout << "testtesttest";
         if (selection <= 0 || selection > option_num || inputerror)
@@ -310,7 +312,7 @@ int main()
     welcome_msg(); //Greetings at the programm start
     main_menu();
     
-    /*
+    
     myinitialize();
 
     while (repeat) {
@@ -343,7 +345,7 @@ int main()
         printf("************************\n");
     printf("Willkommen zum Musikplayer!\n");
     printf("Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ");
-    /*scanf("%c", myinput);
+    scanf("%c", myinput);
     printf("%c", myinput); //testtest
     
     
@@ -359,12 +361,11 @@ int main()
     } else {
         printf("\nfehler");
     } 
-    /*else if(myinput=="Nein" || myinput=="nein" || myinput=="NEIN") {
+    else if(myinput=="Nein" || myinput=="nein" || myinput=="NEIN") {
         //bibliothek NICHT initialisieren
         //hier soll es normal mit dem musikplayer weitergehen
 
-        printf("test - fall: nein");
-    } else {
+        printf("test - fall: nein");f    } else {
         //falsche eingabe (nicht "ja" oder "nein") --> wiederholen
         printf("hdahsfhdfsdo\n");
         printf("Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein):");

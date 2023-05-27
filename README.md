@@ -150,5 +150,23 @@ todo: spacing/padding bei myprintfile() abhaengig von groesse des groessten jewe
 
 todo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
 
+-chars in myeditfile() durch strings ersetzt und viele fehler, vor allem bei grossen eingaben vermieden
+
+todo: mycreatefile() und ggfs. myopenfile()/myprintfile() auch durch strings ersetzen --> deutlich vereinfachter code, weniger stellen a denen durch conversions fehler auftreten koennten
+
+-myeditfile() delete funktioniert jetzt
+
+todo: einlesen von currentplaylist in die temporaeren variablen, mit catch block absichern.
+    -ueberdenken, ob wir die ueberhaupt brauchen und code/commentare vereinfachen
+
+-bugfix: richtige eingaben im haupt-/song- menue wurden ignoriert bis das menue erneut angezeigt wurde, wenn eine falsche eingabe auftrat
+
+-song in playlist bearbeiten hinzugefuegt
+
+-etliche debugging ausgaben entfernt
+
+-viele warnings behoben
+
+-bearbeiten von Dateien hinzugefuegt
 
 

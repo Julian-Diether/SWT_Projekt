@@ -19,8 +19,8 @@ using namespace std;
 //using std::cin;
 //using std::endl;
 //initialisierung eigener funktionen
-/*void myinitialize();
-void myopenfile();brauchenwirnicht*/
+//void myinitialize();
+//void myopenfile();brauchenwirnicht
 
 //deklarierung globaler variablen
 std::string mypath = "playlists/"; //PFAD ZUM PLAYLIST ORDNER! immer aktuell halten! ggfs. spaeter in einstellungen aenderbar
@@ -60,7 +60,7 @@ int main() {
     /*    printf("************************\n");
     printf("Willkommen zum Musikplayer!\n");
     printf("Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ");
-    /*scanf("%c", myinput);
+    scanf("%c", myinput);
     printf("%c", myinput); //testtest
     
     
@@ -76,7 +76,7 @@ int main() {
     } else {
         printf("\nfehler");
     } 
-    /*else if(myinput=="Nein" || myinput=="nein" || myinput=="NEIN") {
+    else if(myinput=="Nein" || myinput=="nein" || myinput=="NEIN") {
         //bibliothek NICHT initialisieren
         //hier soll es normal mit dem musikplayer weitergehen
 
