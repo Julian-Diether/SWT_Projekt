@@ -51,7 +51,7 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
     -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
     -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
-    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0)
+    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name
     -07 --> fehler, datei existiert bereits (in mycreatefile())
 
 -git ignore hinzugefuegt
@@ -168,5 +168,7 @@ todo: einlesen von currentplaylist in die temporaeren variablen, mit catch block
 -viele warnings behoben
 
 -bearbeiten von Dateien hinzugefuegt
+
+todo: song bearbeiten, erscheinungsjahr != int absichern!!
 
 
