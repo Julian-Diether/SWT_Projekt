@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <iomanip>//darstellung myprintfile()
 #include <cctype> // std::tolower() in mysearchfile()
 #include <cstdio>//dateien loeschen
@@ -232,7 +233,7 @@ void mycreatefile() {
     
     std::string answer3str(filenamecreatefile);
     std::string answer3str2;//gegen sonderzeichen
-    if (!answer3str.find(".json") != std::string::npos) {
+    if (!(answer3str.find(".json") != std::string::npos)) {
         answer3str2 = answer3str;
         answer3str = answer3str2 + ".json";//.json anfuegen
     }
@@ -366,7 +367,7 @@ void mycreatefile() {
                     std::cout << "Geben sie einen alternativen Dateinamen ein:";
                     std::cin >> tempanswer;
 
-                    if (!tempanswer.find(".json") != std::string::npos) {
+                    if (!(tempanswer.find(".json") != std::string::npos)) {
                         tempanswer = tempanswer + ".json";
                     }
                 }
@@ -402,7 +403,7 @@ void mydeletefile() {
     }
 
     //.json an datei anfuegen, falls noch nicht vorhanden
-    if (!filenamedeletefile.find(".json") != std::string::npos) {
+    if (!(filenamedeletefile.find(".json") != std::string::npos)) {
         filenamedeletefile = filenamedeletefile + ".json";
     }
     //pfad (playlists/) vor dateinamen anfuegen
@@ -448,7 +449,7 @@ void mysearchfile() {
         std::cout << "Name der zu durchsuchenden Playlist eingeben: ";
         std::cin >> filenamesearchfile;
 
-        if (!filenamesearchfile.find(".json") != std::string::npos) {
+        if (!(filenamesearchfile.find(".json") != std::string::npos)) {
             filenamesearchfile = filenamesearchfile + ".json";
         }//pfad (playlists/) vor dateinamen anfuegen
         filenamesearchfile=mypath+filenamesearchfile;
@@ -637,7 +638,7 @@ void myeditfile(int select) {
             }
             if(std::cin >> songposition) {
                 if(songposition>0) {//Zahlen positiv
-                    if(songposition<currentplaylist["data"].size()+1) {
+                    if(songposition < static_cast<int>(currentplaylist["data"].size()) + 1) {//if(songposition<currentplaylist["data"].size()+1) {
                         repeat=false;
                         songposition-=1;//sehr wichtig, da die zahlen in c++ bei 0, nicht 1 beginnen!!!!!
                     } else {//Zahl groesser als anzahl der eintraege in der Playlist

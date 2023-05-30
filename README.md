@@ -171,4 +171,11 @@ todo: einlesen von currentplaylist in die temporaeren variablen, mit catch block
 
 todo: song bearbeiten, erscheinungsjahr != int absichern!!
 
+todo: durchsuchen von erscheinungsdatum hinzufuegen, dazu muss der input zu einem string konvertiert werden. aber wann???
+    ist es nicht einfacher, das erscheinungsjahr zu konvertieren? wahrscheinlich schon. doer wo die datei eingelesen wird!
+
+todo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwandeln
+
+todo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
+
 

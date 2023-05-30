@@ -17,11 +17,7 @@ void mycreatefile();
 void mydeletefile();
 void mysearchfile();
 void myeditfile(int select);
-
 void myexit(char myinput[50]);
-void mywaitenter();
-void mycheckifopen(char myinput2[50]);
-void mydashedline();
 
 
 void welcome_msg()
@@ -68,7 +64,7 @@ void main_menu()
             mysearchfile();
         break;
         case 7:
-            myexit("beenden");//nicht sehr elegant, egal
+            myexit(mybeenden);//nicht sehr elegant, egal
         break;
         default:
         main_menu();//sollte nie passieren
@@ -103,7 +99,7 @@ void song_management()
             main_menu();
         break;
         case 5:
-            myexit("beenden");
+            myexit(mybeenden);
         break;
         default:
             song_management();//sollte nie passieren
