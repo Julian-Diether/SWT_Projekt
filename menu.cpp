@@ -1,5 +1,7 @@
 //Software Technik Projekt Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 #include <string>
+#include <iostream>
+#include <limits>
 
 //eigene variablen
 int counter=0;
@@ -8,6 +10,7 @@ char mybeenden[50] = "beenden";
 //eigene funktionen
 void welcome_msg();
 void main_menu();
+void song_management();
 int input_validation(int option_num, bool bmainmenu);
 
 //fremde funktionen (fileops.cpp)

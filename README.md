@@ -105,6 +105,7 @@ todo: input bei searchfile auf leerzeichen absichern! leerzeichen-->underscore! 
     im code angekommen: 05_54
     datei: test10.json  immernoch unter playlist/ gespeichert!
 
+**23.05.**
 -jedes cin, cout und endl mit std:: erhaenzt um moegliche fehler zu vermeiden.
 
 -absicherung des Hauptmenue, damit buchstaben nicht mehr zu fehlern fuehren
@@ -131,6 +132,7 @@ todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
 
 -menu.cpp gegen falsche inputs abgesichert
 
+**24.05.**
 -myeditfile() hinzufuegen komplett, bearbeiten teilweise.
 
 todo: finden, wo beim einlesen aus der .json datei fehler entstehen!! vor allem bei songlaenge und erscheinungsjahr extrem haeufig/auffaellig/stoerend/destruktiv! unbeding finden
@@ -150,6 +152,7 @@ todo: spacing/padding bei myprintfile() abhaengig von groesse des groessten jewe
 
 todo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
 
+**27.05.**
 -chars in myeditfile() durch strings ersetzt und viele fehler, vor allem bei grossen eingaben vermieden
 
 todo: mycreatefile() und ggfs. myopenfile()/myprintfile() auch durch strings ersetzen --> deutlich vereinfachter code, weniger stellen a denen durch conversions fehler auftreten koennten
@@ -169,13 +172,23 @@ todo: einlesen von currentplaylist in die temporaeren variablen, mit catch block
 
 -bearbeiten von Dateien hinzugefuegt
 
+**29.05.**
 todo: song bearbeiten, erscheinungsjahr != int absichern!!
 
+**30.05.**
 todo: durchsuchen von erscheinungsdatum hinzufuegen, dazu muss der input zu einem string konvertiert werden. aber wann???
     ist es nicht einfacher, das erscheinungsjahr zu konvertieren? wahrscheinlich schon. doer wo die datei eingelesen wird!
 
 todo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwandeln
 
 todo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
+
+-einige warnungen mit vergleich unzulaessiger dateitypen behoben!
+    jetzt gibt es nur noch 14(2*7) Warnungen fuer variable Dateilaengen
+
+todo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokierung beheben!
+    sofern es sich ueberhaupt lohnt
+
+todo: code auf anderen betriebssystemen testen
 
 

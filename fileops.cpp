@@ -9,6 +9,7 @@
 #include <cstdio>//dateien loeschen
 #include <iostream>
 #include <fstream>//dateien lesen/schreiben
+#include <limits>
 #include "nlohmann/json.hpp"
 
 //inkludierung globaler variablen
