@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "album": "d",
+      "artist": "s",
+      "date": 2000,
+      "explicit": false,
+      "genre": "asdasd",
+      "length": "04_26",
+      "title": "a"
+    },
+    {
+      "album": "j",
+      "artist": "j",
+      "date": 2010,
+      "explicit": true,
+      "genre": "afghj",
+      "length": "18_37",
+      "title": "h"
+    }
+  ]
+}

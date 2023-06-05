@@ -17,6 +17,7 @@ extern std::string mypath;
 
 //deklarierung eigener variablen
 std::string filename = "";
+std::string tempstring;
 nlohmann::json currentplaylist;
 nlohmann::json searchplaylist;
 char answer[50];
@@ -42,27 +43,17 @@ void myexit(char myinput[50]);
 void mywaitenter();
 void mycheckifopen(char myinput2[50]);
 void mydashedline();
+bool myjanein(std::string message);
 
 
 void myinitialize() {
     
     welcome_msg();
-    repeat=true;
-    while (repeat) {
-        std::memset(answer, 0, sizeof(answer));
-        std::cout << "Moechten sie eine Musik-Playlist initialisieren? (Ja/Nein): ";
-        std::cin >> answer;
-        myexit(answer);
-        
-        if (strcasecmp(answer, "ja") == 0) {//if (answer == "ja") 
-            repeat = false;
-            myopenfile(false);
-        }
-        if (strcasecmp(answer, "nein") == 0) {
-            repeat = false;
-            //bibliothek NICHT initialisieren
-            main_menu();
-        }
+
+    if(myjanein("Moechten sie eine Musik-Playlist initialisieren?")) {
+        myopenfile(false);
+    } else {
+        main_menu();
     }
 }
 
@@ -117,19 +108,10 @@ void myopenfile(bool justprint2) {
 
         //datei ist geoeffnet, kann direkt ausgegeben werden
         if(!repeat && !justprint2) {
-        std::memset(answer, 0, sizeof(answer));
-            repeat2=true;
-            while (repeat2) {
-            std::cout << "Soll die Playlist direkt angezeigt werden? (Ja/Nein): ";
-            std::cin >> answer;
-            myexit(answer);//wurde "beenden" eingegeben?
-                if (strcasecmp(answer, "ja") == 0) {
-                    repeat2 = false;
-                    myprintfile(false);
-                } if (strcasecmp(answer, "nein") == 0) {
-                    repeat2 = false;   
-                    main_menu();
-                }
+            if(myjanein("Soll die Playlist direkt angezeigt werden?")) {
+                myprintfile(false);
+            } else {
+                main_menu();
             }
         }
     }
@@ -211,21 +193,6 @@ void mycreatefile() {
     int length=0;
     int tempyear=0;
 
-    //ISO C++ forbids variable length array
-    char title[length][25];
-    char artist[length][25];
-    char album[length][25];
-    int year[length];
-    char duration[length][5];
-    char genre[length][25];
-    bool badwords[length];
-
-    for (int i2 = 0; i2<length; i2++) {//probleme beim speichern vermeiden
-        for (int i = 0; i<5; i++) {
-            duration[i2][i]='\0';
-        }
-    }
-
     
     mydashedline();
     std::cout << "Name der neuen Playlist eingeben: ";
@@ -266,17 +233,36 @@ void mycreatefile() {
         }
     }
 
-    repeat=true;
-    while (repeat) {
-        std::memset(answer, 0, sizeof(answer));
-        std::cout << length << " Songs werden zu >" << filenamecreatefile << "< hinzugefuegt. Fortfahren? (Ja/Nein):";
-        std::cin >> answer;
-        myexit(answer);//"beenden" eingegeben?
-        if (strcasecmp(answer, "ja") == 0) {
-            repeat = false;
-        } if (strcasecmp(answer, "nein") == 0) {
-            repeat = false;
-            main_menu();
+    tempstring = std::to_string(length) + " Songs werden zu " + std::string(filenamecreatefile) + " hinzugefuegt. Fortfahren?";
+    if(!myjanein(tempstring)) {
+        main_menu();
+    }
+
+
+    //ISO C++ forbids variable length array
+    std::string title[length];
+    std::string artist[length];
+    std::string album[length];
+    int year[length];
+    std::string duration[length];
+    std::string genre[length];
+    bool badwords[length];
+    //char title[length][25];
+    //char artist[length][25];
+    //char album[length][25];
+    //char duration[length][5];
+    //char genre[length][25];
+    
+
+    for (int i2 = 0; i2<length; i2++) {//probleme beim speichern vermeiden
+        for (int i = 0; i<5; i++) {
+            duration[i2][i]='\0';
+        }
+    }
+
+    for (int i2 = 0; i2<length; i2++) {//probleme beim speichern vermeiden
+        for (int i = 0; i<5; i++) {
+            std::cout << "duration[" << i2 << "][" << i << "]: " << duration[i2][i] << std::endl;
         }
     }
 
@@ -285,7 +271,7 @@ void mycreatefile() {
     mydashedline();
     std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
 
-    std::memset(answer, 0, sizeof(answer));
+    //std::memset(answer, 0, sizeof(answer));
     for(int i=0; i<length; i++) {
         mydashedline();
         std::cout << "Informationen fuer Song [" << (i+1) << "] eingeben:" << std::endl;
@@ -293,8 +279,9 @@ void mycreatefile() {
         std::cout << "Interpret: "; std::cin >> artist[i];
         std::cout << "Album: "; std::cin >> album[i];
         repeat=true;
+        tempyear=0;
         while (repeat) {std::cout << "Erscheinungsjahr: ";
-            if (std::cin >> tempyear) {//integer wurde eingegeben
+            if (std::cin >> tempyear) {//integer eingegeben
                 if(tempyear>0) {repeat=false;year[i]=tempyear;}//success!
             } else {
                 std::cin.clear();
@@ -303,10 +290,11 @@ void mycreatefile() {
         }
         std::cout << "Laenge [xx:xx]: "; std::cin >> duration[i];
         std::cout << "Musikrichtung: "; std::cin >> genre[i];
-        repeat=true;
-        while (repeat) {std::cout << "Jugendfrei (Ja/Nein): "; std::cin >> answer;
-            if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[i]=false;}
-            if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[i]=true;}
+
+        if(myjanein("Jugendfrei")) {
+            badwords[i]=false;
+        } else {
+            badwords[i]=true;
         }
     }
 
@@ -318,6 +306,7 @@ void mycreatefile() {
             }
         }
     }
+
 
     mydashedline();
     std::cout << "Daten werden in Datei geschrieben" << std::endl;
@@ -356,6 +345,12 @@ void mycreatefile() {
         if (!file2.is_open()) {
             std::cout << "Datei konnte nicht geoeffnet werden, um Daten zu speichern! Fehlercode: 04" << std::endl;
             
+            if(myjanein("Ernet mit anderem Dateinamen versuchen?")) {
+                //all dass muss nochchmal durchgegeangen und getestet werden!! Nur wie???
+            } else {
+                main_menu();
+            }
+            /*
             repeat2=true;
             while(repeat2) {
                 std::cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
@@ -376,7 +371,7 @@ void mycreatefile() {
                     repeat2=false;
                     main_menu();
                 }
-            }
+            }*/
             //zurueck in den loop, hoffentlich klappt es
         } else {
             repeat=false;
@@ -939,5 +934,34 @@ void mycheckifopen(char myinput2[50]) {
 
 void mydashedline() {
         std::cout << "\t----------------------------------" << std::endl;
+}
+
+bool myjanein(std::string message) {
+    //ersetzt die einzelnen abfragen um den code zu vereinfachen/fehler zu vermeiden
+    bool repeatjn = true;
+    char answerjn[50];
+    std::memset(answerjn, 0, sizeof(answerjn));
+
+    while (repeatjn) {
+        std::cout << message << " (Ja/Nein): ";
+        std::cin >> answerjn;
+        myexit(answerjn);
+
+        if (strcasecmp(answerjn, "ja") == 0) {
+            repeatjn = false;
+            return true;
+        }
+        if (strcasecmp(answerjn, "nein") == 0) {
+            repeatjn = false;
+            return false;
+        }
+    }
+    //-------------------------!ACHTUNG!-------------------------
+    //!!!!!Das folgende return statement wird NIEMALS erreicht!!!!!
+    //Es dient jediglich dazu, die folgende Compiler Warnung zu vermeiden
+    //>>warning: control reaches end of non-void function [-Wreturn-type]<<
+    //die obige logik wird IMMER den jeweiligen true/false wert zurueckgeben...
+    //...beziehungsweise das programm auf wunsch des benutzers schliesssen
+    return false;
 }
 

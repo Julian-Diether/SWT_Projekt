@@ -183,6 +183,7 @@ todo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwandel
 
 todo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
 
+**31.05.**
 -einige warnungen mit vergleich unzulaessiger dateitypen behoben!
     jetzt gibt es nur noch 14(2*7) Warnungen fuer variable Dateilaengen
 
@@ -190,5 +191,22 @@ todo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokierung
     sofern es sich ueberhaupt lohnt
 
 todo: code auf anderen betriebssystemen testen
+
+**06.05.**
+-addition der myjanein() funktion um häufige abfragen zentral zu regeln, fehler zu vermeiden und den gesamten code etwas zu vereinfachen/entschleiern
+
+-diverse probleme beim einlesen der song eigenschaften (beim erstellen einer playlist) behoben
+
+todo: herausfinden, was beim erstellen einer datei mit existierendem namen passiert
+
+todo: diverse fehler zu:
+    terminate called after throwing an instance of 'nlohmann::json_abi_v3_11_2::detail::type_error'
+      what():  [json.exception.type_error.316] invalid UTF-8 byte at index 4: 0x07
+beheben!
+    am besten mittels try&catch block absichern und zum hauptmenue zurueckkehren(?).
+
+todo:repeat bei if (!file2.is_open()) (in mycreatefile()) irgendwie provozieren (vielleicht per deub)
+
+-saemtliche char arrays bei mycreatefile() durch strings ersetzt, um diverse probleme zu vermeiden, einheit zu schaffen und benutzung der daten zu vereinfachen
 
 
