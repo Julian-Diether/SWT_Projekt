@@ -9,6 +9,7 @@
 #include <cstdio>//dateien loeschen
 #include <iostream>
 #include <fstream>//dateien lesen/schreiben
+#include <filesystem>//pruefen ob dateien existieren
 #include <limits>
 #include "nlohmann/json.hpp"
 
@@ -18,12 +19,16 @@ extern std::string mypath;
 //deklarierung eigener variablen
 std::string filename = "";
 std::string tempstring;
+std::string tempstring2;
+std::string tempstring3;
 nlohmann::json currentplaylist;
 nlohmann::json searchplaylist;
 char answer[50];
 char tempchar[50];
+
 bool repeat=true;
 bool repeat2=true;
+int tempint;
 
 //deklarierung GLOBALER funktionen
 void welcome_msg();
@@ -33,23 +38,23 @@ void song_management();
 //eigene funktionen
 void myinitialize();
 void myopenfile(bool justprint);
-void myprintfile(bool justprint2);
+void myprintfile(bool justopen);
 void mycreatefile();
 void mydeletefile();
 void mysearchfile();
 void myeditfile(int select);
+void myrenamefile();
 
 void myexit(char myinput[50]);
 void mywaitenter();
 void mycheckifopen(char myinput2[50]);
 void mydashedline();
 bool myjanein(std::string message);
-
+std::string myaddjson(std::string filenamein, bool addpath);
+void mycheckname(std::string filenamein2);
 
 void myinitialize() {
-    
     welcome_msg();
-
     if(myjanein("Moechten sie eine Musik-Playlist initialisieren?")) {
         myopenfile(false);
     } else {
@@ -57,13 +62,13 @@ void myinitialize() {
     }
 }
 
-void myopenfile(bool justprint2) {
+void myopenfile(bool justopen) {
 
     mydashedline();
     //while schleife, bis datei gueltig geoeffnet ist
     repeat=true;
     while (repeat) {
-        if(justprint2) {
+        if(justopen) {
             std::cout << "Geben sie den Namen der zu bearbeitenden Playlist ein: ";
         } else {
             std::cout << "Geben sie den Namen der zu oeffnenden Playlist ein: ";
@@ -72,18 +77,14 @@ void myopenfile(bool justprint2) {
         std::copy(filename.begin(), filename.end(), tempchar);
         tempchar[filename.size()] = '\0';
         myexit(tempchar);
+        mycheckname(filename);
 
-        if (filename.find(".json") != std::string::npos) {
-            //.json ist schon angefuegt
-        } else {
-            //std::swap(filename, filename2);//filename2 = filename
-            filename = filename + ".json";//.json wird angefuegt
-        }
-       std::cout << "\tDie Datei " << filename << " wird geoeffnet." << std::endl;
-
+        std::cout << "\tDie Datei " << filename << " wird geoeffnet." << std::endl;
+        filename = myaddjson(filename, true);
+        
         //datei wird geoeffnet
         try {
-            std::ifstream file(mypath + filename);
+            std::ifstream file(filename);
             //oeffnen in sicheren umfeld --> kein absturz
             if (!file.is_open()) {
                 std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
@@ -94,11 +95,10 @@ void myopenfile(bool justprint2) {
             file.close();
             std::cout << "\t   Playlist erfolgreich geoeffnet" << std::endl; //erst hier ist die datei erfolgreich geoeffnet!!
             
-            if(!justprint2) {
+            if(!justopen) {
                 mydashedline();
             }
         }
-
         catch (const std::exception& e) {
             repeat = true;
             std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << e.what() << std::endl;
@@ -107,7 +107,7 @@ void myopenfile(bool justprint2) {
         }
 
         //datei ist geoeffnet, kann direkt ausgegeben werden
-        if(!repeat && !justprint2) {
+        if(!repeat && !justopen) {
             if(myjanein("Soll die Playlist direkt angezeigt werden?")) {
                 myprintfile(false);
             } else {
@@ -148,9 +148,11 @@ void myprintfile(bool justprint) {
         std::string length = currentplaylist["data"][i]["length"];
         std::string genre = currentplaylist["data"][i]["genre"];
 
-        for(nlohmann::json::size_type i = 0; i<currentplaylist["data"].size(); i++) {
-            std::replace(length.begin(), length.end(), '_', ':');
-        }
+        std::replace(length.begin(), length.end(), '_', ':');
+        std::replace(artist.begin(), artist.end(), '_', ' ');
+        std::replace(album.begin(), album.end(), '_', ' ');
+        std::replace(title.begin(), title.end(), '_', ' ');
+        std::replace(genre.begin(), genre.end(), '_', ' ');
 
         std::cout << " ";
         std::cout << std::left << std::setw(6) << std::setfill(' ') << (i + 1)
@@ -189,27 +191,19 @@ void myprintfile(bool justprint) {
 
 void mycreatefile() {
 
-    char filenamecreatefile[50];
+    //char filenamecreatefile[50];
+    std::string filenamecreatefile;
     int length=0;
     int tempyear=0;
-
     
     mydashedline();
     std::cout << "Name der neuen Playlist eingeben: ";
     std::cin >> filenamecreatefile;
-    myexit(filenamecreatefile);
-    
-    std::string answer3str(filenamecreatefile);
-    std::string answer3str2;//gegen sonderzeichen
-    if (!(answer3str.find(".json") != std::string::npos)) {
-        answer3str2 = answer3str;
-        answer3str = answer3str2 + ".json";//.json anfuegen
-    }
+    std::copy(filenamecreatefile.begin(), filenamecreatefile.end(), tempchar);
+    myexit(tempchar);
+    mycheckname(filenamecreatefile);
 
-    std::copy(answer3str.begin(), answer3str.end(), filenamecreatefile);
-    filenamecreatefile[answer3str.size()] = '\0';
-    myexit(filenamecreatefile);//schwachsinn
-    mycheckifopen(filenamecreatefile);//?
+    filenamecreatefile = myaddjson(filenamecreatefile, false);
 
     if (std::filesystem::exists( mypath + filenamecreatefile)) {
         mydashedline();
@@ -238,7 +232,6 @@ void mycreatefile() {
         main_menu();
     }
 
-
     //ISO C++ forbids variable length array
     std::string title[length];
     std::string artist[length];
@@ -247,11 +240,6 @@ void mycreatefile() {
     std::string duration[length];
     std::string genre[length];
     bool badwords[length];
-    //char title[length][25];
-    //char artist[length][25];
-    //char album[length][25];
-    //char duration[length][5];
-    //char genre[length][25];
     
 
     for (int i2 = 0; i2<length; i2++) {//probleme beim speichern vermeiden
@@ -260,13 +248,6 @@ void mycreatefile() {
         }
     }
 
-    for (int i2 = 0; i2<length; i2++) {//probleme beim speichern vermeiden
-        for (int i = 0; i<5; i++) {
-            std::cout << "duration[" << i2 << "][" << i << "]: " << duration[i2][i] << std::endl;
-        }
-    }
-
-
     //hier beggint das einlesen der neuen songs!
     mydashedline();
     std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
@@ -274,10 +255,11 @@ void mycreatefile() {
     //std::memset(answer, 0, sizeof(answer));
     for(int i=0; i<length; i++) {
         mydashedline();
-        std::cout << "Informationen fuer Song [" << (i+1) << "] eingeben:" << std::endl;
-        std::cout << "Songname: "; std::cin >> title[i];
-        std::cout << "Interpret: "; std::cin >> artist[i];
-        std::cout << "Album: "; std::cin >> album[i];
+        std::cin.ignore();
+        std::cout << "Informationen fuer Song [" << (i+1) << "/" << length << "] eingeben:" << std::endl;
+        std::cout << "Songname: "; std::getline(std::cin, title[i]);
+        std::cout << "Interpret: "; std::getline(std::cin, artist[i]);
+        std::cout << "Album: "; std::getline(std::cin, album[i]);
         repeat=true;
         tempyear=0;
         while (repeat) {std::cout << "Erscheinungsjahr: ";
@@ -290,23 +272,20 @@ void mycreatefile() {
         }
         std::cout << "Laenge [xx:xx]: "; std::cin >> duration[i];
         std::cout << "Musikrichtung: "; std::cin >> genre[i];
-
+        std::cin.ignore();
+        std::cin.ignore();
         if(myjanein("Jugendfrei")) {
             badwords[i]=false;
         } else {
             badwords[i]=true;
         }
+        
+        std::replace(duration[i].begin(), duration[i].end(), ':', ' ');
+        std::replace(title[i].begin(), title[i].end(), ' ', '_');
+        std::replace(artist[i].begin(), artist[i].end(), ' ', '_');
+        std::replace(album[i].begin(), album[i].end(), ' ', '_');
+        std::replace(genre[i].begin(), genre[i].end(), ' ', '_');
     }
-
-    //doppelpunkt bei duration ersetzen
-    for (int i2 = 0; i2<length; i2++) {
-        for (int i = 0; i<5; i++) {
-            if (duration[i2][i] == ':') {
-                duration[i2][i] = '_';
-            }
-        }
-    }
-
 
     mydashedline();
     std::cout << "Daten werden in Datei geschrieben" << std::endl;
@@ -376,6 +355,8 @@ void mycreatefile() {
         } else {
             repeat=false;
             file2 << writefile.dump(2);//lokale json variable in externe datei
+            currentplaylist = writefile;//hierdurch wird die gerade erstellte playlist jetzt auch
+            filename = filenamecreatefile;//siehe obige zeile
             //feierabend! datei schliessen
             file2.close();
             main_menu();
@@ -385,52 +366,30 @@ void mycreatefile() {
 
 void mydeletefile() {
 
+    std::string filenamedeletefile;
     std::memset(answer, 0, sizeof(answer));//random sonderzeichen vermeiden
     mydashedline();
     std::cout << "Name der zu loeschenden Playlist eingeben: ";
     std::cin >> answer;
+    myexit(answer);
+    mycheckname(std::string(answer));
+    filenamedeletefile = myaddjson(filenamedeletefile, true);
 
-    std::string filenamedeletefile(answer);
-    //da wir hier dateien loeschen mussen wir sehr vorsichtig sein!! der benutzer koennte auf andere ordner zugreifen!!!
-    if (filenamedeletefile.find("/") != std::string::npos || filenamedeletefile.find("\\") != std::string::npos) {//_ '//' ==> /
-        std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
-        mywaitenter();
+    tempstring = "Die Playlist >" + filenamedeletefile + "< wird geloescht! Fortfahren?";
+    if(!myjanein(tempstring)) {
         main_menu();
     }
-
-    //.json an datei anfuegen, falls noch nicht vorhanden
-    if (!(filenamedeletefile.find(".json") != std::string::npos)) {
-        filenamedeletefile = filenamedeletefile + ".json";
-    }
-    //pfad (playlists/) vor dateinamen anfuegen
-    filenamedeletefile=mypath+filenamedeletefile;
-
-    repeat=true;
-    while(repeat) {
-        std::cout << "Die Playlist >" << filenamedeletefile << "< wird geloescht! Fortfahren? (Ja/Nein): ";
-        std::cin >> answer;
-        myexit(answer);
-        if (strcasecmp(answer, "ja") == 0) {
-            repeat = false;
-        } if (strcasecmp(answer, "nein") == 0) {
-            repeat = false;
-            main_menu();
-        }
-    }
-
     
+    mydashedline();
     std::copy(filenamedeletefile.begin(), filenamedeletefile.end(), tempchar);
     //hier wird geloescht
     if (std::remove(tempchar) != 0) {
         std::cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << std::endl;
-        mywaitenter();
-        main_menu();
     } else {
-        mydashedline();
-        std::cout << "\tDie Datei wurde erfolgreich geloescht!" << std::endl;
-        mywaitenter();
-        main_menu();    
+        std::cout << "\tDie Datei wurde erfolgreich geloescht!" << std::endl;   
     }
+    mywaitenter();
+    main_menu(); 
 }
 
 void mysearchfile() {
@@ -444,26 +403,12 @@ void mysearchfile() {
 
         std::cout << "Name der zu durchsuchenden Playlist eingeben: ";
         std::cin >> filenamesearchfile;
-
-        if (!(filenamesearchfile.find(".json") != std::string::npos)) {
-            filenamesearchfile = filenamesearchfile + ".json";
-        }//pfad (playlists/) vor dateinamen anfuegen
-        filenamesearchfile=mypath+filenamesearchfile;
-
-        std::memset(answer, 0, sizeof(answer));
-        repeat2=true;
-        while(repeat2) {
-            std::cout << "Die Datei >" << filenamesearchfile << "< wird durchsucht. Fortfahren? (ja/nein): ";
-            std::cin >> answer;
-            myexit(answer);
-            if (strcasecmp(answer, "ja") == 0) {
-                repeat2 = false;
-
-            } if (strcasecmp(answer, "nein") == 0) {
-                repeat2 = false;
-                main_menu();
-            }
+        mycheckname(filenamesearchfile);
+        tempstring = "Die Datei >" + filenamesearchfile + "< wird durchsucht. Fortfahren?";
+        if(!myjanein(tempstring)) {
+            main_menu();
         }
+        filenamesearchfile = myaddjson(filenamesearchfile, true);//pfad (playlists/) vor dateinamen anfuegen
         //jetzt kann endlich durchsucht werden!!! NAJA, zuerst muss datei erfolgreich! geoeffnent werden!!
 
         std::cout << "Die Datei " << filenamesearchfile << " wird geoeffnet." << std::endl;
@@ -492,21 +437,11 @@ void mysearchfile() {
     while (repeat) {
         if(!firstrun) {
             mydashedline();
-            repeat2=true;
-            while(repeat2) {
-                std::cout << "Datei >" << filenamesearchfile << "< erneut durchsuchen? (ja/nein): ";
-                std::cin >> answer;
-                myexit(answer);
-                if (strcasecmp(answer, "ja") == 0) {
-                    repeat2 = false;
-
-                } if (strcasecmp(answer, "nein") == 0) {
-                    repeat2 = false;
-                    main_menu();
-                }
+            if(!myjanein("\t Die Datei erneut durchsuchen?")) {
+                main_menu();
             }
         }
-        firstrun=false;//nach dem ersten durchlauf wird jetzt grfragt, ob erneut durchsucht werden soll.
+        firstrun=false;//nach dem ersten durchlauf wird gefragt, ob erneut durchsucht werden soll.
 
         std::cout << "Achtung! Keine Sonderzeichen! Ausnahme Doppelpunkt." << std::endl;
         std::cout << "Geben sie einen Suchbegriff ein: ";
@@ -514,19 +449,13 @@ void mysearchfile() {
         searchstring = std::string(answer);
         std::memset(answer, 0, sizeof(answer));
 
-        std::replace(searchstring.begin(), searchstring.end(), ':', '_');//nun kann nach der laenge gesucht werden!
-        std::replace(searchstring.begin(), searchstring.end(), ' ', '_');//und nach alben/titeln, die mehrere woerter umfassen! /normalerweise wuerde das schiefgehen, weil mehrere schritte vorgesprungen wird. hier egal, da alle schritte gleich sind((ja/nein) abfrage)!
-
+        //std::replace(searchstring.begin(), searchstring.end(), ':', '_');//nun kann nach der laenge gesucht werden!
+        std::replace(searchstring.begin(), searchstring.end(), '_', ' ');//und nach alben/titeln, die mehrere woerter umfassen! /normalerweise wuerde das schiefgehen, weil mehrere schritte vorgesprungen wird. hier egal, da alle schritte gleich sind((ja/nein) abfrage)!
+        std::transform(searchstring.begin(), searchstring.end(), searchstring.begin(), ::tolower);
         const char* searchchar;
         searchchar = searchstring.c_str();
-        //cout << searchstring << endl;
-        //cout << searchstring << " | " << searchplaylist["data"][0]["artist"] << endl;
         std::cout << "\t\t*******" << std::endl;
-        //hoffentlich letzter versuch. JAAAAA //playlist zum test ist in line 635 falls sie je wieder gebraucht wird
-        //for(int i=0; i<(searchplaylist["data"].size()); i++) {
         for(nlohmann::json::size_type i = 0; i<searchplaylist["data"].size(); i++) {
-            std::transform(searchstring.begin(), searchstring.end(), searchstring.begin(), ::tolower);
-            //anfuehrungszeichen aus searchstring entfernen --> line 665 commented
 
             std::string str1(searchplaylist["data"][i]["title"]);
             std::transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
@@ -534,27 +463,31 @@ void mysearchfile() {
             std::transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
             std::string str3(searchplaylist["data"][i]["album"]);
             std::transform(str3.begin(), str3.end(), str3.begin(), ::tolower);
-            //char char4 = searchplaylist["data"][i]["date"].get<std::string>()[0];
+            tempint = searchplaylist["data"][i]["date"];
+            std::string str4(std::to_string(tempint));
+            std::transform(str4.begin(), str4.end(), str4.begin(), ::tolower);
             std::string str5(searchplaylist["data"][i]["length"]);
             std::transform(str5.begin(), str5.end(), str5.begin(), ::tolower);
             std::string str6(searchplaylist["data"][i]["genre"]);
             std::transform(str6.begin(), str6.end(), str6.begin(), ::tolower);
             
+            std::replace(str5.begin(), str5.end(), '_', ':');//duration
+            std::replace(str1.begin(), str1.end(), '_', ' ');//title
+            std::replace(str2.begin(), str2.end(), '_', ' ');//artist
+            std::replace(str3.begin(), str3.end(), '_', ' ');//album
+            std::replace(str6.begin(), str6.end(), '_', ' ');//genre
 
             bool unabletolocate=true;//auf die art koennen mehrere eintraege durchsucht werden. zum beispiel titel und album
             if(str1.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Titel von Song Nr. "<<i+1<<"! -- >"<<str1<<"<"<<std::endl; unabletolocate=false;}
             if(str2.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Interpreten von Song Nr. "<<i+1<<"! -- >"<<str2<<"<"<<std::endl; unabletolocate=false;}
             if(str3.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Album von Song Nr. "<<i+1<<"! -- >"<<str3<<"<"<<std::endl; unabletolocate=false;}
-            //else if(str4.find(searchstring) != std::string::npos) {cout<<"Gefunden! Suche entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<endl;}//muss das noch irgendwie abgesichert weerden? kann so ein int ueberhaupt verglichen werden???
+            if(str4.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Erscheinungsjahr von Song Nr. "<<i+1<<"! -- >"<<str4<<"<"<<std::endl; unabletolocate=false;}
             if(str5.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht der Laenge von Song Nr. "<<i+1<<"! -- >"<<str5<<"<"<<std::endl; unabletolocate=false;}
             if(str6.find(searchchar) != std::string::npos) {std::cout<<"Suchbegriff entspricht dem Genre von Song Nr. "<<i+1<<"! -- >"<<str6<<"<"<<std::endl; unabletolocate=false;}
             //else if(answer==searchplaylist["data"][i]["explicit"]) {cout<<"Gefunden! Suche entspricht dem ??? von Song Nr. "<<i+1<<endl;}//ergibt wenig sinn...
             if(unabletolocate) {std::cout << "Fuer Song Nr. " << i+1 << " wurde nichts gefunden." << std::endl;}
         }
-        
-
     }
-    main_menu();
 }
 
 void myeditfile(int select) {
@@ -629,8 +562,20 @@ void myeditfile(int select) {
             //std::memset(answer, 0, sizeof(answer));
             if(select==2) {
                 std::cout << "Welche Songnummer soll bearbeitet werden?: ";
-            } else {
-                std::cout << "welche Songnummer soll geloescht werden?: ";
+            } else {//song loeschen selektiert
+
+                if(currentplaylist["data"].size()<2) {
+                    mydashedline();
+                    std::cout << "\tAchtung, die ausgewaehlte Playlist enthaelt nur einen Song" << std::endl;
+
+                    if(myjanein("Mit loeschen der gesamten Playlist fortfahren?")) {
+                        mydeletefile();
+                    } else {
+                        song_management();
+                    }
+                } else {
+                        std::cout << "welche Songnummer soll geloescht werden?: ";
+                }
             }
             if(std::cin >> songposition) {
                 if(songposition>0) {//Zahlen positiv
@@ -661,14 +606,14 @@ void myeditfile(int select) {
     
     int tempi =(playlistsize-1);
     
-        std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
-
+        std::cout << "\tACHTUNG!! keine Sonderzeichen eingeben" << std::endl;
+        std::cin.ignore();
         mydashedline();
         std::cout << "Informationen fuer neuen Song eingeben:" << std::endl;
-        std::cout << "Songname: "; std::cin >> title[tempi];
+        std::cout << "Songname: "; getline(std::cin, title[tempi]);
         //std::cout << "test" << std::endl;
-        std::cout << "Interpret: "; std::cin >> artist[tempi];
-        std::cout << "Album: "; std::cin >> album[tempi];
+        std::cout << "Interpret: "; getline(std::cin, artist[tempi]);
+        std::cout << "Album: "; getline(std::cin, album[tempi]);
         repeat=true;
         while (repeat) {std::cout << "Erscheinungsjahr: ";
             if (std::cin >> tempyear) {//zahl eingegebe
@@ -679,21 +624,22 @@ void myeditfile(int select) {
                 //input ignorieren, falls keine zahl
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;}
         }
-        std::cout << "Laenge [xx:xx]: "; std::cin >> duration[tempi];
-        std::cout << "Musikrichtung: "; std::cin >> genre[tempi];
-        repeat=true;
-        std::memset(answer, 0, sizeof(answer));
-        while (repeat) {std::cout << "Jugendfrei (Ja/Nein): "; std::cin >> answer;
-            if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[tempi]=false;}
-            if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[tempi]=true;}
+        std::cin.ignore();
+        std::cout << "Laenge [xx:xx]: "; getline(std::cin, duration[tempi]);
+        std::cout << "Musikrichtung: "; getline(std::cin, genre[tempi]);
+
+        if(myjanein("Jugendfrei")) {
+            badwords[tempi]=false;
+        } else {
+            badwords[tempi]=true;
         }
 
-            for (int i = 0; i<5; i++) {
-                if (duration[tempi][i] == ':') {
-                    duration[tempi][i] = '_';
-                }
-            }
-            mydashedline();
+        std::replace(duration[tempi].begin(), duration[tempi].end(), ':', '_');
+        std::replace(title[tempi].begin(), title[tempi].end(), ' ', '_');
+        std::replace(artist[tempi].begin(), artist[tempi].end(), ' ', '_');
+        std::replace(album[tempi].begin(), album[tempi].end(), ' ', '_');
+        std::replace(genre[tempi].begin(), genre[tempi].end(), ' ', '_');
+        mydashedline();
     }
 
     if(select==2) {
@@ -704,19 +650,19 @@ void myeditfile(int select) {
         //      Abfrage, ob fortgefahren werden soll???---
         std::string tempstr;
 
-        std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
+        std::cout << "\tACHTUNG!! keine Sonderzeichen eingeben" << std::endl;
         std::cout << "**Eintrag aendern, oder mit der Enter Taste beibehalten**" << std::endl;
 
-        for (int i = 0; i<5; i++) {
-                if (duration[songposition][i] == '_') {
-                    duration[songposition][i] = ':';//zum ausgeben des momentanwerts im terminal
-                }
-            }
+        std::replace(duration[songposition].begin(), duration[songposition].end(), '_', ':');
+        std::replace(title[songposition].begin(), title[songposition].end(), '_', ' ');
+        std::replace(artist[songposition].begin(), artist[songposition].end(), '_', ' ');
+        std::replace(album[songposition].begin(), album[songposition].end(), '_', ' ');
+        std::replace(genre[songposition].begin(), genre[songposition].end(), '_', ' ');
 
         std::string tempanswer;
         mydashedline();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//um probleme bei der 1. eingabe zu vermeiden
-
+        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//um probleme bei der 1. eingabe zu vermeiden
+        std::cin.ignore();
         std::cout << "Songname: " << title[songposition] << std::endl << ">";
         std::getline(std::cin, tempanswer);
         if (!tempanswer.empty()) {
@@ -774,9 +720,14 @@ void myeditfile(int select) {
 
         repeat=true;
         if(badwords[songposition]) {std::cout << "Jugendfrei (Ja/Nein): " << "Nein" << std::endl;} else {std::cout << "Jugendfrei (Ja/Nein): " << "Ja" << std::endl;}
-        while (repeat) {std::cout << ">";
+        while (repeat) {std::cout << "> (Ja/Nein): ";
             std::getline(std::cin, tempanswer);
             if(!tempanswer.empty()) {
+                /*if(myjanein("")) {
+                    badwords[songposition] = false;
+                }   else {
+                    badwords[songposition] = true;
+                }*/
                 std::copy(tempanswer.begin(), tempanswer.end(), answer);
                 if (strcasecmp(answer, "ja") == 0) {repeat=false;badwords[songposition]=false;}
                 if (strcasecmp(answer, "nein") == 0) {repeat=false;badwords[songposition]=true;}
@@ -794,44 +745,7 @@ void myeditfile(int select) {
 
         mydashedline();
     }//ende if(select==2)
-
-    if(select==3) {
         
-        if(currentplaylist["data"].size()<2) {
-            mydashedline();
-            std::cout << "\tAchtung, die ausgewaehlte Playlist enthaelt nur einen Song" << std::endl;
-
-            repeat=true;
-            while(repeat) {
-                std::cout << "Mit loeschen der gesamten Playlist fortfahren? (Ja/Nein): ";
-                std::cin >> answer;
-                    
-                if (strcasecmp(answer, "ja") == 0) {
-                    repeat = false;
-                    mydeletefile();//hier ggfs. noch dateinamen an funktion uebergeben
-                }
-                if (strcasecmp(answer, "nein") == 0) {
-                    repeat = false;
-                    //zum song editor zurueckkehren
-                    song_management();
-                }
-            }
-        }
-        
-        repeat=true;
-        while(repeat) {
-            std::cout << "ACHTUNG! Soll song Nr. " << (songposition+1) << " wirklich geloscht werden? (Ja/Nein):";
-            std::cin >> answer;
-            myexit(answer);
-            if (strcasecmp(answer, "ja") == 0) {
-                repeat = false;
-            }
-            if (strcasecmp(answer, "nein") == 0) {
-                repeat = false;
-                song_management();
-            }
-        }
-    }
 
     //geanderte datei fuer das speichern vorbereiten
     std::cout << "Aenderungen werden in die Datei geschrieben" << std::endl;
@@ -845,8 +759,14 @@ void myeditfile(int select) {
         writefile["data"][i]["length"] = duration[i];
     }
 
-    if(select==3) {//ggfs. song loeschen
-        writefile["data"].erase(writefile["data"].begin() + songposition);
+    if(select==3) {
+        //macht es optimisierungstechnisch einen unterschied, dass hier datein eingelesen werden, die im fall 'nein' nicht gebraucht werden??
+        tempstring = "ACHTUNG! Soll song Nr. " + std::to_string((songposition+1)) + " wirklich geloscht werden?";
+        if(myjanein(tempstring)) {
+            writefile["data"].erase(writefile["data"].begin() + songposition);
+        } else {
+            song_management();
+        }
     }
 
     //nicht nur werden die aenderungen in der datei gepeichert, sondern auch lokal im programm. so koennen sie direkt im mensaue durch myprintfile() ausgegeben und abgespielt werden!!
@@ -856,10 +776,9 @@ void myeditfile(int select) {
     repeat=true;
     while(repeat) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
         //daten werden in die datei file2 geschrieben
-        std::ofstream file2(mypath + filename);
-
+        std::ofstream file2(filename);
         if (!file2.is_open()) {
-            std::cout << "Datei konnte nicht geoeffnet werden, um Datenn zu speichern! Fehlercode: 04" << std::endl;
+            std::cout << "Datei konnte nicht geoeffnet werden, um Daten zu speichern! Fehlercode: 04" << std::endl;
             
             repeat2=true;
             while(repeat2) {
@@ -868,6 +787,9 @@ void myeditfile(int select) {
                 if (strcasecmp(answer, "ja") == 0) {//er will es nochmal versuchen. viel glueck!
                     repeat2=false;
                     //hier muss die abfrage nach dem dateinamen ergaenzt werden??
+                    std::cout << "Geben sie den Dateinamen ein: ";
+                    std::cin >> filename;
+                    std::ofstream file2(myaddjson(filename, true));
                 }
                 if (strcasecmp(answer, "nein") == 0) {
                     repeat2=false;
@@ -897,6 +819,69 @@ void myeditfile(int select) {
     main_menu();
 }
 
+void myrenamefile() {
+    //filename wird nichzt benutzt, da hier keine datei geoeffnet wird und es (z.B.) bei myprintfile() zu logischen fehlern kommen koennte
+    std::string filenameold;
+    std::string filenamenew;
+    nlohmann::json renameplaylist;
+    
+    repeat=true;
+    while (repeat) {
+        //loop verlassen, wenn erfolgreich umbenannt oder aufgegeben
+        mydashedline();
+        std::cout << "Geben sie den Namen der umzubenennenden Playlist ein: ";
+        std::cin >> filenameold;
+        tempstring2 = filenameold;
+        filenameold = myaddjson(filenameold, true);
+        mycheckname(filenameold);
+
+        if(std::filesystem::exists(filenameold)) {
+            std::cout << "Neuen Namen fuer \'" << tempstring2 << "\' eingeben: ";
+            std::cin >> filenamenew;
+            tempstring3 = filenamenew;
+            filenamenew = myaddjson(filenamenew, true);
+            mycheckname(filenamenew);
+
+            if(!std::filesystem::exists(filenamenew)) {
+                //hier passen beide Dateinamen, es kann also fortgefahren werden!!!
+                tempstring = "\'" + tempstring2 + "\'" + " wird in " + "\'" + tempstring3 + "\'" + " umbenannt. Fortfahren?";
+                if(myjanein(tempstring)) {
+                    const char* temp11;
+                    const char* temp12;
+                    temp11=filenamenew.c_str();
+                    temp12=filenameold.c_str();
+
+                    if (std::rename(temp12, temp11) != 0) {
+                    //if (std::rename(filenamenew.c_str(), filenamenew.c_str()) != 0) {
+                        std::cout << "Fehler! Die Datei konnte nicht umbenannt werden. Fehlercode: 08" << std::endl;
+                        if(!myjanein("\t Umbenennen erneut versuchen?")) {
+                            repeat=false;
+                        }
+                    } else {
+                        mydashedline();
+                        std::cout << "\tDie Datei wurde erfolgreich umbenannt!" << std::endl;
+                        repeat=false;
+                        mywaitenter();
+                    }
+                } else {
+                    if(myjanein("Zurzeck zum Hauptmenue? Sonst erneuter Versuch.")) {
+                        repeat=false;
+                    }
+                }
+            } else {
+                if(!myjanein("Eingegebener Dateiname existiert bereits! Erneut versuchen?")) {
+                    repeat=false;
+                }
+            }
+        } else {
+            if(!myjanein("Eingegebener Dateiname existiert nicht! Erneut versuchen?")) {
+                repeat=false;
+            }
+        }
+    }
+    main_menu();
+}
+
 void myexit(char myinput[50]) {
     //funktion ueberprueft inputs auf "beenden" und beendet dann das programm
     if(strcasecmp(myinput, "beenden")==0) {//hier koennen sehr leicht andere woerter, wie "exit" oder "schliessen" ergaenzt werden
@@ -906,10 +891,11 @@ void myexit(char myinput[50]) {
 }
 
 void mywaitenter() {
-    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//damit nach dem bearbeiten eines songs nicht mehrmals enter gedrueckt werden muss?!
     std::cout << ">mit Enter zurueck zum Hauptmenue...";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cin.get();//wartet auf den user input
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//Enter ignorieren
+    while(std::cin.get() != '\n') {
+        std::cin.clear();//Input Buffer KOMPLETT loeschen
+    }
 }
 
 void mycheckifopen(char myinput2[50]) {
@@ -937,6 +923,7 @@ void mydashedline() {
 }
 
 bool myjanein(std::string message) {
+    //testtestsette
     //ersetzt die einzelnen abfragen um den code zu vereinfachen/fehler zu vermeiden
     bool repeatjn = true;
     char answerjn[50];
@@ -946,6 +933,7 @@ bool myjanein(std::string message) {
         std::cout << message << " (Ja/Nein): ";
         std::cin >> answerjn;
         myexit(answerjn);
+        std::cout << "test1 input: " << answerjn << std::endl;
 
         if (strcasecmp(answerjn, "ja") == 0) {
             repeatjn = false;
@@ -956,7 +944,7 @@ bool myjanein(std::string message) {
             return false;
         }
     }
-    //-------------------------!ACHTUNG!-------------------------
+    //------------------------!!!ACHTUNG!!!------------------------
     //!!!!!Das folgende return statement wird NIEMALS erreicht!!!!!
     //Es dient jediglich dazu, die folgende Compiler Warnung zu vermeiden
     //>>warning: control reaches end of non-void function [-Wreturn-type]<<
@@ -964,4 +952,24 @@ bool myjanein(std::string message) {
     //...beziehungsweise das programm auf wunsch des benutzers schliesssen
     return false;
 }
+
+std::string myaddjson(std::string filenamein, bool addpath) {
+    if (filenamein.find(".json") != std::string::npos) {
+    } else {
+        filenamein = filenamein + ".json";//.json wird angefuegt
+    }
+    if(addpath) {
+        filenamein = mypath + filenamein;
+    }
+    return filenamein;
+}
+
+void mycheckname(std::string filenamein2) {
+    if (filenamein2.find("/") != std::string::npos || filenamein2.find("\\") != std::string::npos) {//_ '//' ==> /
+        std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
+        mywaitenter();
+        main_menu();
+    }
+}
+
 

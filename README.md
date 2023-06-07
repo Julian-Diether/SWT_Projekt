@@ -34,7 +34,7 @@ songtitel, kuenstler, album, jahr, laenge des titels?, genre, explicit(y/n)?
 
 todo:inputs in menu.cpp gegebenenfalls als char speichern um probleme bei eingabe von buchstaben zu vermeiden!
 
-todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
+DONEtodo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
 
 -Im hauptmenue, sowie song-management menue werden die Befehle nach 6 ungueltigen versuchen nun wiederholt um die bedienfaehigkeit zu vermeiden
 
@@ -51,12 +51,13 @@ todo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
     -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
     -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
-    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name
+    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name, Datei existiert nicht, ...
     -07 --> fehler, datei existiert bereits (in mycreatefile())
+    -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
 
 -git ignore hinzugefuegt
 
-todo: input laenge eingeben, bei datei erstellen auf integer ueberpruefen. sonst fehlermeldung und wiederholung. Kein Absturz!!
+DONEtodo: input laenge eingeben, bei datei erstellen auf integer ueberpruefen. sonst fehlermeldung und wiederholung. Kein Absturz!!
 
 -myexit() / mywaitenter() / mycheckifopen() funktionen hinzugefuegt
     code vereinfacht und verschiedene fehler behoben
@@ -192,7 +193,7 @@ todo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokierung
 
 todo: code auf anderen betriebssystemen testen
 
-**06.05.**
+**05.06.**
 -addition der myjanein() funktion um häufige abfragen zentral zu regeln, fehler zu vermeiden und den gesamten code etwas zu vereinfachen/entschleiern
 
 -diverse probleme beim einlesen der song eigenschaften (beim erstellen einer playlist) behoben
@@ -208,5 +209,48 @@ beheben!
 todo:repeat bei if (!file2.is_open()) (in mycreatefile()) irgendwie provozieren (vielleicht per deub)
 
 -saemtliche char arrays bei mycreatefile() durch strings ersetzt, um diverse probleme zu vermeiden, einheit zu schaffen und benutzung der daten zu vereinfachen
+
+**06.06.**
+-vereinfachung saemtlicher funktionen und arbeitsschritte
+
+todo: eingabe von duration auf buchstaben ueberpruefen und fehler ausgeben! (wo?: createfile & editfile(edit song & add song))
+
+-jetzt kann auch nach erscheinungsjahr gesucht werden
+
+todo: 575 myjanein - repeat dort auf null setzen?
+
+verschiedene ausgaben wurden benutzerorientierter gestaltet
+    -songdauer wird jetzt immer mit doppelpunkt ausgegeben, selbst bei suchergebnissen
+    -titel ------||----------       leerzeichen     ------------||---------------
+    -album, kuenstler, genre, ^^^
+
+**07.06.**
+ganz am ende von mysearchfile(); wurde main_menu(); entfernt.
+    eigentlich doch egal, da dieser code nie erreicht wird, sonder stattdessen mit 'nein' oder 'beenden' die schleife schon vorher endet
+
+todo: sicherheitsabfrage beim suchen auf dort verlegen, wo die datei schon geoffnet wurde(dass man nicht den dateinamen eingeben muss und bestaetigen muss, nur damit ein fehler erscheint)
+
+-myrenamefile() erstellt
+
+-hauptmenue komplett ueberarbeitet und sehr stark vereinfacht!!
+
+wohin soll fortfahren(ja/nein) zurueckfuehren??? immer main_menu(), oder ggfs. song/playlist_managemment()?
+
+todo: sonderzeichen!!, aber erst mal punkte im dateiname erkennen
+
+-das tatsaechliche schreiben in eine Datei noch irgendwie absichern??
+    am besten in eine zusaetzliche funktion schreoben
+
+-gerade erstellte datei ist jetzt auch die aktuell geoeffnete datei und kann direkt ausgegeben/verwendet werden
+
+TODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeichert wird!!!
+
+todo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
+
+todo: settings.xml datei, um z.B. myinitialize() zu umgehen!
+
+todo: mycreatefile() erneuter versuch(ja/nein) abfrage anstatt direkt ins hauptmenue zu gehen
+
+todo: sind arrays bei mycreatefile nicht zu groß????
 
 

@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "album": "test",
+      "artist": "song",
+      "date": 2020,
+      "explicit": false,
+      "genre": "test",
+      "length": "06_47",
+      "title": "der"
+    },
+    {
+      "album": "extended",
+      "artist": "song",
+      "date": 2019,
+      "explicit": false,
+      "genre": "rock",
+      "length": "02_59",
+      "title": "test"
+    }
+  ]
+}
