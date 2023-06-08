@@ -4,7 +4,7 @@
 #include "menu.cpp"
 
 //deklarierung globaler variablen
-std::string mypath = "playlists/"; //PFAD ZUM PLAYLIST ORDNER! immer aktuell halten! ggfs. spaeter in einstellungen aenderbar
+//std::string mypath = "playlists/"; //PFAD ZUM PLAYLIST ORDNER! immer aktuell halten! ggfs. spaeter in einstellungen aenderbar
 
 int main() {
     myinitialize();//wenn ja wird datei initialisiert/wenn nein --> main_menu();

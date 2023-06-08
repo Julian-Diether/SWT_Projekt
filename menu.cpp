@@ -21,6 +21,7 @@ void mycreatefile();
 void mydeletefile();
 void mysearchfile();
 void myrenamefile();
+void mylistfiles();
 void myeditfile(int select);
 void myexit(char myinput[50]);
 
@@ -39,7 +40,7 @@ void main_menu()
     std::cout << "Aktuelle Playlist anzeigen   -   1" << std::endl;
     std::cout << "Gespeicherte Playlist oeffnen - 2" << std::endl;
     std::cout << "Einzelne Playlists verwalten  -  3" << std::endl;
-    std::cout << "Titel der Playlist verwalten  -  4" << std::endl;
+    std::cout << "Titel einer Playlist verwalten - 4" << std::endl;
     std::cout << "Eine playlist durchsuchen    -    5" << std::endl;
     std::cout << "Den Musikplayer jetzt beenden  -  6" << std::endl;
     int selection {0}; //User input
@@ -114,10 +115,11 @@ void playlist_management()
     std::cout << "Neue Playlist erstellen - 1" << std::endl;
     std::cout << "Eine Playlist umbenennen - 2" << std::endl;
     std::cout << "Eine Playlist loeschen  -  3" << std::endl;
-    std::cout << "Zurueck zum menue    -    4" << std::endl;
-    std::cout << "Musikplayer beenden   -   5" << std::endl;
+    std::cout << "Alle Playlists anzeigen - 4" << std::endl;
+    std::cout << "Zurueck zum menue    -   5" << std::endl;
+    std::cout << "Musikplayer beenden   -   6" << std::endl;
     int selection {0}; //User input
-    int option_num {5}; //Number of options in the displayed menu
+    int option_num {6}; //Number of options in the displayed menu
     selection = input_validation(option_num, 3);
 
     switch(selection)
@@ -132,9 +134,12 @@ void playlist_management()
             mydeletefile();;
         break;
         case 4:
-            main_menu();
+            mylistfiles();
         break;
         case 5:
+            main_menu();
+        break;
+        case 6:
             myexit(mybeenden);
         break;
         default:

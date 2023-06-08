@@ -54,6 +54,7 @@ DONEtodo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name, Datei existiert nicht, ...
     -07 --> fehler, datei existiert bereits (in mycreatefile())
     -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
+    -09 --> der auszulesende ordner existiert nicht. Eigentlich nur moeglich, wenn in settings.json ein nicht vorhandener pfad liegt!
 
 -git ignore hinzugefuegt
 
@@ -72,7 +73,7 @@ todo: beim einlesen der dateien sonderzeichen herausfiltern! vllt noch einen hin
     einlesen von erscheinungsjahr, musikdauer und jugendfrei berichtigt
     bessere uebersichtbarkeit durch mydashedline 
 
-todo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
+DONEtodo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
 
 **20.05.**
 -funktionierendes dateien erstellen
@@ -82,18 +83,18 @@ todo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeiche
 todo: die diversen checks und failsafes irgendwie ueberpruefen
 
 **21.05.**
-todo: beim auslesen der datei, alles schoen untereinander schreiben um lesbarkeit zu erhoehen!!
+DONEtodo: beim auslesen der datei, alles schoen untereinander schreiben um lesbarkeit zu erhoehen!!
 
 -funktion vom loeschen von dateien hinzugefuegt und abgesichert
 
-todo:: ueberpruefen ob wir die ganzen bibliotheken brauchen oder funktionen auch in anderen gefunden werden koennen, um das programm einfacher/schneller/kleiner zu machen!!
+DONEtodo:: ueberpruefen ob wir die ganzen bibliotheken brauchen oder funktionen auch in anderen gefunden werden koennen, um das programm einfacher/schneller/kleiner zu machen!!
 
-todo: ueberlegen ob sinnvoll, wenn ja ggfs eigene funktion fuer die ganzen (ja/nein) abfragen erstellen.
+DONEtodo: ueberlegen ob sinnvoll, wenn ja ggfs eigene funktion fuer die ganzen (ja/nein) abfragen erstellen.
 
-todo: ich glaube mycheckifopen funktioniert im momment nicht. wahrscheinlich, weil es die .json endung enthaelt waehrend der user nur den namen der datei eingeben kann. 
+DONEtodo: ich glaube mycheckifopen funktioniert im momment nicht. wahrscheinlich, weil es die .json endung enthaelt waehrend der user nur den namen der datei eingeben kann. 
     -variable erstellen, die reinen dateinamen enthaelt, falls .json schon dabei ist ihn wieder herausfiltert.
 
-todo: input bei searchfile auf leerzeichen absichern! leerzeichen-->underscore! auch bei createfile und spaeter dort wo songs erstellt/umbenannt, etc werden
+DONEtodo: input bei searchfile auf leerzeichen absichern! leerzeichen-->underscore! auch bei createfile und spaeter dort wo songs erstellt/umbenannt, etc werden
 
 -mysearchfile erstellt, ausgiebig getestet und abgesichert.
     -noetige anpassung von menu.cpp
@@ -111,15 +112,15 @@ todo: input bei searchfile auf leerzeichen absichern! leerzeichen-->underscore! 
 
 -absicherung des Hauptmenue, damit buchstaben nicht mehr zu fehlern fuehren
 
-todo: herausfinden, ob es zu problemen kommen kann, dass currentplaylist waehrend nutzung des programms offen bleibt (kein file.close();)
+DONEtodo: herausfinden, ob es zu problemen kommen kann, dass currentplaylist waehrend nutzung des programms offen bleibt (kein file.close();)
 ^^NEIN! currentplaylist ist jediglich eine lokale nlohman::json. die datei selbst (file) wird direkt wieder geschlossen!
 
-todo: mycheckifopen() reparieren, oder wenn nicht hilfreich/benoetigt abschaffen.
+DONEtodo: mycheckifopen() reparieren, oder wenn nicht hilfreich/benoetigt abschaffen.
 
-todo: herausfinden, ob beim loeschen von songs irgendwie der ganze eintrag der json datei geloscht werden kann!!
+DONEtodo: herausfinden, ob beim loeschen von songs irgendwie der ganze eintrag der json datei geloscht werden kann!!
     -ansonsten gibt es danach einen leeren eintrag und playlist.size() ist nicht mehr aussagekraeftig.
 
-todo: herausfinden, ob in dem funktiontsteil in mycreatefile(), der das leerzeichen ersetzt auch unterstriche verwendet wereden!!
+DONEtodo: herausfinden, ob in dem funktiontsteil in mycreatefile(), der das leerzeichen ersetzt auch unterstriche verwendet wereden!!
     -falls ja: nach anderen zeichen suchen, da doppelpunkte auch durch unterstriche ersetzt werden!!
     -IST DAS UEBERHAUPT EIN PROBLEM??? oder werden die inputs nicht seperat zugewiesen?? vielleicht braucht man es doch nicht...
 
@@ -136,7 +137,7 @@ todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
 **24.05.**
 -myeditfile() hinzufuegen komplett, bearbeiten teilweise.
 
-todo: finden, wo beim einlesen aus der .json datei fehler entstehen!! vor allem bei songlaenge und erscheinungsjahr extrem haeufig/auffaellig/stoerend/destruktiv! unbeding finden
+DONEtodo: finden, wo beim einlesen aus der .json datei fehler entstehen!! vor allem bei songlaenge und erscheinungsjahr extrem haeufig/auffaellig/stoerend/destruktiv! unbeding finden
 
 -check, ob datei die erstellt werden soll, bereits existiert. wenn ja fehlercode07!
 
@@ -151,12 +152,12 @@ todo: spacing/padding bei myprintfile() abhaengig von groesse des groessten jewe
     -es kann beim oeffnen leerer, dateien zu fehlern kommen. alle elemente auf null zu setzen waere eine option
     -user kann anschliessen direkt in das mydeletefile(); menue
 
-todo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
+DONEtodo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
 
 **27.05.**
 -chars in myeditfile() durch strings ersetzt und viele fehler, vor allem bei grossen eingaben vermieden
 
-todo: mycreatefile() und ggfs. myopenfile()/myprintfile() auch durch strings ersetzen --> deutlich vereinfachter code, weniger stellen a denen durch conversions fehler auftreten koennten
+DONEtodo: mycreatefile() und ggfs. myopenfile()/myprintfile() auch durch strings ersetzen --> deutlich vereinfachter code, weniger stellen a denen durch conversions fehler auftreten koennten
 
 -myeditfile() delete funktioniert jetzt
 
@@ -174,15 +175,15 @@ todo: einlesen von currentplaylist in die temporaeren variablen, mit catch block
 -bearbeiten von Dateien hinzugefuegt
 
 **29.05.**
-todo: song bearbeiten, erscheinungsjahr != int absichern!!
+DONEtodo: song bearbeiten, erscheinungsjahr != int absichern!!
 
 **30.05.**
-todo: durchsuchen von erscheinungsdatum hinzufuegen, dazu muss der input zu einem string konvertiert werden. aber wann???
+DONEtodo: durchsuchen von erscheinungsdatum hinzufuegen, dazu muss der input zu einem string konvertiert werden. aber wann???
     ist es nicht einfacher, das erscheinungsjahr zu konvertieren? wahrscheinlich schon. doer wo die datei eingelesen wird!
 
-todo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwandeln
+DONEtodo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwandeln
 
-todo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
+DONEtodo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
 
 **31.05.**
 -einige warnungen mit vergleich unzulaessiger dateitypen behoben!
@@ -198,7 +199,7 @@ todo: code auf anderen betriebssystemen testen
 
 -diverse probleme beim einlesen der song eigenschaften (beim erstellen einer playlist) behoben
 
-todo: herausfinden, was beim erstellen einer datei mit existierendem namen passiert
+DONEtodo: herausfinden, was beim erstellen einer datei mit existierendem namen passiert
 
 todo: diverse fehler zu:
     terminate called after throwing an instance of 'nlohmann::json_abi_v3_11_2::detail::type_error'
@@ -234,7 +235,7 @@ todo: sicherheitsabfrage beim suchen auf dort verlegen, wo die datei schon geoff
 
 -hauptmenue komplett ueberarbeitet und sehr stark vereinfacht!!
 
-wohin soll fortfahren(ja/nein) zurueckfuehren??? immer main_menu(), oder ggfs. song/playlist_managemment()?
+todo: wohin soll fortfahren(ja/nein) zurueckfuehren??? immer main_menu(), oder ggfs. song/playlist_managemment()?
 
 todo: sonderzeichen!!, aber erst mal punkte im dateiname erkennen
 
@@ -247,10 +248,14 @@ TODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeichert wi
 
 todo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
 
-todo: settings.xml datei, um z.B. myinitialize() zu umgehen!
+DONEtodo: settings.xml datei, um z.B. myinitialize() zu umgehen!
 
 todo: mycreatefile() erneuter versuch(ja/nein) abfrage anstatt direkt ins hauptmenue zu gehen
 
 todo: sind arrays bei mycreatefile nicht zu groß????
+
+-settings.json hinzugefuegt und komplett abgesichert
+
+NOTE: pfad in settings.json muss mit einem / enden. Ohne das / koennten zwar ordner aber keine KEINE DATEIEN geoeffnet werden!
 
 

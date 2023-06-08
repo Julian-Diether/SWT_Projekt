@@ -28,13 +28,13 @@
       "title": "a"
     },
     {
-      "album": "das test album",
-      "artist": "ser",
-      "date": 2011,
-      "explicit": false,
-      "genre": "test songs",
-      "length": "04_13",
-      "title": "a s d"
+      "album": "das test album2",
+      "artist": "der tester 1",
+      "date": 2012,
+      "explicit": true,
+      "genre": "test musik",
+      "length": "04_31",
+      "title": "der song name"
     }
   ]
 }

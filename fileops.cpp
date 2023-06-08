@@ -11,10 +11,12 @@
 #include <fstream>//dateien lesen/schreiben
 #include <filesystem>//pruefen ob dateien existieren
 #include <limits>
+#include <vector>
 #include "nlohmann/json.hpp"
 
 //inkludierung globaler variablen
-extern std::string mypath;
+std::string mypath;
+std::string settingspath = "settings.json";
 
 //deklarierung eigener variablen
 std::string filename = "";
@@ -44,6 +46,7 @@ void mydeletefile();
 void mysearchfile();
 void myeditfile(int select);
 void myrenamefile();
+void mylistfiles();
 
 void myexit(char myinput[50]);
 void mywaitenter();
@@ -54,6 +57,41 @@ std::string myaddjson(std::string filenamein, bool addpath);
 void mycheckname(std::string filenamein2);
 
 void myinitialize() {
+
+    //fallback settings:
+    bool skipini=false;
+    mypath = "playlists/";
+
+    nlohmann::json settings = {
+        {
+            "skipini", false,
+            "mypath", ""
+        }
+    };
+
+    try {
+        if (std::filesystem::exists(settingspath)) {
+            std::ifstream tempfile(settingspath);
+            if(tempfile.is_open()) {
+                tempfile >> settings;
+                tempfile.close();
+                mypath = settings["mypath"];
+                skipini = settings["skipini"];
+            } else {//not open
+                //fallback settings
+            }
+        } else {//not existing
+            //fallback settings
+        }
+    }//end try
+    catch(const std::exception& e) {
+        //fallback settings / keine fehlermeldung
+    }
+
+    if(skipini) {
+        main_menu();
+    }
+
     welcome_msg();
     if(myjanein("Moechten sie eine Musik-Playlist initialisieren?")) {
         myopenfile(false);
@@ -170,8 +208,8 @@ void myprintfile(bool justprint) {
         }
     }
 
-    //mehr als 6 entries in .json datei --> legende unten erneut anzeigen
-    if(currentplaylist["data"].size()>6) {
+    //mehr als 5 entries in .json datei --> legende unten erneut anzeigen
+    if(currentplaylist["data"].size()>5) {
         std::cout << std::left << std::setw(6) <<" Nr." <<
         std::setw(28) << "Titel" <<
         std::setw(28) << "Interpret" <<
@@ -324,7 +362,7 @@ void mycreatefile() {
         if (!file2.is_open()) {
             std::cout << "Datei konnte nicht geoeffnet werden, um Daten zu speichern! Fehlercode: 04" << std::endl;
             
-            if(myjanein("Ernet mit anderem Dateinamen versuchen?")) {
+            if(myjanein("Erneut mit anderem Dateinamen versuchen?")) {
                 //all dass muss nochchmal durchgegeangen und getestet werden!! Nur wie???
             } else {
                 main_menu();
@@ -443,7 +481,7 @@ void mysearchfile() {
         }
         firstrun=false;//nach dem ersten durchlauf wird gefragt, ob erneut durchsucht werden soll.
 
-        std::cout << "Achtung! Keine Sonderzeichen! Ausnahme Doppelpunkt." << std::endl;
+        std::cout << "Achtung! Keine Sonderzeichen oder Leerzeichen! Ausnahme Doppelpunkt." << std::endl;
         std::cout << "Geben sie einen Suchbegriff ein: ";
         std::cin >> answer;
         searchstring = std::string(answer);
@@ -506,6 +544,7 @@ void myeditfile(int select) {
     if(select==2) {playlistsize1=playlistsize;}//bearbeiten
     if(select==3) {playlistsize1=playlistsize;}//loeschen
 
+    //ISO C++ forbids variable length array
     std::string title[playlistsize1];
     std::string artist[playlistsize1];
     std::string album[playlistsize1];
@@ -882,6 +921,70 @@ void myrenamefile() {
     main_menu();
 }
 
+void mylistfiles() {
+
+    mydashedline();
+    std::vector<std::string> myfilenames;// Array vom Typ std::string mit dynamischer laenge!
+    std::vector<std::string> mynumberofsongs;
+    nlohmann::json tempplaylist;
+    
+    if (std::filesystem::exists(mypath) && std::filesystem::is_directory(mypath)) {//verzeichnis existiert && ist valide/gueltig
+        for (const auto& myfile : std::filesystem::directory_iterator(mypath)) {//es wird ueber alle dateien iteriert
+            if (std::filesystem::is_regular_file(myfile)) {//Einzelne datei existiert(ist gueltiger dateityp)
+
+                std::string filepath = myfile.path().string();//Pfad der Datei (die existiert) --> path2
+                std::string extension = myfile.path().extension().string();//Dateiendung auslesen
+                
+                if (extension == ".json") {//es werden NUR .json Dateien eingelesen
+                    myfilenames.push_back(myfile.path().filename().string());//Dateinamen dynamisch allokierten array zwischenspeichern
+                }
+            }
+        }
+
+        bool tempbool = false;
+        std::cout << "     In dem Verzeichnis >" << mypath << "< wurden " << myfilenames.size() << " Playlists gefunden!" << std::endl;
+        for (int i=0; i<myfilenames.size(); i++) {
+            //Auslesen der Anzahl an Songs!
+            try {
+                //std::cout << myaddjson(myfilenames[i], true);
+                std::ifstream file(myaddjson(myfilenames[i], true));//haette filepath auch zu einem vector<string> machen koennen!
+            if (!file.is_open()) {
+                tempbool=true;
+                mynumberofsongs.push_back("-Fehler-");
+            }
+            //Datei ist offen und wird eingelesen
+            file >> tempplaylist;
+            file.close();
+            mynumberofsongs.push_back(std::to_string(tempplaylist["data"].size()));
+            }
+            catch (const std::exception& e) {
+                if(!tempbool) {
+                    mynumberofsongs.push_back("-Fehler-");
+                }
+            }
+
+            tempstring = "  Playlist[" + std::to_string(i+1) + "/" + std::to_string(myfilenames.size()) + "]:";
+            std::cout << std::left << std::setfill(' ') << std::setw(22) << tempstring
+            << std::setw(22) << myfilenames[i]
+            << std::setw(7) << "-"
+            << std::setw(19) << "Anzahl an Songs: "
+            << std::setw(5) << mynumberofsongs[i] << std::endl;
+
+            //std::cout << "  Playlist [" << (i+1) << "/" << myfilenames.size() << "]:   " << myfilenames[i] << "  -  Anzahl an Songs: "<< mynumberofsongs[i] << std::endl;
+            //gegebenenfalls noch die Playlistlaenge angeben. Muss die Datei dafuer geoeffnet werden?? Ja .. schwierig
+            //naja wir koennten alles mit eine try/catch block absichern und wenn eine datei nicht geoeffnet werden kann...
+            //...wird eben '---' oder 'Fehler!' anstatt der laenge angezeigt, waere ja kein sehr grosses problem fuer den user.
+        }
+        //(sobald die funktion verlassen wird werden die arrays automatisch geloescht und ihre speicher wieder befreit)
+    } else {
+        //sollte eigentlich nicht passieren
+        std::cout << "Fehler! Der spetifizierte Pfad existiert nicht. Fehlercode: 09" << std::endl;
+        std::cout << "\t---Der spezifizierte Pfad lautet: >" << mypath << "<.---" << std::endl;
+    }
+    mywaitenter();
+    main_menu();
+}
+
 void myexit(char myinput[50]) {
     //funktion ueberprueft inputs auf "beenden" und beendet dann das programm
     if(strcasecmp(myinput, "beenden")==0) {//hier koennen sehr leicht andere woerter, wie "exit" oder "schliessen" ergaenzt werden
@@ -933,8 +1036,6 @@ bool myjanein(std::string message) {
         std::cout << message << " (Ja/Nein): ";
         std::cin >> answerjn;
         myexit(answerjn);
-        std::cout << "test1 input: " << answerjn << std::endl;
-
         if (strcasecmp(answerjn, "ja") == 0) {
             repeatjn = false;
             return true;
@@ -965,11 +1066,26 @@ std::string myaddjson(std::string filenamein, bool addpath) {
 }
 
 void mycheckname(std::string filenamein2) {
-    if (filenamein2.find("/") != std::string::npos || filenamein2.find("\\") != std::string::npos) {//_ '//' ==> /
+    if (filenamein2.find("/") != std::string::npos || filenamein2.find("\\") != std::string::npos || filenamein2.find("*") != std::string::npos
+    || filenamein2.find("!") != std::string::npos || filenamein2.find("?") != std::string::npos || filenamein2.find("%") != std::string::npos
+    || filenamein2.find("§") != std::string::npos || filenamein2.find("$") != std::string::npos || filenamein2.find("&") != std::string::npos
+    || filenamein2.find(":") != std::string::npos || filenamein2.find("ß") != std::string::npos || filenamein2.find("@") != std::string::npos
+    || filenamein2.find("ü") != std::string::npos || filenamein2.find("ö") != std::string::npos || filenamein2.find("ä") != std::string::npos
+    || filenamein2.find("(") != std::string::npos || filenamein2.find(")") != std::string::npos || filenamein2.find("#") != std::string::npos
+    || filenamein2.find("\"") != std::string::npos || filenamein2.find("\'") != std::string::npos || filenamein2.find("^") != std::string::npos
+    || filenamein2.find("<") != std::string::npos || filenamein2.find(">") != std::string::npos || filenamein2.find("|") != std::string::npos
+    || filenamein2.find(",") != std::string::npos || filenamein2.find(";") != std::string::npos || filenamein2.find("+") != std::string::npos
+    || filenamein2.find("~") != std::string::npos || filenamein2.find("=") != std::string::npos || filenamein2.find("€") != std::string::npos) {//_ '\\' ==> '\'
         std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
         mywaitenter();
         main_menu();
-    }
+    }//ggfs. durch andere zeichen ergaenzen, vllt. sogar invertieren!
+    if (!(filenamein2.find(".json") != std::string::npos)) {
+         if (filenamein2.find(".") != std::string::npos) {
+            std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
+            mywaitenter();
+            main_menu();
+         }
+    }//punkt eingegeben, ohne dass '.json' vorkommt
 }
-
 
