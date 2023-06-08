@@ -248,6 +248,7 @@ TODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeichert wi
 
 todo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
 
+**08.06.**
 DONEtodo: settings.xml datei, um z.B. myinitialize() zu umgehen!
 
 todo: mycreatefile() erneuter versuch(ja/nein) abfrage anstatt direkt ins hauptmenue zu gehen
@@ -258,4 +259,12 @@ todo: sind arrays bei mycreatefile nicht zu groß????
 
 NOTE: pfad in settings.json muss mit einem / enden. Ohne das / koennten zwar ordner aber keine KEINE DATEIEN geoeffnet werden!
 
+-ausgeben aller playlists mylistfiles() hinzugefuegt
+
+todo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen, die die playlist auslesen
+    ODER!!: alles ueber objekte(structs) machen, anstatt arrays. <-- das klingt nach einem guten plan!!
+    ODER!!!!!!!: direkt in, aus der datei lesen
+        ^^nicht ueberall moeglich, da es sonst ein albtraum waere alle user inputs abzusichern
+
+-diverse kleinere aenderungen, zum beispiel im menue
 
