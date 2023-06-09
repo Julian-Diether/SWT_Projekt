@@ -446,4 +446,22 @@ void mycreatefile() {
 */
 
 
+/*
+try
+{
+    tempyear= std::stoi(tempanswer);
+    if(tempyear>0) {//sicherstellen, dass zahl positiv ist! ggfs. andere plausibilitaets checks.
+        repeat=false;
+        year.push_back(tempyear);
+    }//success!n
+} catch(std::invalid_argument()) {//falls keine zahl eingegeben wurde 
+    std::cerr << "Fehler!" << std::endl;
+    std::cin.clear();//input wird geloescht
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    tempanswer="";
+    std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
+}
+*/
+
+
 

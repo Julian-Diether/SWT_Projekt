@@ -1,0 +1,31 @@
+{
+  "data": [
+    {
+      "album": "d_f_g",
+      "artist": "s_d_f",
+      "date": 2010,
+      "explicit": false,
+      "genre": "as_sd",
+      "length": "04 11",
+      "title": "a_s_d"
+    },
+    {
+      "album": "das_musik_album",
+      "artist": "der_musiker_nr_1",
+      "date": 2013,
+      "explicit": true,
+      "genre": "musik_richtung",
+      "length": "08 46",
+      "title": "der_song"
+    },
+    {
+      "album": "testung",
+      "artist": "tester",
+      "date": 2018,
+      "explicit": false,
+      "genre": "test_musik",
+      "length": "08 11",
+      "title": "songname"
+    }
+  ]
+}

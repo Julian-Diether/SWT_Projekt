@@ -1,0 +1,31 @@
+{
+  "data": [
+    {
+      "album": "Niveau_Weshalb_Warum",
+      "artist": "Deichkind",
+      "date": 2015,
+      "explicit": false,
+      "genre": "elektro",
+      "length": "03 12",
+      "title": "So_ne_Musik"
+    },
+    {
+      "album": "Miracle_Single",
+      "artist": "Calvin_Harris,_Ellie_Goulding",
+      "date": 2023,
+      "explicit": false,
+      "genre": "elektro_pop",
+      "length": "03 06",
+      "title": "Miracle"
+    },
+    {
+      "album": "Would_You_Ever",
+      "artist": "Skrillex",
+      "date": 2016,
+      "explicit": false,
+      "genre": "dubstep",
+      "length": "03 54",
+      "title": "Would_You_Ever"
+    }
+  ]
+}

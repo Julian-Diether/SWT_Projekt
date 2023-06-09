@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "album": "die_tests",
+      "artist": "test_band_spezial",
+      "date": 2017,
+      "explicit": false,
+      "genre": "test_songs",
+      "length": "05_46",
+      "title": "test_song"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ songtitel, kuenstler, album, jahr, laenge des titels?, genre, explicit(y/n)?
 
 -teilweise uebersetzung von menu.cpp auf deustsch und zusammenfuehrung mit main.cpp und fileops.cpp
 
-todo:inputs in menu.cpp gegebenenfalls als char speichern um probleme bei eingabe von buchstaben zu vermeiden!
+DONEtodo:inputs in menu.cpp gegebenenfalls als char speichern um probleme bei eingabe von buchstaben zu vermeiden!
 
 DONEtodo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
 
@@ -189,7 +189,7 @@ DONEtodo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (od
 -einige warnungen mit vergleich unzulaessiger dateitypen behoben!
     jetzt gibt es nur noch 14(2*7) Warnungen fuer variable Dateilaengen
 
-todo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokierung beheben!
+DONEtodo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokierung beheben!
     sofern es sich ueberhaupt lohnt
 
 todo: code auf anderen betriebssystemen testen
@@ -215,7 +215,7 @@ todo:repeat bei if (!file2.is_open()) (in mycreatefile()) irgendwie provozieren 
 -vereinfachung saemtlicher funktionen und arbeitsschritte
 
 todo: eingabe von duration auf buchstaben ueberpruefen und fehler ausgeben! (wo?: createfile & editfile(edit song & add song))
-
+^^^^^hier eine while(repeat) schleife, die den repeat auf true setzt und erneut fragt, wenn buchstaben vorhanden sind!!
 -jetzt kann auch nach erscheinungsjahr gesucht werden
 
 todo: 575 myjanein - repeat dort auf null setzen?
@@ -237,7 +237,7 @@ todo: sicherheitsabfrage beim suchen auf dort verlegen, wo die datei schon geoff
 
 todo: wohin soll fortfahren(ja/nein) zurueckfuehren??? immer main_menu(), oder ggfs. song/playlist_managemment()?
 
-todo: sonderzeichen!!, aber erst mal punkte im dateiname erkennen
+DONEtodo: sonderzeichen!!, aber erst mal punkte im dateiname erkennen
 
 -das tatsaechliche schreiben in eine Datei noch irgendwie absichern??
     am besten in eine zusaetzliche funktion schreoben
@@ -267,4 +267,39 @@ todo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen, die
         ^^nicht ueberall moeglich, da es sonst ein albtraum waere alle user inputs abzusichern
 
 -diverse kleinere aenderungen, zum beispiel im menue
+
+todo: fehlermeldung wenn leerzeichen beim dateinamen eingegeben wrden. zum beispiel bei mycreatefile() - !!!
+^^Das machen wir ueber mycheckname(), dafür muss aber mit getline ausgelesen werden!!!! --> myreadfile() !
+
+todo: in mycreatefile() den fehler if(!file2.is_open()) korrekt absichern!!
+    provozieren zum beispiel mit gezielt falschem dateinamen dort wo die datei feoeffnet wird
+    ^^circa zeile 380
+
+-mit den folgendem debugging flags gibt es nur noch eine fehlermeldung fuer die ungenutze variable in mycheckifopen()
+    -W -Wall -Wpedantic -Wextra -Wconversion -Wformat -Wuninitialized -Wshadow -Wunused-variable
+
+todo: was ist der plan mit mycheckifopen()? ergibt das irgendeinen sinn?
+    mach es optimierungs technisch sinn eine bereits geoeffnete date nicht erneut zu oeffnen
+    passiert irgendwo etwas schlimmes wenn eine bereits geoeffnete datei erneut geoeffnet wird?? eigentlich ja nicht
+
+todo: ggfs. myopenfile() auch anderswo benutzen, um dateien zu oeffnen.
+
+todo: unebdingt ueberlegen ob das generelle oeffnen und auslesen von dateien in eine zentrale funktion gelegt werrden kann
+    auch das schreiben in dateien koennte so durchgefuehrt werden!!
+
+todo: herausfinden, wann diverse switch() >default< getriggert werden, und das ganze, am besten mit eigenem fehlercode, absichern!!!
+
+todo: alle std::cin durch std::getline() ersetzen, um anfaelligkeit gegen leerzeichen zu beheben
+^^dann kann ich auch die ganzen std::cin.ignore() entfernen
+
+todo:: ggfs. fehler wenn beid den verschiedenen integer abfragen kommas bzw. punkte eingegeben werden
+
+-std::cin komplett durch std::getline() ersetzt um viele fehler zum beispiel mit leerzeichen oder ueberbleibenden wertden zu beheben!!
+
+todo: alle "integer-only" abfragen ueberpruefen
+
+todo: myexit() ueberall ueberpruefen!!!!
+
+-myexit() jetzt als string, anstatt char gestaltet um unnoetige umwandlungen ausserhalb zu vermeiden
+
 

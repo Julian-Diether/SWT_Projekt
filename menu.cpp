@@ -2,10 +2,12 @@
 #include <string>
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 
 //eigene variablen
 int counter=0;
-char mybeenden[50] = "beenden";
+std::string mybeenden = "beenden";
+std::string tempstringx;
 
 //eigene funktionen
 void welcome_msg();
@@ -23,8 +25,7 @@ void mysearchfile();
 void myrenamefile();
 void mylistfiles();
 void myeditfile(int select);
-void myexit(char myinput[50]);
-
+void myexit(std::string inputstring);
 
 void welcome_msg()
 {
@@ -108,7 +109,6 @@ void song_management()
     }
 }
 
-
 void playlist_management()
 {
     std::cout << "\n********************\tPlaylist Editor\t**********************" << std::endl;
@@ -148,26 +148,26 @@ void playlist_management()
     }
 }
 
-
 int input_validation(int option_num, int whichmenu)
 {
     bool inputerror=false;
-    bool repeat=true;
+    //bool ivrepeat=true;
     int selection{0};
     do
     {
-        repeat=true;
-        while(repeat) {
-            std::cout << "--Geben sie die entsprechende Zahl ein: "; 
-            std::cin >> selection;
+        std::cout << "--Geben sie die entsprechende Zahl ein: "; 
+        std::getline(std::cin, tempstringx);
 
-            if(std::cin.fail()) {//oder if(cin>>selection)???
-                inputerror=true;
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "\tBuchstaben sind nicht zulaessig!" << std::endl;
-                repeat=false;
-            } else {repeat=false; inputerror=false;}//gueltiger input
+        try {
+            selection = std::stoi(tempstringx);//integer eingegeben
+            mydashedline();
+            inputerror=false;
+        }
+        catch(const std::invalid_argument&) {//falls keine zahl eingegeben wurde
+            inputerror=true;
+            std::cin.clear();//die fehler flags werden geloescht!
+            std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
+
         }
 
         if (selection <= 0 || selection > option_num || inputerror)
@@ -175,8 +175,9 @@ int input_validation(int option_num, int whichmenu)
             std::cout << "\tGeben sie eine gueltige Zahl ein!" << std::endl;
             
             counter++;
-            if(counter>2) {//nach 4 fehlern mainmenu bzw. songmanagement erneut anzeigen
+            if(counter>2) {//nach 4 fehlern mainmenu bzw. song-/playlistmanagement erneut anzeigen
                 counter=0;
+                mydashedline();
                 switch(whichmenu) {
                     case 1:
                         main_menu();
