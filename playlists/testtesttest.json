@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "album": "Befehl von ganz unten",
+      "album": "Befehl_von_ganz_unten",
       "artist": "Deichkind",
       "date": 2012,
       "explicit": false,
@@ -10,7 +10,7 @@
       "title": "Leider_Geil"
     },
     {
-      "album": "Befehl von ganz unten2",
+      "album": "Befehl_von_ganz_unten2",
       "artist": "Deichkind2",
       "date": 2012,
       "explicit": true,

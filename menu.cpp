@@ -42,7 +42,7 @@ void main_menu()
     std::cout << "Gespeicherte Playlist oeffnen - 2" << std::endl;
     std::cout << "Einzelne Playlists verwalten  -  3" << std::endl;
     std::cout << "Titel einer Playlist verwalten - 4" << std::endl;
-    std::cout << "Eine playlist durchsuchen    -    5" << std::endl;
+    std::cout << "Eine playlist durchsuchen   -   5" << std::endl;
     std::cout << "Den Musikplayer jetzt beenden  -  6" << std::endl;
     int selection {0}; //User input
     int option_num {6}; //Number of options in the displayed menu
@@ -81,7 +81,7 @@ void song_management()
     std::cout << "Song bearbeiten  -  2" << std::endl;
     std::cout << "Song loeschen   -   3" << std::endl;
     std::cout << "Zurueck zum menue  -  4" << std::endl;
-    std::cout << "Musikplayer beenden - 5" << std::endl;
+    std::cout << "Musikplayer beenden  - 5" << std::endl;
     int selection {0}; //User input
     int option_num {5}; //Number of options in the displayed menu
     selection = input_validation(option_num, 2); 
@@ -151,16 +151,14 @@ void playlist_management()
 int input_validation(int option_num, int whichmenu)
 {
     bool inputerror=false;
-    //bool ivrepeat=true;
     int selection{0};
     do
     {
-        std::cout << "--Geben sie die entsprechende Zahl ein: "; 
+        std::cout << "   --entsprechende Zahl--: ";
         std::getline(std::cin, tempstringx);
 
         try {
             selection = std::stoi(tempstringx);//integer eingegeben
-            mydashedline();
             inputerror=false;
         }
         catch(const std::invalid_argument&) {//falls keine zahl eingegeben wurde

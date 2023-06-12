@@ -124,10 +124,10 @@ DONEtodo: herausfinden, ob in dem funktiontsteil in mycreatefile(), der das leer
     -falls ja: nach anderen zeichen suchen, da doppelpunkte auch durch unterstriche ersetzt werden!!
     -IST DAS UEBERHAUPT EIN PROBLEM??? oder werden die inputs nicht seperat zugewiesen?? vielleicht braucht man es doch nicht...
 
-todo: bei eingabe des jahres (in mycreatefile() und myeditfile()) negative zahlen nicht zulassen?
+DONEtodo: bei eingabe des jahres (in mycreatefile() und myeditfile()) negative zahlen nicht zulassen?
     ggfs. inputs<1500 und >2100  auch nicht zulassen?
 
-todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
+DONE:todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
     -sollte das programm deutlich vereinfachen!
 
 -myeditfile() groessten teils fertig gestellt
@@ -301,5 +301,13 @@ todo: alle "integer-only" abfragen ueberpruefen
 todo: myexit() ueberall ueberpruefen!!!!
 
 -myexit() jetzt als string, anstatt char gestaltet um unnoetige umwandlungen ausserhalb zu vermeiden
+
+-absicherung bei der eingabe saemtlicher dateinamen: nach 3 fehlerhaften eingaben wird gefrag, ob zum hauptmenue zurueckgekehrt werden soll. vor allem in leeren verzeichnissen koennte es sonst zu endlos schleifen kommen.
+    jetzt noch die frage: wie kann man den nutzer darauf hinweisen??!?
+
+todo: muss die json datei on myreadfile auch mit dem fuer unsere playlists typischen syntax deklariert werden??
+    damit koennten wir 'falsche' dateien schon frueher erkennen und zentral behandeln
+
+-logischer fehler in mysearchfile behoben, der 'verbotene' zeichen hinzufuegte, bevor nach diesen gesucht und fehler gemeldet wurde!
 
 

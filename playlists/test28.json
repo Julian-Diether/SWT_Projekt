@@ -1,13 +1,31 @@
 {
   "data": [
     {
-      "album": "die_tests",
-      "artist": "test_band_spezial",
-      "date": 2017,
+      "album": "Nothing_but_the_Beat",
+      "artist": "David_Guetta",
+      "date": 2012,
       "explicit": false,
-      "genre": "test_songs",
-      "length": "05_46",
-      "title": "test_song"
+      "genre": "pop_elektro",
+      "length": "04:05",
+      "title": "Titanium"
+    },
+    {
+      "album": "Listen",
+      "artist": "David_Guetta",
+      "date": 2014,
+      "explicit": false,
+      "genre": "pop_elektro",
+      "length": "02:51",
+      "title": "Bad_radio_edit"
+    },
+    {
+      "album": "7",
+      "artist": "David_Guetta",
+      "date": 2018,
+      "explicit": false,
+      "genre": "pop_elektro",
+      "length": "03_18",
+      "title": "Say_my_Name"
     }
   ]
 }
