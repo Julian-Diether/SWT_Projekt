@@ -1,5 +1,134 @@
 SoftwareTechnik Projekt
 
+
+
+## Fehlercodes
+
+***Fehlercodes***
+    -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
+    -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
+    -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
+    -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
+    -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
+    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name, Datei existiert nicht, ...
+    -07 --> fehler, datei existiert bereits (in mycreatefile())
+    -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
+    -09 --> der auszulesende ordner existiert nicht. Eigentlich nur moeglich, wenn in settings.json ein nicht vorhandener pfad liegt!
+    -10 --> der Dateiname der zu oeffnenden Datei existiert nicht (in myreadfile())
+
+
+
+## Erklaerung saemtlicher Funktionen
+
+**main.cpp**
+
+int main() {
+    //ruft die myinitialize() funktion auf
+}
+
+
+**fileops.cpp**
+
+void myinitialize() {
+    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll
+}
+
+void myopenfile(bool justprint) {
+    //fragt den Nutzer nach
+}
+
+void myprintfile(bool justopen) {
+    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)
+}
+
+void mycreatefile() {
+    //erstellt eine neue playlist mit beliebige vielen songs
+}
+
+void mydeletefile() {
+    //loescht eine beliebige playlist
+}
+
+void mysearchfile() {
+    //durchsucht saemtliche merkmale einer playlist auf ein beliebiges stichwort
+}
+
+void myeditfile(int select) {
+    //erlaubt das hinzufuegen/bearbeiten/loeschen eines songs in einer playlist
+}
+
+void myrenamefile() {
+    //benennt eine playlist in einen beliebigen namen um
+}
+
+void mylistfiles() {
+    //gibt alle playlists und die anzahl deren songs im aktuellen verzeichnis aus
+}
+
+void myexit(std::string inpute) {
+    //Hilfsfunktion, die Benutzereingaben auf 'beenden' ueberpruefen und ggfs. das programm schliessen
+}
+
+void mywaitenter() {
+    //Hilfsfunktion, die wartet bis der Benutzer die Enter-Taste drueckt. Zum Beispiel um eine Fehler-/Statusmeldung zu lesen
+}
+
+void mydashedline() {
+    //Hilfsfunktion, die eine gestrichelte linie ausgibt um die ubersicht zu steigern
+}
+
+bool myjanein(std::string messagejn) {
+    //Hilfsfunktion, die eine Frage stellt und die Benutzereingabe auf 'ja' oder 'nein' ueberprueft
+}
+
+std::string myaddjson(std::string filenameaj, bool addpath) {
+    //Hilfsfunktion, die die Dateiendung '.json', sowie den aktuellen Pfad an den Dateinamen anfuegen (falls noch nicht vorhanden)
+}
+
+void mycheckname(std::string filenamecn) {
+    //Hilfsfunktion, die den eingegebenen Dateinamen auf unerlaubte Sonderzeichen ueberprueft
+}
+
+nlohmann::json myreadfile(int select2) {
+    //Funktion die das tatsaechliche auslesen aud Dateien uebernimmt und absichert
+}
+
+void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool currentfilewf) {
+    //Funktion die das tatsaechliche speichern in Dateien uebernimmt und absichert
+}
+
+
+**menu.cpp**
+
+void welcome_msg() {
+    //Gibt eine Willkommensnachricht zu Beginn des Programms aus
+}
+
+void main_menu() {
+    //Zeigt dem Benutzer das Hauptmenue und moegliche auswahlen an
+}
+
+void song_management() {
+    //Zeigt dem Benutzer den Song-Editor und dessen funktionen an
+}
+
+void playlist_management() {
+    //Zeigt dem Benutzer den Playlist-Editor und dessen funktionen an
+}
+
+int input_validation(int option_num, int whichmenu) {
+    //Ueberprueft dass nur die zu den erlaubten auswahlen gehoerenden zahlen eingegben wurden
+}
+
+
+**test1.cpp**
+
+//Diente dazu diverse funktionen waehrend der entwicklung und dem troubleshooting gezielt und ohne groeßeren aufwand zu testen
+
+
+
+## Changelogs und ToDo liste
+
 **17.05.**
 -Story-Boards und workflow in Jira anlegen
     -Zeitplan festlegen
@@ -45,16 +174,7 @@ DONEtodo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
 
 **19.05**
 
-***Fehlercodes***
-    -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
-    -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
-    -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
-    -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
-    -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
-    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name, Datei existiert nicht, ...
-    -07 --> fehler, datei existiert bereits (in mycreatefile())
-    -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
-    -09 --> der auszulesende ordner existiert nicht. Eigentlich nur moeglich, wenn in settings.json ein nicht vorhandener pfad liegt!
+-Fehlercodes hinzugefuegt!
 
 -git ignore hinzugefuegt
 
@@ -327,5 +447,15 @@ todo: pfad (z.B. 'playlists/') nur hinzufuegen, wenn noch nicht hinzugefuegt!!!
 
 -mehr uebersichtlichkeit unv verstaendlichkeit durch andere variablennamen
 
+-bugfix myexit(), mywritefile(), ...
 
+-myaddjson: aenderungen beim hinzufuegen des pfads erfolgreich getestet!!!
+
+-entfernen saemtlicher auskommentierter code stellen
+
+-vollendung von mywritefile()
+
+-besseres handling zu oeffnen einer datei die nicht existiert
+
+-trim whitespace (leerzeichen entfernen)
 
