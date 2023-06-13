@@ -29,8 +29,7 @@ nlohmann::json searchplaylist;
 char answer[100];
 char tempchar[100];
 
-bool repeat=true;
-//bool repeat2=true;
+bool repeat=true;  
 bool tempbool;
 int tempint;
 
@@ -50,14 +49,14 @@ void myeditfile(int select);
 void myrenamefile();
 void mylistfiles();
 
-void myexit(std::string inputstring);
+void myexit(std::string inpute);
 void mywaitenter();
-void mycheckifopen(char myinput2[50]);
 void mydashedline();
-bool myjanein(std::string message);
-std::string myaddjson(std::string filenamein, bool addpath);
-void mycheckname(std::string filenamein2);
+bool myjanein(std::string messagejn);
+std::string myaddjson(std::string filenameaj, bool addpath);
+void mycheckname(std::string filenamecn);
 nlohmann::json myreadfile(int select2);
+void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool currentfilewf);
 
 void myinitialize() {
 
@@ -114,59 +113,6 @@ void myopenfile(bool justopen) {
             main_menu();
         }
     }
-
-/*
-    //while schleife, bis datei gueltig geoeffnet ist
-    repeat=true;
-    while (repeat) {
-        if(justopen) {
-            std::cout << "Geben sie den Namen der zu bearbeitenden Playlist ein: ";
-        } else {
-            std::cout << "Geben sie den Namen der zu oeffnenden Playlist ein: ";
-        }
-        std::cin >> filename;
-        std::copy(filename.begin(), filename.end(), tempchar);
-        tempchar[filename.size()] = '\0';
-        myexit(tempchar);
-        mycheckname(filename);
-
-        std::cout << "\tDie Datei " << filename << " wird geoeffnet." << std::endl;
-        filename = myaddjson(filename, true);
-        
-        //datei wird geoeffnet
-        try {
-            std::ifstream file(filename);
-            //oeffnen in sicheren umfeld --> kein absturz
-            if (!file.is_open()) {
-                std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
-            } //fehler, wenn datei nicht geoeffnet werden konnte
-            
-            repeat = false; //erst nachden file.is_open = true ist. danach bei fehler wieder geaendert
-            file >> currentplaylist;
-            file.close();
-            std::cout << "\t   Playlist erfolgreich geoeffnet" << std::endl; //erst hier ist die datei erfolgreich geoeffnet!!
-            
-            if(!justopen) {
-                mydashedline();
-            }
-        }
-        catch (const std::exception& e) {
-            repeat = true;
-            std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << e.what() << std::endl;
-            mydashedline();
-            //hier gab es einen fehler beim einlesen? der datei. zum bsp war sie leer ->siehe test2.json
-        }
-
-        //datei ist geoeffnet, kann direkt ausgegeben werden
-        if(!repeat && !justopen) {
-            if(myjanein("Soll die Playlist direkt angezeigt werden?")) {
-                myprintfile(false);
-            } else {
-                main_menu();
-            }
-        }
-    }*/
-
 }
 
 void myprintfile(bool justprint) {
@@ -373,54 +319,7 @@ void mycreatefile() {
         writefile["data"][i]["explicit"] = badwords[i];
     }
 
-    std::memset(answer, 0, sizeof(answer));
-    repeat=true;
-    while(repeat) {
-        std::ofstream file2(mypath + filenamecreatefile);
-
-        if (!file2.is_open()) {
-            std::cout << "Datei konnte nicht geoeffnet werden, um Daten zu speichern! Fehlercode: 04" << std::endl;
-            
-            if(myjanein("Erneut mit anderem Dateinamen versuchen?")) {
-                //all dass muss nochchmal durchgegeangen und getestet werden!! Nur wie???
-            } else {
-                main_menu();
-            }
-            /*
-            repeat2=true;
-            while(repeat2) {
-                std::cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
-                std::cin >> answer;
-                myexit(answer);
-
-                if (strcasecmp(answer, "ja") == 0) {//er will erneut versuchen. viel glueck!
-                    repeat2=false;
-                    std::string tempanswer;
-                    std::cout << "Geben sie einen alternativen Dateinamen ein:";
-                    std::cin >> tempanswer;
-
-                    if (!(tempanswer.find(".json") != std::string::npos)) {
-                        tempanswer = tempanswer + ".json";
-                    }
-                }
-                if (strcasecmp(answer, "nein") == 0) {
-                    repeat2=false;
-                    main_menu();
-                }
-            }*/
-            //zurueck in den loop, hoffentlich klappt es
-        } else {
-            repeat=false;
-            file2 << writefile.dump(2);//lokale json variable in externe datei
-            currentplaylist = writefile;//hierdurch wird die gerade erstellte playlist jetzt auch
-            filename = filenamecreatefile;//siehe obige zeile
-            //feierabend! datei schliessen
-            file2.close();
-            std::cout << "Die Daten wurden erfolgreich gespeichert!" << std::endl;
-            mywaitenter();
-            main_menu();
-        }
-    }
+    mywritefile(writefile, filenamecreatefile, false);
 }
 
 void mydeletefile() {
@@ -433,20 +332,31 @@ void mydeletefile() {
 
     myexit(tempstring);
     mycheckname(tempstring);
-    filenamedeletefile = myaddjson(filenamedeletefile, true);
+    filenamedeletefile = myaddjson(tempstring, true);
 
-    tempstring = "Die Playlist >" + filenamedeletefile + "< wird geloescht! Fortfahren?";
+    tempstring = "Playlist >" + filenamedeletefile + "< wird geloescht! Fortfahren?";
     if(!myjanein(tempstring)) {
         main_menu();
     }
     
+    
+    tempbool=false;
+    if(filenamedeletefile==filename) {
+        //aktuell geoeffnete playlist wird geloscht
+        tempbool=true;
+    }
+
     mydashedline();
     std::copy(filenamedeletefile.begin(), filenamedeletefile.end(), tempchar);
     //hier wird geloescht
     if (std::remove(tempchar) != 0) {
         std::cout << "Fehler! Die Datei konnte nicht geloescht werden. Fehlercode: 06" << std::endl;
     } else {
-        std::cout << "\tDie Datei wurde erfolgreich geloescht!" << std::endl;   
+        std::cout << "\tDie Datei wurde erfolgreich geloescht!" << std::endl;
+        if(tempbool) {
+            filename = "";//sorgt fuer 'keine playlist geoeffnet' warnung
+            currentplaylist.clear();//loescht playlist aus zwischenspeicher
+        }
     }
     mywaitenter();
     main_menu(); 
@@ -457,42 +367,10 @@ void mysearchfile() {
     std::string filenamesearchfile;
 
     searchplaylist = myreadfile(2);
-    tempstring = "Die Datei >" + tempstring3 + "< wird durchsucht. Fortfahren?";
+    tempstring = "Datei >" + tempstring3 + "< wird durchsucht. Fortfahren?";
     if(!myjanein(tempstring)) {
         main_menu();
     }
-
-    /*repeat=true;
-    while (repeat) {
-
-        std::cout << "Name der zu durchsuchenden Playlist eingeben: ";
-        std::getline(std::cin, filenamesearchfile);
-        mycheckname(filenamesearchfile);
-        tempstring = "Die Datei >" + filenamesearchfile + "< wird durchsucht. Fortfahren?";
-        if(!myjanein(tempstring)) {
-            main_menu();
-        }
-        filenamesearchfile = myaddjson(filenamesearchfile, true);//pfad (playlists/) vor dateinamen anfuegen
-        //jetzt kann endlich durchsucht werden!!! NAJA, zuerst muss datei erfolgreich! geoeffnent werden!!
-
-        std::cout << "Die Datei " << filenamesearchfile << " wird geoeffnet." << std::endl;
-        try {
-            std::ifstream file(filenamesearchfile);
-            if (!file.is_open()) {
-                std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 01" << std::endl;
-            } //fehler, wenn datei nicht geoeffnet werden konnte
-            repeat = false;
-
-            file >> searchplaylist;//Datei wird eingelesen
-            file.close();//Datei wird geschlossen
-            std::cout << "\tDie Datei wurde geoeffnet" << std::endl;
-            mydashedline();
-        } catch (const std::exception& e) {
-            repeat = true;//erneut versuchen, da fehler
-            std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << e.what() << std::endl;
-            mydashedline();
-        }
-    }*/
 
     //jetzt koennen wir endlich durchsuchen!
     
@@ -509,7 +387,7 @@ void mysearchfile() {
         }
         firstrun=false;//nach dem ersten durchlauf wird gefragt, ob erneut durchsucht werden soll.
 
-        std::cout << "Achtung! Keine Sonderzeichen oder Leerzeichen! Ausnahme Doppelpunkt." << std::endl;
+        std::cout << "Achtung! Keine Sonderzeichen! Ausnahme Doppelpunkt." << std::endl;
         std::cout << "Geben sie einen Suchbegriff ein: ";
         std::getline(std::cin, searchstring);
         //std::cin >> answer;
@@ -850,8 +728,11 @@ void myeditfile(int select) {
     }
 
     //nicht nur werden die aenderungen in der datei gepeichert, sondern auch lokal im programm. so koennen sie direkt im mensaue durch myprintfile() ausgegeben und abgespielt werden!!
-    currentplaylist = writefile;
+    //currentplaylist = writefile;
 
+    mywritefile(writefile, filename, true);
+
+    /*
     std::memset(answer, 0, sizeof(answer));
     repeat=true;
     while(repeat) {//      ------das sollte jetzt alles abgeichert sein, aber wie testet man so etwas?? wie kann ich ein fole.is_open()==false erzwingen??
@@ -869,7 +750,7 @@ void myeditfile(int select) {
                     repeat=false;
                     song_management();
             }
-
+*/
             /*
             repeat2=true;
             while(repeat2) {
@@ -889,7 +770,7 @@ void myeditfile(int select) {
                 }
             }
             */
-
+/*
         //dann zurueck in den loop und es klappt hoffentlich
         } else {
             repeat=false;
@@ -898,18 +779,19 @@ void myeditfile(int select) {
             file2.close();
             std::cout << "---Aenderungen erfolgreich gespeichert---" << std::endl;
         }
-    }
+    }*/
 
-    //irgendwie gab es durch das erlauben von enter beim bearbeiten probleme mit diesem schritt, desshalb die ausnahme regelung
-    if(select==2) {
-        std::cout << ">mit Enter zurueck zum Hauptmenue...";
-        std::string temp;
-        std::getline(std::cin, temp);
-    } else {
-        mywaitenter();
-    }
-    //am ende zurueck zum hauptmenue
-    main_menu();
+    ////irgendwie gab es durch das erlauben von enter beim bearbeiten probleme mit diesem schritt, desshalb die ausnahme regelung
+    //if(select==2) {
+    //    std::cout << ">mit Enter zurueck zum Hauptmenue...";
+    //    std::string temp;
+    //    std::getline(std::cin, temp);
+    //} else {
+    //    mywaitenter();
+    //}
+    
+    ////am ende zurueck zum hauptmenue
+    //main_menu();
 }
 
 void myrenamefile() {
@@ -946,7 +828,7 @@ void myrenamefile() {
 
                     if (std::rename(temp12, temp11) != 0) {
                     //if (std::rename(filenamenew.c_str(), filenamenew.c_str()) != 0) {
-                        std::cout << "Fehler! Die Datei konnte nicht umbenannt werden. Fehlercode: 08" << std::endl;
+                        std::cout << "Fehler! Datei konnte nicht umbenannt werden. Fehlercode: 08" << std::endl;
                         if(!myjanein("\t Umbenennen erneut versuchen?")) {
                             repeat=false;
                         }
@@ -1039,11 +921,11 @@ void mylistfiles() {
     main_menu();
 }
 
-void myexit(std::string inputstring) {
+void myexit(std::string inpute) {
     //funktion ueberprueft inputs auf "beenden" und beendet dann das programm,
     char inputchar[50];
     std::memset(inputchar, 0, sizeof(inputchar));//char leeren
-    std::copy(inputstring.begin(), inputstring.end(), inputchar);//inputstring in char schreiben
+    std::copy(inputme.begin(), inputme.end(), inputchar);//inputstring in char schreiben
     if(strcasecmp(inputchar, "beenden")==0) {//hier koennen sehr leicht andere woerter, wie "exit" oder "schliessen" ergaenzt werden
         std::cout << std::endl << "\tDer Musikplayer wurde vom Benutzer beendet." << std::endl;
         exit(0);
@@ -1055,39 +937,19 @@ void mywaitenter() {
     std::cin.get();//input (der automatisch bis enter geht) abwarten
 }
 
-void mycheckifopen(char myinput2[50]) {
-//---was machen wit jetzt mit diesem schritt?? das oeffnen einer bereits geoeffneten datei ist ja nicht schlimm
-    //std::string tempfilename = filename;    
-    //const char* tempfilename; tempfilename = filename.c_str();//AAAARRRGHHH
-
-    //char* dotPos = std::strrchr(tempfilename, '.');//wir finden die stelle, an der der punkt ist
-    //if (dotPos != nullptr) {//falls es diese gibt
-    //    *dotPos = '\0';//und loecshen alles danach!
-    //}
-    
-    //initialisieren funktioniert nicht, da der filename ueberprueft wird waehrend der nutzer noch gar nicht gefragt wurde!!
-
-    /*if(myinput2==filename || myinput2==tempfilename) {
-        std::cout << "Die Playlist: >" << myinput2 << "< ist bereits geoeffnet!"<< std::endl;
-        std::cout << "Bearbeiten/Loeschen und weitere Funktionen ueber das Hauptmenue." << std::endl;
-        mywaitenter();
-        main_menu();
-    }*/
-}
-
 void mydashedline() {
         std::cout << "\t----------------------------------" << std::endl;
 }
 
-bool myjanein(std::string message) {
+bool myjanein(std::string messagejn) {
     //testtestsette
     //ersetzt die einzelnen abfragen um den code zu vereinfachen/fehler zu vermeiden
     bool repeatjn = true;
-    char answerjn[100];    
+    char answerjn[100];
     std::string stringjn;
 
     while (repeatjn) {
-        std::cout << message << " (Ja/Nein): ";
+        std::cout << messagejn << " (Ja/Nein): ";
         std::getline(std::cin, stringjn);//jetzt immun gegen leerzeichen!
         myexit(stringjn);
 
@@ -1112,35 +974,39 @@ bool myjanein(std::string message) {
     return false;
 }
 
-std::string myaddjson(std::string filenamein, bool addpath) {
-    if (filenamein.find(".json") != std::string::npos) {
+std::string myaddjson(std::string filenameaj, bool addpath) {
+    std::cout << "testsetsttests111: " << filenameaj << std::endl;
+    if (filenameaj.find(".json") != std::string::npos) {
     } else {
-        filenamein = filenamein + ".json";//.json wird angefuegt
+        filenameaj = filenameaj + ".json";//.json wird angefuegt
     }
     if(addpath) {
-        filenamein = mypath + filenamein;
+        if(filenameaj.find(mypath) != std::string::npos) { } else {
+            filenameaj = mypath + filenameaj;
+        }
     }
-    return filenamein;
+    std::cout << "testsetsttests222: " << filenameaj << std::endl;
+    return filenameaj;
 }
 
-void mycheckname(std::string filenamein2) {
+void mycheckname(std::string filenamecn) {
 
-    if (filenamein2.find("/") != std::string::npos || filenamein2.find("\\") != std::string::npos || filenamein2.find("*") != std::string::npos
-    || filenamein2.find("!") != std::string::npos || filenamein2.find("?") != std::string::npos || filenamein2.find("%") != std::string::npos
-    || filenamein2.find("§") != std::string::npos || filenamein2.find("$") != std::string::npos || filenamein2.find("&") != std::string::npos
-    || filenamein2.find(":") != std::string::npos || filenamein2.find("ß") != std::string::npos || filenamein2.find("@") != std::string::npos
-    || filenamein2.find("ü") != std::string::npos || filenamein2.find("ö") != std::string::npos || filenamein2.find("ä") != std::string::npos
-    || filenamein2.find("(") != std::string::npos || filenamein2.find(")") != std::string::npos || filenamein2.find("#") != std::string::npos
-    || filenamein2.find("\"") != std::string::npos || filenamein2.find("\'") != std::string::npos || filenamein2.find("^") != std::string::npos
-    || filenamein2.find("<") != std::string::npos || filenamein2.find(">") != std::string::npos || filenamein2.find("|") != std::string::npos
-    || filenamein2.find(",") != std::string::npos || filenamein2.find(";") != std::string::npos || filenamein2.find("+") != std::string::npos
-    || filenamein2.find("~") != std::string::npos || filenamein2.find("=") != std::string::npos || filenamein2.find("€") != std::string::npos) {//_ '\\' ==> '\'
+    if (filenamecn.find("/") != std::string::npos || filenamecn.find("\\") != std::string::npos || filenamecn.find("*") != std::string::npos
+    || filenamecn.find("!") != std::string::npos || filenamecn.find("?") != std::string::npos || filenamecn.find("%") != std::string::npos
+    || filenamecn.find("§") != std::string::npos || filenamecn.find("$") != std::string::npos || filenamecn.find("&") != std::string::npos
+    || filenamecn.find(":") != std::string::npos || filenamecn.find("ß") != std::string::npos || filenamecn.find("@") != std::string::npos
+    || filenamecn.find("ü") != std::string::npos || filenamecn.find("ö") != std::string::npos || filenamecn.find("ä") != std::string::npos
+    || filenamecn.find("(") != std::string::npos || filenamecn.find(")") != std::string::npos || filenamecn.find("#") != std::string::npos
+    || filenamecn.find("\"") != std::string::npos || filenamecn.find("\'") != std::string::npos || filenamecn.find("^") != std::string::npos
+    || filenamecn.find("<") != std::string::npos || filenamecn.find(">") != std::string::npos || filenamecn.find("|") != std::string::npos
+    || filenamecn.find(",") != std::string::npos || filenamecn.find(";") != std::string::npos || filenamecn.find("+") != std::string::npos
+    || filenamecn.find("~") != std::string::npos || filenamecn.find("=") != std::string::npos || filenamecn.find("€") != std::string::npos) {//_ '\\' ==> '\'
         std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
         mywaitenter();
         main_menu();
     }//ggfs. durch andere zeichen ergaenzen, vllt. sogar invertieren!
-    if (!(filenamein2.find(".json") != std::string::npos)) {
-         if (filenamein2.find(".") != std::string::npos) {
+    if (!(filenamecn.find(".json") != std::string::npos)) {
+         if (filenamecn.find(".") != std::string::npos) {
             std::cout << "Fehler! Nicht erlaubte Zeichen eingegeben. Fehlercode: 05"<<std::endl;
             mywaitenter();
             main_menu();
@@ -1217,11 +1083,92 @@ nlohmann::json myreadfile(int select2) {
         catch (const std::exception& error) {
             continuecounter++;
             repeatread = true;//erneut versuchen, da fehler
-            std::cout << "\nDie Datei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << error.what() << std::endl;
+            std::cout << "\nDatei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << error.what() << std::endl;
             mydashedline();
         }
     }
     //DAMIT MEIN PROGRAMM WIEDER FUNKTINOIERT - AHHHH!!
     return playlistread;
+}
+
+void mywritefile(std::string filenamewf, nlohmann::json writefilewf, bool currentfilewf) {
+
+    //---------------------------------------------------------------------
+    //ueberpruefen ob dateiname bereits existiert!!!!!
+    //  ^^siehe myrenamefile()
+
+    //std::string filenamealt;
+    nlohmann::json writefile2;
+    //std::memset(answer, 0, sizeof(answer));
+    bool repeatwf;
+    //bool repeatwf2;
+
+    mydashedline();
+    filenamewf = myaddjson(filenamewf, true);
+    //fuehrt aufgrund der checks nicht zu fehlern. Hinzufuegen nur wenn noch nicht vorhanden!!
+
+    repeatwf=true;
+    while(repeatwf) {
+        std::cout << "testteststetsdebugging- (eswirdmit: gespeichert) filename: " << filenamewf << std::endl;
+        std::ofstream filewf(filenamewf);//hier unbedingt alles einheitlich machen mit add json
+
+        if (!filewf.is_open()) {
+            std::cout << "Datei konnte nicht geoeffnet werden, um Daten zu speichern! Fehlercode: 04" << std::endl;
+            
+            if(myjanein("Erneut mit anderem Dateinamen versuchen?")) {
+                //all dass muss nochchmal durchgegeangen und getestet werden!! Nur wie???
+                std::cout << "\tNeuen Dateinamen eingeben: ";
+                std::getline(std::cin, filenamewf);
+            } else {
+                main_menu();
+            }
+                /*if(!std::filesystem::exists(filenameinwf)) {//BRAUCHEN WIR DAS WIRKLICH???????
+                    std::cout << "Der Eingegebene ";
+                    if(myjanein("Zurzeck zum Hauptmenue? \'Nein\' --> erneuter Versuch")) {
+                        //
+                    } else {
+                        main_menu();
+                    }
+                } else {
+                    main_menu();
+                }*/
+            
+            //repeatwf2=true;
+            /*while(repeatwf2) {
+                std::cout << "Erneut mit anderem Dateinamen versuchen? (Ja/Nein): ";
+                std::cin >> answer;
+                myexit(answer);
+
+                if (strcasecmp(answer, "ja") == 0) {//er will erneut versuchen. viel glueck!
+                    repeatwf2=false;
+                    std::string tempanswer;
+                    std::cout << "Geben sie einen alternativen Dateinamen ein:";
+                    std::cin >> tempanswer;
+
+                    if (!(tempanswer.find(".json") != std::string::npos)) {
+                        tempanswer = tempanswer + ".json";
+                    }
+                }
+                if (strcasecmp(answer, "nein") == 0) {
+                    repeatwf2=false;
+                    main_menu();
+                }
+            }*/
+            
+            //zurueck in den loop, hoffentlich klappt es
+        } else {
+            repeatwf=false;
+            filewf << writefile2.dump(2);//lokale json variable in externe datei
+            if(currentfilewf) {//playlist wird zur aktuell geoeffneten playlist gemacht!!
+                currentplaylist = writefile2;//
+                filename = filenamewf;
+            }
+            
+            filewf.close();//feierabend! datei schliessen
+            std::cout << "\tDaten wurden erfolgreich gespeichert!" << std::endl;
+            mywaitenter();
+            main_menu();
+        }
+    }
 }
 

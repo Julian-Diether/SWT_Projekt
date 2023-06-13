@@ -25,7 +25,7 @@ void mysearchfile();
 void myrenamefile();
 void mylistfiles();
 void myeditfile(int select);
-void myexit(std::string inputstring);
+void myexit(std::string inpute);
 
 void welcome_msg()
 {
@@ -173,7 +173,7 @@ int input_validation(int option_num, int whichmenu)
             std::cout << "\tGeben sie eine gueltige Zahl ein!" << std::endl;
             
             counter++;
-            if(counter>2) {//nach 4 fehlern mainmenu bzw. song-/playlistmanagement erneut anzeigen
+            if(counter>2) {//nach 3 fehlern mainmenu bzw. song-/playlistmanagement erneut anzeigen
                 counter=0;
                 mydashedline();
                 switch(whichmenu) {

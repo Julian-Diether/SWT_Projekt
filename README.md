@@ -268,6 +268,7 @@ todo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen, die
 
 -diverse kleinere aenderungen, zum beispiel im menue
 
+**10.06.**
 todo: fehlermeldung wenn leerzeichen beim dateinamen eingegeben wrden. zum beispiel bei mycreatefile() - !!!
 ^^Das machen wir ueber mycheckname(), dafür muss aber mit getline ausgelesen werden!!!! --> myreadfile() !
 
@@ -302,6 +303,7 @@ todo: myexit() ueberall ueberpruefen!!!!
 
 -myexit() jetzt als string, anstatt char gestaltet um unnoetige umwandlungen ausserhalb zu vermeiden
 
+**12.06.**
 -absicherung bei der eingabe saemtlicher dateinamen: nach 3 fehlerhaften eingaben wird gefrag, ob zum hauptmenue zurueckgekehrt werden soll. vor allem in leeren verzeichnissen koennte es sonst zu endlos schleifen kommen.
     jetzt noch die frage: wie kann man den nutzer darauf hinweisen??!?
 
@@ -309,5 +311,21 @@ todo: muss die json datei on myreadfile auch mit dem fuer unsere playlists typis
     damit koennten wir 'falsche' dateien schon frueher erkennen und zentral behandeln
 
 -logischer fehler in mysearchfile behoben, der 'verbotene' zeichen hinzufuegte, bevor nach diesen gesucht und fehler gemeldet wurde!
+
+**13.06.**
+-beim loeschen der aktuellen playlist wird diese jetzt auch lokal geloscht
+
+-mycheckifopen() geloescht
+
+-diverse kommentare entfernt
+
+todo: pfad (z.B. 'playlists/') nur hinzufuegen, wenn noch nicht hinzugefuegt!!!
+
+-mywritefile() hinzugefuegt und implementiert
+
+-myaddjson addiert den pfad jetzt nur, wenn er noch nicht hinzugefuegt wurde!!
+
+-mehr uebersichtlichkeit unv verstaendlichkeit durch andere variablennamen
+
 
 
