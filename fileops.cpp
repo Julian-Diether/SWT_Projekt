@@ -13,8 +13,7 @@
 #include <limits>//warnungsfreihe vergleiche
 #include <stdexcept>//um z.B. std::invalid_argument zu catchen
 #include <vector>//dynamische speicher allokation
-#include <unicode/ustring.h>
-#include <unicode/ustream.h>
+#include "source/utf8.h"
 #include "nlohmann/json.hpp"//json manipulation
 
 //inkludierung globaler variablen
@@ -59,7 +58,7 @@ std::string myaddjson(std::string filenameaj, bool addpath);
 void mycheckname(const std::string filenamecn);
 nlohmann::json myreadfile(int select2);
 void mywritefile(std::string filenamewf, const nlohmann::json writefilewf, bool currentfilewf);
-std::string myvalidate(const std::string inputv);
+std::string myvalidateutf8(std::string str);
 
 void myinitialize() {
 
@@ -196,10 +195,17 @@ void mycreatefile() {
     std::string filenamecreatefile;
     int length=0;
     int tempyear=0;
+    int continuecounter2=0;
     
     mydashedline();
     repeat=true;
     while(repeat) {
+        if(continuecounter2>2) {
+            continuecounter2=0;
+            if(!myjanein("\t\tFortfahren?")) {
+                main_menu();
+            }
+        }
         std::cout << "Name der neuen Playlist eingeben: ";
         std::getline(std::cin, filenamecreatefile);
         mycheckname(filenamecreatefile);
@@ -207,6 +213,7 @@ void mycreatefile() {
         filenamecreatefile = myaddjson(filenamecreatefile, false);
 
         if (std::filesystem::exists(mypath + filenamecreatefile)) {
+            continuecounter2++;
             mydashedline();
             std::cout << "Die Datei existiert bereits! Fehlercode: 07" << std::endl;
         } else {
@@ -226,6 +233,10 @@ void mycreatefile() {
             std::cin.clear();//input wird geloescht
             std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
         }
+        catch(std::out_of_range&) {
+            std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
+        }
+
         if(length>0) {//sicherstellen, dass zahl positiv ist! ggfs. andere plausibilitaets checks.
             repeat=false;
         }//success!n
@@ -255,14 +266,14 @@ void mycreatefile() {
     for(int i=0; i<length; i++) {
         mydashedline();
         std::cout << "Informationen fuer Song [" << (i+1) << "/" << length << "] eingeben:" << std::endl;
-        std::cout << "Songname: "; std::getline(std::cin, tempstring);title.push_back(myvalidate(tempstring));
-        std::cout << "Interpret: "; std::getline(std::cin, tempstring);artist.push_back(myvalidate(tempstring));
-        std::cout << "Album: "; std::getline(std::cin, tempstring);album.push_back(myvalidate(tempstring));
+        std::cout << "Songname: "; std::getline(std::cin, tempstring);title.push_back(myvalidateutf8(tempstring));
+        std::cout << "Interpret: "; std::getline(std::cin, tempstring);artist.push_back(myvalidateutf8(tempstring));
+        std::cout << "Album: "; std::getline(std::cin, tempstring);album.push_back(myvalidateutf8(tempstring));
         repeat=true;
         tempyear=0;
         while (repeat) {std::cout << "Erscheinungsjahr: ";
             std::getline(std::cin, tempstring);
-            tempstring = myvalidate(tempstring);
+            //tempstring = myvalidateutf8(tempstring);  // - no need since it has to be an integer any way!!
             try {
                 tempyear = std::stoi(tempstring);
             }
@@ -270,16 +281,19 @@ void mycreatefile() {
                 std::cin.clear();//input wird geloescht
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
             }
+            catch(std::out_of_range&) {
+                std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
+            }
 
-            if(tempyear>0) {
+            if(tempyear>0 && tempyear<2500) {
                 repeat=false;year.push_back(tempyear);
             } else {//success!
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
             }
         }
 
-        std::cout << "Laenge [xx:xx]: "; std::getline(std::cin, tempstring); duration.push_back(myvalidate(tempstring));
-        std::cout << "Musikrichtung: "; std::getline(std::cin, tempstring); genre.push_back(myvalidate(tempstring));
+        std::cout << "Laenge [xx:xx]: "; std::getline(std::cin, tempstring); duration.push_back(myvalidateutf8(tempstring));
+        std::cout << "Musikrichtung: "; std::getline(std::cin, tempstring); genre.push_back(myvalidateutf8(tempstring));
 
         if(myjanein("Jugendfrei")) {
             badwords.push_back(false);
@@ -322,8 +336,8 @@ void mycreatefile() {
         writefile["data"][i]["genre"] = genre[i];
         writefile["data"][i]["explicit"] = badwords[i];
     }
-std::cout << writefile << std::endl;
-    mywritefile(writefile, filenamecreatefile, false);
+
+    mywritefile(filenamecreatefile, writefile, false);
 }
 
 void mydeletefile() {
@@ -537,6 +551,9 @@ void myeditfile(int select) {
                 std::cin.clear();//input wird geloescht
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
             }
+            catch(std::out_of_range&) {
+                std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
+            }
             
             if(songposition>0) {//Zahlen positiv
                 if(songposition < static_cast<int>(currentplaylist["data"].size()) + 1) {//if(songposition<currentplaylist["data"].size()+1) {
@@ -564,10 +581,10 @@ void myeditfile(int select) {
         std::cout << "\tACHTUNG!! keine Sonderzeichen eingeben" << std::endl;
         mydashedline();
         std::cout << "Informationen fuer neuen Song eingeben:" << std::endl;
-        std::cout << "Songname: "; getline(std::cin, tempstring); title.push_back(tempstring);
+        std::cout << "Songname: "; getline(std::cin, tempstring); title.push_back(myvalidateutf8(tempstring));
         //std::cout << "test" << std::endl;
-        std::cout << "Interpret: "; getline(std::cin, tempstring); artist.push_back(tempstring);
-        std::cout << "Album: "; getline(std::cin, tempstring); album.push_back(tempstring);
+        std::cout << "Interpret: "; getline(std::cin, tempstring); artist.push_back(myvalidateutf8(tempstring));
+        std::cout << "Album: "; getline(std::cin, tempstring); album.push_back(myvalidateutf8(tempstring));
         repeat=true;
         while (repeat) {std::cout << "Erscheinungsjahr: ";
             std::getline(std::cin, tempstring);
@@ -579,15 +596,18 @@ void myeditfile(int select) {
                 std::cin.clear();//fehler flags werden resettet
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
             }
+            catch(std::out_of_range&) {
+                std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
+            }
 
-            if(tempyear>0) {
+            if(tempyear>0 && tempyear>2500) {
                 repeat=false;year.push_back(tempyear);
             } else {//success!n
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
             }
         }
-        std::cout << "Laenge [xx:xx]: "; getline(std::cin, tempstring);duration.push_back(tempstring);
-        std::cout << "Musikrichtung: "; getline(std::cin, tempstring);genre.push_back(tempstring);
+        std::cout << "Laenge [xx:xx]: "; getline(std::cin, tempstring);duration.push_back(myvalidateutf8(tempstring));
+        std::cout << "Musikrichtung: "; getline(std::cin, tempstring);genre.push_back(myvalidateutf8(tempstring));
 
         if(myjanein("Jugendfrei")) {
             badwords.push_back(false);
@@ -627,24 +647,24 @@ void myeditfile(int select) {
         std::getline(std::cin, tempanswer);
         if (!tempanswer.empty()) {
             //title.push_back(tempanswer);
-            title[songposition] = tempanswer;
+            title[songposition] = myvalidateutf8(tempanswer);
         }
 
         std::cout << "Interpret: " << artist[songposition] << std::endl << ">";
         std::getline(std::cin, tempanswer);
         if (!tempanswer.empty()) {
             //artist.push_back(tempanswer);
-            artist[songposition] = tempanswer;
+            artist[songposition] = myvalidateutf8(tempanswer);
         }
 
         std::cout << "Album: " << album[songposition] << std::endl << ">";
         std::getline(std::cin, tempanswer);
         if (!tempanswer.empty()) {
             //album.push_back(tempanswer);
-            album[songposition] = tempanswer;
+            album[songposition] = myvalidateutf8(tempanswer);
         }
 
-        std::cout << "Erscheinungsjahr: " << year[songposition] << std::endl;;
+        std::cout << "Erscheinungsjahr: " << year[songposition] << std::endl;
         repeat=true;
         while (repeat) {
             std::cout << ">";
@@ -656,7 +676,7 @@ void myeditfile(int select) {
                 try //(tempyear= std::stoi(tempanswer)) {//std::cin >> tempyear) {//zahl eingegebe
                     {
                     tempyear= std::stoi(tempanswer);
-                    if(tempyear>0) {//sicherstellen, dass zahl positiv ist! ggfs. andere plausibilitaets checks.
+                    if(tempyear>0 && tempyear<2500) {//sicherstellen, dass zahl positiv ist! ggfs. andere plausibilitaets checks.
                         repeat=false;
                         //year.push_back(tempyear);
                         year[songposition] = tempyear;            
@@ -666,6 +686,9 @@ void myeditfile(int select) {
                     tempanswer="";
                     std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
                 }
+                catch(std::out_of_range&) {
+                    std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
+                }
             }
         }
 
@@ -673,14 +696,14 @@ void myeditfile(int select) {
         std::getline(std::cin, tempanswer);
         if (!tempanswer.empty()) {
             //duration.push_back(tempanswer);
-            duration[songposition] = tempanswer;
+            duration[songposition] = myvalidateutf8(tempanswer);
         }
 
         std::cout << "Musikrichtung: " << genre[songposition] << std::endl << ">";// std::cin >> genre[songposition];
         std::getline(std::cin, tempanswer);
         if (!tempanswer.empty()) {
             //genre.push_back(tempanswer);
-            genre[songposition] = tempanswer;
+            genre[songposition] = myvalidateutf8(tempanswer);
         }
 
         repeat=true;
@@ -731,7 +754,7 @@ void myeditfile(int select) {
         }
     }//ende song loeschen
 
-    mywritefile(writefile, filename, false);
+    mywritefile(filename, writefile, false);
 }
 
 void myrenamefile() {
@@ -959,7 +982,22 @@ nlohmann::json myreadfile(int select2) {
     //filename in globale variable z.B. filename 2 schreiben
     //erst dann in filename, wenn schreiben in datei abgeschlossen ist!!
     
-    nlohmann::json playlistread;
+    nlohmann::json playlistread = {
+        {
+            "data",
+            {
+                {
+                    {"title", ""},
+                    {"artist", ""},
+                    {"album", ""},
+                    {"date", nullptr},
+                    {"length", ""},
+                    {"genre", ""},
+                    {"explicit", ""}
+                }
+            }
+        }
+    };
     std::string filenameread;
     bool repeatread = true;//damit andere loops nicht beeinflusst werden!!! koennte sonst KATASTROPHAL werden.
     bool makecurrentfile=false;//die datei die in myprintfile() angezeigt wird (aus der musik abgespielt werden soll)
@@ -1001,7 +1039,6 @@ nlohmann::json myreadfile(int select2) {
         if(select2==2) {tempstring3=filenameread;}//So kann der Dateiname in der Abfrage fortzufahren verwendet werden!
 
         if(!std::filesystem::exists(filenameread)) {
-            std::cout << "testestset: -" << filenameread << "-" << std::endl;
             continuecounter++;// -- wir fragen doch schon nach fortfahren(ja/nein)
             std::cout << "Die Datei konnte nicht geoeffnet werden! Fehlercode: 10" << std::endl;
             //if(myjanein("Eingegebener Dateiname existiert nicht! Erneut versuchen?")) {
@@ -1039,6 +1076,9 @@ nlohmann::json myreadfile(int select2) {
             std::cout << "\nDatei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << error.what() << std::endl;
             mydashedline();
         }
+        //catch(playlist falsch eingelesen - falscher syntax!) {
+        //    
+        //}
     }
     //DAMIT MEIN PROGRAMM WIEDER FUNKTINOIERT - AHHHH!!
     return playlistread;
@@ -1050,7 +1090,6 @@ void mywritefile(std::string filenamewf, const nlohmann::json writefilewf, bool 
     //ueberpruefen ob dateiname bereits existiert!!!!!
     //  ^^siehe myrenamefile()
     bool repeatwf;
-    
     mydashedline();
     
     if(!filecanexist && std::filesystem::exists(filenamewf)) {//Datei existiert bereits, darf es aber nicht (Neue Datei!!)
@@ -1071,7 +1110,6 @@ void mywritefile(std::string filenamewf, const nlohmann::json writefilewf, bool 
 
     repeatwf=true;
     while(repeatwf) {
-        std::cout << "testteststetsdebugging- (eswirdmit: gespeichert) filename: " << filenamewf << std::endl;
         std::ofstream filewf(filenamewf);//hier unbedingt alles einheitlich machen mit add json
 
         if (!filewf.is_open()) {
@@ -1100,20 +1138,16 @@ void mywritefile(std::string filenamewf, const nlohmann::json writefilewf, bool 
     }
 }
 
-std::string myvalidate(std::string inputv) {
-    //diese funktion wird saemtliche vom nutzer eingegebenen strings auf sonderzeichen ueberpruefen
-    icu::UnicodeString unicodeinputv = icu::UnicodeString::fromUTF8(inputv);
-    unicodeInput.toUTF8String(inputv);
-    return inputv;
+std::string myvalidateutf8(std::string str) {
+    //https://github.com/nemtrif/utfcpp
     
-    /*std::string myreturn;//leerer string fuer die rueckgabe
-    for (char c : inputv) {//ueber alle zeichen von inputv iterieren
-        if (static_cast<unsigned char>(c) < 128) {//zeichen c als positiver char projekziert ist kleiner 128 --> erlaubte zeichen
-            myreturn += c;  //erlaubte (sonder)zeichen werden an return string angefuegt und spaeter zurueckgegeben
-        } else {
-            myreturn += '?';  //fuer nicht erlaubte sonderzeichen wird ein fragezeichen dem return string angefuegt!
-        }
-    }
-    return myreturn;*/
+    std::string temp;
+    utf8::replace_invalid(str.begin(), str.end(), back_inserter(temp));
+
+    std::replace(temp.begin(), temp.end(), '[', '?');
+    std::replace(temp.begin(), temp.end(), ']', '?');
+    std::replace(temp.begin(), temp.end(), '{', '?');
+    std::replace(temp.begin(), temp.end(), '}', '?');
+    return temp;
 }
 

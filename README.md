@@ -1,4 +1,5 @@
-SoftwareTechnik Projekt
+//Software Technik Projekt
+Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 
 
 
@@ -15,6 +16,8 @@ SoftwareTechnik Projekt
     -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
     -09 --> der auszulesende ordner existiert nicht. Eigentlich nur moeglich, wenn in settings.json ein nicht vorhandener pfad liegt!
     -10 --> der Dateiname der zu oeffnenden Datei existiert nicht (in myreadfile())
+
+    -12 --> einegebene zahl ist viel zu gross terminate: 'std::out_of_range' (stoi)
 
 
 
@@ -281,7 +284,7 @@ DONEtodo: mycreatefile() und ggfs. myopenfile()/myprintfile() auch durch strings
 
 -myeditfile() delete funktioniert jetzt
 
-todo: einlesen von currentplaylist in die temporaeren variablen, mit catch block absichern.
+DONEtodo: einlesen von currentplaylist in die temporaeren variablen, mit catch block absichern.
     -ueberdenken, ob wir die ueberhaupt brauchen und code/commentare vereinfachen
 
 -bugfix: richtige eingaben im haupt-/song- menue wurden ignoriert bis das menue erneut angezeigt wurde, wenn eine falsche eingabe auftrat
@@ -321,7 +324,7 @@ todo: code auf anderen betriebssystemen testen
 
 DONEtodo: herausfinden, was beim erstellen einer datei mit existierendem namen passiert
 
-todo: diverse fehler zu:
+DONEtodo: diverse fehler zu:
     terminate called after throwing an instance of 'nlohmann::json_abi_v3_11_2::detail::type_error'
       what():  [json.exception.type_error.316] invalid UTF-8 byte at index 4: 0x07
 beheben!
@@ -349,13 +352,13 @@ verschiedene ausgaben wurden benutzerorientierter gestaltet
 ganz am ende von mysearchfile(); wurde main_menu(); entfernt.
     eigentlich doch egal, da dieser code nie erreicht wird, sonder stattdessen mit 'nein' oder 'beenden' die schleife schon vorher endet
 
-todo: sicherheitsabfrage beim suchen auf dort verlegen, wo die datei schon geoffnet wurde(dass man nicht den dateinamen eingeben muss und bestaetigen muss, nur damit ein fehler erscheint)
+DONEtodo: sicherheitsabfrage beim suchen auf dort verlegen, wo die datei schon geoffnet wurde(dass man nicht den dateinamen eingeben muss und bestaetigen muss, nur damit ein fehler erscheint)
 
 -myrenamefile() erstellt
 
 -hauptmenue komplett ueberarbeitet und sehr stark vereinfacht!!
 
-todo: wohin soll fortfahren(ja/nein) zurueckfuehren??? immer main_menu(), oder ggfs. song/playlist_managemment()?
+DONEtodo: wohin soll fortfahren(ja/nein) zurueckfuehren??? immer main_menu(), oder ggfs. song/playlist_managemment()?
 
 DONEtodo: sonderzeichen!!, aber erst mal punkte im dateiname erkennen
 
@@ -364,14 +367,14 @@ DONEtodo: sonderzeichen!!, aber erst mal punkte im dateiname erkennen
 
 -gerade erstellte datei ist jetzt auch die aktuell geoeffnete datei und kann direkt ausgegeben/verwendet werden
 
-TODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeichert wird!!!
+DONETODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeichert wird!!!
 
-todo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
+DONEtodo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
 
 **08.06.**
 DONEtodo: settings.xml datei, um z.B. myinitialize() zu umgehen!
 
-todo: mycreatefile() erneuter versuch(ja/nein) abfrage anstatt direkt ins hauptmenue zu gehen
+DONEtodo: mycreatefile() erneuter versuch(ja/nein) abfrage anstatt direkt ins hauptmenue zu gehen
 
 todo: sind arrays bei mycreatefile nicht zu groß????
 
@@ -381,7 +384,7 @@ NOTE: pfad in settings.json muss mit einem / enden. Ohne das / koennten zwar ord
 
 -ausgeben aller playlists mylistfiles() hinzugefuegt
 
-todo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen, die die playlist auslesen
+DONEtodo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen, die die playlist auslesen
     ODER!!: alles ueber objekte(structs) machen, anstatt arrays. <-- das klingt nach einem guten plan!!
     ODER!!!!!!!: direkt in, aus der datei lesen
         ^^nicht ueberall moeglich, da es sonst ein albtraum waere alle user inputs abzusichern
@@ -392,34 +395,34 @@ todo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen, die
 todo: fehlermeldung wenn leerzeichen beim dateinamen eingegeben wrden. zum beispiel bei mycreatefile() - !!!
 ^^Das machen wir ueber mycheckname(), dafür muss aber mit getline ausgelesen werden!!!! --> myreadfile() !
 
-todo: in mycreatefile() den fehler if(!file2.is_open()) korrekt absichern!!
+DONEtodo: in mycreatefile() den fehler if(!file2.is_open()) korrekt absichern!!
     provozieren zum beispiel mit gezielt falschem dateinamen dort wo die datei feoeffnet wird
     ^^circa zeile 380
 
 -mit den folgendem debugging flags gibt es nur noch eine fehlermeldung fuer die ungenutze variable in mycheckifopen()
     -W -Wall -Wpedantic -Wextra -Wconversion -Wformat -Wuninitialized -Wshadow -Wunused-variable
 
-todo: was ist der plan mit mycheckifopen()? ergibt das irgendeinen sinn?
+DONEtodo: was ist der plan mit mycheckifopen()? ergibt das irgendeinen sinn?
     mach es optimierungs technisch sinn eine bereits geoeffnete date nicht erneut zu oeffnen
     passiert irgendwo etwas schlimmes wenn eine bereits geoeffnete datei erneut geoeffnet wird?? eigentlich ja nicht
 
-todo: ggfs. myopenfile() auch anderswo benutzen, um dateien zu oeffnen.
+DONEtodo: ggfs. myopenfile() auch anderswo benutzen, um dateien zu oeffnen.
 
-todo: unebdingt ueberlegen ob das generelle oeffnen und auslesen von dateien in eine zentrale funktion gelegt werrden kann
+DONEtodo: unebdingt ueberlegen ob das generelle oeffnen und auslesen von dateien in eine zentrale funktion gelegt werrden kann
     auch das schreiben in dateien koennte so durchgefuehrt werden!!
 
 todo: herausfinden, wann diverse switch() >default< getriggert werden, und das ganze, am besten mit eigenem fehlercode, absichern!!!
 
-todo: alle std::cin durch std::getline() ersetzen, um anfaelligkeit gegen leerzeichen zu beheben
+DONEtodo: alle std::cin durch std::getline() ersetzen, um anfaelligkeit gegen leerzeichen zu beheben
 ^^dann kann ich auch die ganzen std::cin.ignore() entfernen
 
-todo:: ggfs. fehler wenn beid den verschiedenen integer abfragen kommas bzw. punkte eingegeben werden
+todo:: ggfs. fehler wenn bei den verschiedenen integer abfragen kommas bzw. punkte eingegeben werden
 
 -std::cin komplett durch std::getline() ersetzt um viele fehler zum beispiel mit leerzeichen oder ueberbleibenden wertden zu beheben!!
 
-todo: alle "integer-only" abfragen ueberpruefen
+DONEtodo: alle "integer-only" abfragen ueberpruefen
 
-todo: myexit() ueberall ueberpruefen!!!!
+DONEtodo: myexit() ueberall ueberpruefen!!!!
 
 -myexit() jetzt als string, anstatt char gestaltet um unnoetige umwandlungen ausserhalb zu vermeiden
 
@@ -427,7 +430,7 @@ todo: myexit() ueberall ueberpruefen!!!!
 -absicherung bei der eingabe saemtlicher dateinamen: nach 3 fehlerhaften eingaben wird gefrag, ob zum hauptmenue zurueckgekehrt werden soll. vor allem in leeren verzeichnissen koennte es sonst zu endlos schleifen kommen.
     jetzt noch die frage: wie kann man den nutzer darauf hinweisen??!?
 
-todo: muss die json datei on myreadfile auch mit dem fuer unsere playlists typischen syntax deklariert werden??
+DONEtodo: muss die json datei on myreadfile auch mit dem fuer unsere playlists typischen syntax deklariert werden??
     damit koennten wir 'falsche' dateien schon frueher erkennen und zentral behandeln
 
 -logischer fehler in mysearchfile behoben, der 'verbotene' zeichen hinzufuegte, bevor nach diesen gesucht und fehler gemeldet wurde!
@@ -458,4 +461,25 @@ todo: pfad (z.B. 'playlists/') nur hinzufuegen, wenn noch nicht hinzugefuegt!!!
 -besseres handling zu oeffnen einer datei die nicht existiert
 
 -trim whitespace (leerzeichen entfernen)
+
+DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr grosse zahlen zu vermeiden!
+    ^^datei erstellen, song bearbeiten, song hinzufuegen
+
+-myvalidateutf8() um alle user inputs, die spaeter in .json dateien geschrieben werden in utf-8 konforme strings umzuwandeln!!
+    mit klammern ergaenzt und komplett abgesichert
+
+-abfrage, ob nach 3 fehlversuchen fortgefahren wereden soll jetzt auch beim eingeben eines dateinamen zu erstellen der datei!
+
+-absturz bei eingabe zu grosser zahlen behoben, an folgenden stellen(eigentlich allen) behoben
+    --erscheinungsjahr datei erstellen-
+    --erscheinungsjahr song bearbeiten-
+    --erscheinungsjahr song hinzufuegen-
+    --selektion im hauptmenue-
+    --anzahl an songs datei erstellen-
+    --(bei durchsuchen nicht benoetigt)
+    --welcher song bearbeitet werden soll-
+    --welcher song geloescht werden soll-
+
+DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
+
 

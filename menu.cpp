@@ -165,7 +165,9 @@ int input_validation(int option_num, int whichmenu)
             inputerror=true;
             std::cin.clear();//die fehler flags werden geloescht!
             std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
-
+        }
+        catch(std::out_of_range&) {
+            std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
         }
 
         if (selection <= 0 || selection > option_num || inputerror)
