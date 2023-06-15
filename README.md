@@ -159,7 +159,7 @@ int input_validation(int option_num, int whichmenu) {
 -erste Test in cpp
     eingaben auslesen(nicht case-sensitiv), verschiedene programmebenen erstellen
 
-***
+---
 **18.05.**
 
 json datei layout:
@@ -193,7 +193,7 @@ DONEtodo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     dateien sind leichter lesbar, dank warten auf enter druck vor rueckkehr zum haupemenue
     vereinfachung der oeffnen funktion
 
-
+---
 **19.05**
 
 -Fehlercodes hinzugefuegt!
@@ -217,7 +217,7 @@ todo: beim einlesen der dateien sonderzeichen herausfiltern! vllt noch einen hin
 
 DONEtodo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
 
-
+---
 **20.05.**
 
 -funktionierendes dateien erstellen
@@ -226,7 +226,7 @@ DONEtodo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderze
 
 todo: die diversen checks und failsafes irgendwie ueberpruefen
 
-
+---
 **21.05.**
 
 DONEtodo: beim auslesen der datei, alles schoen untereinander schreiben um lesbarkeit zu erhoehen!!
@@ -253,7 +253,7 @@ DONEtodo: input bei searchfile auf leerzeichen absichern! leerzeichen-->undersco
     im code angekommen: 05_54
     datei: test10.json  immernoch unter playlist/ gespeichert!
 
-
+---
 **23.05.**
 
 -jedes cin, cout und endl mit std:: erhaenzt um moegliche fehler zu vermeiden.
@@ -282,7 +282,7 @@ DONE:todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
 
 -menu.cpp gegen falsche inputs abgesichert
 
-
+---
 **24.05.**
 
 -myeditfile() hinzufuegen komplett, bearbeiten teilweise.
@@ -304,7 +304,7 @@ todo: spacing/padding bei myprintfile() abhaengig von groesse des groessten jewe
 
 DONEtodo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
 
-
+---
 **27.05.**
 
 -chars in myeditfile() durch strings ersetzt und viele fehler, vor allem bei grossen eingaben vermieden
@@ -326,12 +326,12 @@ DONEtodo: einlesen von currentplaylist in die temporaeren variablen, mit catch b
 
 -bearbeiten von Dateien hinzugefuegt
 
-
+---
 **29.05.**
 
 DONEtodo: song bearbeiten, erscheinungsjahr != int absichern!!
 
-
+---
 **30.05.**
 
 DONEtodo: durchsuchen von erscheinungsdatum hinzufuegen, dazu muss der input zu einem string konvertiert werden. aber wann???
@@ -341,7 +341,7 @@ DONEtodo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwa
 
 DONEtodo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
 
-
+---
 **31.05.**
 
 -einige warnungen mit vergleich unzulaessiger dateitypen behoben!
@@ -352,7 +352,7 @@ DONEtodo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokie
 
 todo: code auf anderen betriebssystemen testen
 
-
+---
 **05.06.**
 
 -addition der myjanein() funktion um häufige abfragen zentral zu regeln, fehler zu vermeiden und den gesamten code etwas zu vereinfachen/entschleiern
@@ -371,7 +371,7 @@ todo:repeat bei if (!file2.is_open()) (in mycreatefile()) irgendwie provozieren 
 
 -saemtliche char arrays bei mycreatefile() durch strings ersetzt, um diverse probleme zu vermeiden, einheit zu schaffen und benutzung der daten zu vereinfachen
 
-
+---
 **06.06.**
 
 -vereinfachung saemtlicher funktionen und arbeitsschritte
@@ -387,7 +387,7 @@ verschiedene ausgaben wurden benutzerorientierter gestaltet
     -titel ------||----------       leerzeichen     ------------||---------------
     -album, kuenstler, genre, ^^^
 
-
+---
 **07.06.**
 
 ganz am ende von mysearchfile(); wurde main_menu(); entfernt.
@@ -412,7 +412,7 @@ DONETODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeicher
 
 DONEtodo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
 
-
+---
 **08.06.**
 
 DONEtodo: settings.xml datei, um z.B. myinitialize() zu umgehen!
@@ -434,7 +434,7 @@ DONEtodo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen,
 
 -diverse kleinere aenderungen, zum beispiel im menue
 
-
+---
 **10.06.**
 
 todo: fehlermeldung wenn leerzeichen beim dateinamen eingegeben wrden. zum beispiel bei mycreatefile() - !!!
@@ -471,7 +471,7 @@ DONEtodo: myexit() ueberall ueberpruefen!!!!
 
 -myexit() jetzt als string, anstatt char gestaltet um unnoetige umwandlungen ausserhalb zu vermeiden
 
-
+---
 **12.06.**
 
 -absicherung bei der eingabe saemtlicher dateinamen: nach 3 fehlerhaften eingaben wird gefrag, ob zum hauptmenue zurueckgekehrt werden soll. vor allem in leeren verzeichnissen koennte es sonst zu endlos schleifen kommen.
@@ -482,7 +482,7 @@ DONEtodo: muss die json datei on myreadfile auch mit dem fuer unsere playlists t
 
 -logischer fehler in mysearchfile behoben, der 'verbotene' zeichen hinzufuegte, bevor nach diesen gesucht und fehler gemeldet wurde!
 
-
+---
 **13.06.**
 
 -beim loeschen der aktuellen playlist wird diese jetzt auch lokal geloscht
@@ -511,7 +511,7 @@ todo: pfad (z.B. 'playlists/') nur hinzufuegen, wenn noch nicht hinzugefuegt!!!
 
 -trim whitespace (leerzeichen entfernen)
 
-
+---
 **14.06.**
 
 DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr grosse zahlen zu vermeiden!
@@ -534,7 +534,7 @@ DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr
 
 DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
 
-
+---
 **15.06.**
 
 -logik fehler beim aufrufen von mywritefile() in myeditfile() behoben!
