@@ -34,85 +34,86 @@ Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 ## Erklaerung saemtlicher Funktionen
 
 **main.cpp**
-
-int main() {  return
-    //ruft die myinitialize() funktion auf  return
+<pre>
+int main() {
+    //ruft die myinitialize() funktion auf
 }
-
+</pre>
 
 **fileops.cpp**
-
-void myinitialize() {  
-    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll  
+<pre>
+void myinitialize() {
+    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll
 }
 
-void myopenfile(bool justprint) {  
-    //fragt den Nutzer nach  
+void myopenfile(bool justprint) {
+    //fragt den Nutzer nach
 }
 
-void myprintfile(bool justopen) {  
-    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)  
+void myprintfile(bool justopen) {
+    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)
 }
 
-void mycreatefile() {  return
-    //erstellt eine neue playlist mit beliebige vielen songs  return
+void mycreatefile() {
+    //erstellt eine neue playlist mit beliebige vielen songs
 }
 
-void mydeletefile() {  return
-    //loescht eine beliebige playlist  return
+void mydeletefile() {
+    //loescht eine beliebige playlist
 }
 
-void mysearchfile() {  return
-    //durchsucht saemtliche merkmale einer playlist auf ein beliebiges stichwort  return
+void mysearchfile() {
+    //durchsucht saemtliche merkmale einer playlist auf ein beliebiges stichwort
 }
 
-void myeditfile(int select) {  return
-    //erlaubt das hinzufuegen/bearbeiten/loeschen eines songs in einer playlist  return
+void myeditfile(int select) {
+    //erlaubt das hinzufuegen/bearbeiten/loeschen eines songs in einer playlist
 }
 
-void myrenamefile() {  return
-    //benennt eine playlist in einen beliebigen namen um  return
+void myrenamefile() {
+    //benennt eine playlist in einen beliebigen namen um
 }
 
-void mylistfiles() {  return
-    //gibt alle playlists und die anzahl deren songs im aktuellen verzeichnis aus  return
+void mylistfiles() {
+    //gibt alle playlists und die anzahl deren songs im aktuellen verzeichnis aus
 }
 
-void myexit(std::string inpute) {  return
-    //Hilfsfunktion, die Benutzereingaben auf 'beenden' ueberpruefen und ggfs. das programm schliessen  return
+void myexit(std::string inpute) {
+    //Hilfsfunktion, die Benutzereingaben auf 'beenden' ueberpruefen und ggfs. das programm schliessen
 }
 
-void mywaitenter() {  return
-    //Hilfsfunktion, die wartet bis der Benutzer die Enter-Taste drueckt. Zum Beispiel um eine Fehler-/Statusmeldung zu lesen  return
+void mywaitenter() {
+    //Hilfsfunktion, die wartet bis der Benutzer die Enter-Taste drueckt. Zum Beispiel um eine Fehler-/Statusmeldung zu lesen
 }
 
-void mydashedline() {  return
-    //Hilfsfunktion, die eine gestrichelte linie ausgibt um die ubersicht zu steigern  return
+void mydashedline() {
+    //Hilfsfunktion, die eine gestrichelte linie ausgibt um die ubersicht zu steigern
 }
 
-bool myjanein(std::string messagejn) {  return
-    //Hilfsfunktion, die eine Frage stellt und die Benutzereingabe auf 'ja' oder 'nein' ueberprueft  return
+bool myjanein(std::string messagejn) {
+    //Hilfsfunktion, die eine Frage stellt und die Benutzereingabe auf 'ja' oder 'nein' ueberprueft
 }
 
-std::string myaddjson(std::string filenameaj, bool addpath) {  return
-    //Hilfsfunktion, die die Dateiendung '.json', sowie den aktuellen Pfad an den Dateinamen anfuegen (falls noch nicht vorhanden)  return
+std::string myaddjson(std::string filenameaj, bool addpath) {
+    //Hilfsfunktion, die die Dateiendung '.json', sowie den aktuellen Pfad an den Dateinamen anfuegen (falls noch nicht vorhanden)
 }
 
-void mycheckname(std::string filenamecn) {  return
-    //Hilfsfunktion, die den eingegebenen Dateinamen auf unerlaubte Sonderzeichen ueberprueft  return
+void mycheckname(std::string filenamecn) {
+    //Hilfsfunktion, die den eingegebenen Dateinamen auf unerlaubte Sonderzeichen ueberprueft
 }
 
-nlohmann::json myreadfile(int select2) {  return
-    //Funktion die das tatsaechliche auslesen aud Dateien uebernimmt und absichert  return
+nlohmann::json myreadfile(int select2) {
+    //Funktion die das tatsaechliche auslesen aud Dateien uebernimmt und absichert
 }
 
-void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool currentfilewf) {  return
-    //Funktion die das tatsaechliche speichern in Dateien uebernimmt und absichert  return
+void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool currentfilewf) {
+    //Funktion die das tatsaechliche speichern in Dateien uebernimmt und absichert
 }
 
-std::string myvalidateutf8(std::string str) {  return
-    //Funktion entfernt vom Benutzer eingegebene Sonderzeichen und Klammern, die in .json Dateien Fehler verursachen koennten  return
+std::string myvalidateutf8(std::string str) {
+    //Funktion entfernt vom Benutzer eingegebene Sonderzeichen und Klammern, die in .json Dateien Fehler verursachen koennten
 }
+</pre>
 
 **menu.cpp**
 <pre>
@@ -145,7 +146,9 @@ int input_validation(int option_num, int whichmenu) {
 
 ## Changelogs und ToDo liste
 
+
 **17.05.**
+
 -Story-Boards und workflow in Jira anlegen
     -Zeitplan festlegen
 -anlegen des Git-Hub repository
@@ -156,7 +159,9 @@ int input_validation(int option_num, int whichmenu) {
 -erste Test in cpp
     eingaben auslesen(nicht case-sensitiv), verschiedene programmebenen erstellen
 
+
 **18.05.**
+
 json datei layout:
 songtitel, kuenstler, album, jahr, laenge des titels?, genre, explicit(y/n)?
 
@@ -188,6 +193,7 @@ DONEtodo:option hinzufuegen um die aktuell geoeffnete playlist umzubenennen?
     dateien sind leichter lesbar, dank warten auf enter druck vor rueckkehr zum haupemenue
     vereinfachung der oeffnen funktion
 
+
 **19.05**
 
 -Fehlercodes hinzugefuegt!
@@ -211,14 +217,18 @@ todo: beim einlesen der dateien sonderzeichen herausfiltern! vllt noch einen hin
 
 DONEtodo: inputs in mycreatefile(): beim auslesen schon leerzeichen und sonderzeichen durch z.B. unterstriche ersetzen!!
 
+
 **20.05.**
+
 -funktionierendes dateien erstellen
 
 -datei erstellen deutlich besser abgesichert
 
 todo: die diversen checks und failsafes irgendwie ueberpruefen
 
+
 **21.05.**
+
 DONEtodo: beim auslesen der datei, alles schoen untereinander schreiben um lesbarkeit zu erhoehen!!
 
 -funktion vom loeschen von dateien hinzugefuegt und abgesichert
@@ -243,7 +253,9 @@ DONEtodo: input bei searchfile auf leerzeichen absichern! leerzeichen-->undersco
     im code angekommen: 05_54
     datei: test10.json  immernoch unter playlist/ gespeichert!
 
+
 **23.05.**
+
 -jedes cin, cout und endl mit std:: erhaenzt um moegliche fehler zu vermeiden.
 
 -absicherung des Hauptmenue, damit buchstaben nicht mehr zu fehlern fuehren
@@ -270,7 +282,9 @@ DONE:todo: mysearchfile() jetzt aufh mit myopenfile(false) programmieren!
 
 -menu.cpp gegen falsche inputs abgesichert
 
+
 **24.05.**
+
 -myeditfile() hinzufuegen komplett, bearbeiten teilweise.
 
 DONEtodo: finden, wo beim einlesen aus der .json datei fehler entstehen!! vor allem bei songlaenge und erscheinungsjahr extrem haeufig/auffaellig/stoerend/destruktiv! unbeding finden
@@ -290,7 +304,9 @@ todo: spacing/padding bei myprintfile() abhaengig von groesse des groessten jewe
 
 DONEtodo: special case, dass der nutzer direkt die datei loeschen kann (siehe oben)?? sinvoll?
 
+
 **27.05.**
+
 -chars in myeditfile() durch strings ersetzt und viele fehler, vor allem bei grossen eingaben vermieden
 
 DONEtodo: mycreatefile() und ggfs. myopenfile()/myprintfile() auch durch strings ersetzen --> deutlich vereinfachter code, weniger stellen a denen durch conversions fehler auftreten koennten
@@ -310,10 +326,14 @@ DONEtodo: einlesen von currentplaylist in die temporaeren variablen, mit catch b
 
 -bearbeiten von Dateien hinzugefuegt
 
+
 **29.05.**
+
 DONEtodo: song bearbeiten, erscheinungsjahr != int absichern!!
 
+
 **30.05.**
+
 DONEtodo: durchsuchen von erscheinungsdatum hinzufuegen, dazu muss der input zu einem string konvertiert werden. aber wann???
     ist es nicht einfacher, das erscheinungsjahr zu konvertieren? wahrscheinlich schon. doer wo die datei eingelesen wird!
 
@@ -321,7 +341,9 @@ DONEtodo: beim ausgeben de suchergebnisse auch unterstriche in doppelpunkte umwa
 
 DONEtodo: leerzeichen bei der eingabe von daten zum erstellen einer playlist (oder?) hinzufuegen eines songs, muss eine loesung gefunden werden!
 
+
 **31.05.**
+
 -einige warnungen mit vergleich unzulaessiger dateitypen behoben!
     jetzt gibt es nur noch 14(2*7) Warnungen fuer variable Dateilaengen
 
@@ -330,7 +352,9 @@ DONEtodo: Warnungen fuer variable Dateilaengen durch dynamische speicher allokie
 
 todo: code auf anderen betriebssystemen testen
 
+
 **05.06.**
+
 -addition der myjanein() funktion um häufige abfragen zentral zu regeln, fehler zu vermeiden und den gesamten code etwas zu vereinfachen/entschleiern
 
 -diverse probleme beim einlesen der song eigenschaften (beim erstellen einer playlist) behoben
@@ -347,7 +371,9 @@ todo:repeat bei if (!file2.is_open()) (in mycreatefile()) irgendwie provozieren 
 
 -saemtliche char arrays bei mycreatefile() durch strings ersetzt, um diverse probleme zu vermeiden, einheit zu schaffen und benutzung der daten zu vereinfachen
 
+
 **06.06.**
+
 -vereinfachung saemtlicher funktionen und arbeitsschritte
 
 todo: eingabe von duration auf buchstaben ueberpruefen und fehler ausgeben! (wo?: createfile & editfile(edit song & add song))
@@ -361,7 +387,9 @@ verschiedene ausgaben wurden benutzerorientierter gestaltet
     -titel ------||----------       leerzeichen     ------------||---------------
     -album, kuenstler, genre, ^^^
 
+
 **07.06.**
+
 ganz am ende von mysearchfile(); wurde main_menu(); entfernt.
     eigentlich doch egal, da dieser code nie erreicht wird, sonder stattdessen mit 'nein' oder 'beenden' die schleife schon vorher endet
 
@@ -384,7 +412,9 @@ DONETODO: currentplaylist immer erst dort zuweisen, wo auch die datei gespeicher
 
 DONEtodo: tempstring2&tempstring3 auch enderswo benutzen, damit z.B. myaddjson() vereinfacht werden kann!!
 
+
 **08.06.**
+
 DONEtodo: settings.xml datei, um z.B. myinitialize() zu umgehen!
 
 DONEtodo: mycreatefile() erneuter versuch(ja/nein) abfrage anstatt direkt ins hauptmenue zu gehen
@@ -404,7 +434,9 @@ DONEtodo: dynamisch allokierter speicher jetzt auch fuer die diversen variablen,
 
 -diverse kleinere aenderungen, zum beispiel im menue
 
+
 **10.06.**
+
 todo: fehlermeldung wenn leerzeichen beim dateinamen eingegeben wrden. zum beispiel bei mycreatefile() - !!!
 ^^Das machen wir ueber mycheckname(), dafür muss aber mit getline ausgelesen werden!!!! --> myreadfile() !
 
@@ -439,7 +471,9 @@ DONEtodo: myexit() ueberall ueberpruefen!!!!
 
 -myexit() jetzt als string, anstatt char gestaltet um unnoetige umwandlungen ausserhalb zu vermeiden
 
+
 **12.06.**
+
 -absicherung bei der eingabe saemtlicher dateinamen: nach 3 fehlerhaften eingaben wird gefrag, ob zum hauptmenue zurueckgekehrt werden soll. vor allem in leeren verzeichnissen koennte es sonst zu endlos schleifen kommen.
     jetzt noch die frage: wie kann man den nutzer darauf hinweisen??!?
 
@@ -448,7 +482,9 @@ DONEtodo: muss die json datei on myreadfile auch mit dem fuer unsere playlists t
 
 -logischer fehler in mysearchfile behoben, der 'verbotene' zeichen hinzufuegte, bevor nach diesen gesucht und fehler gemeldet wurde!
 
+
 **13.06.**
+
 -beim loeschen der aktuellen playlist wird diese jetzt auch lokal geloscht
 
 -mycheckifopen() geloescht
@@ -475,7 +511,9 @@ todo: pfad (z.B. 'playlists/') nur hinzufuegen, wenn noch nicht hinzugefuegt!!!
 
 -trim whitespace (leerzeichen entfernen)
 
+
 **14.06.**
+
 DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr grosse zahlen zu vermeiden!
     ^^datei erstellen, song bearbeiten, song hinzufuegen
 
@@ -496,7 +534,9 @@ DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr
 
 DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
 
+
 **15.06.**
+
 -logik fehler beim aufrufen von mywritefile() in myeditfile() behoben!
 
 -in myeditfile() beim abfragen welcher song bearbeitet/geloescht/dupliziert werden soll eine "Fortfahren?" abfrage nach 3 fehlversuchen ergaentz
