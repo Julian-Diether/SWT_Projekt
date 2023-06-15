@@ -577,7 +577,7 @@ void myeditfile(int select) {
                 continuecounter3++;
             }
         }
-    }std::cout << "broke loop with : " << songposition << std::endl;
+    }
 
 
     //durchfuehren von hinzufuegen/bearbeiten/loeschen
@@ -745,7 +745,7 @@ void myeditfile(int select) {
         
 
     if(select==4) {
-        
+
         playlistsize+=1;
         //long long unsigned int tempi =(playlistsize-1);
 

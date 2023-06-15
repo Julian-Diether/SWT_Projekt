@@ -40,8 +40,8 @@
       "album": "test_album",
       "artist": "test_band",
       "date": 2015,
-      "explicit": false,
-      "genre": "test",
+      "explicit": true,
+      "genre": "tests",
       "length": "25:43",
       "title": "test_song_2"
     }

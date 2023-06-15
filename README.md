@@ -7,16 +7,25 @@ Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 
 ***Fehlercodes***
     -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
-    -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
-    -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
-    -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
-    -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
-    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name, Datei existiert nicht, ...
-    -07 --> fehler, datei existiert bereits (in mycreatefile())
-    -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
-    -09 --> der auszulesende ordner existiert nicht. Eigentlich nur moeglich, wenn in settings.json ein nicht vorhandener pfad liegt!
-    -10 --> der Dateiname der zu oeffnenden Datei existiert nicht (in myreadfile())
 
+    -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
+
+    -03 --> user will datei ausgeben oder durchsuchen waehrend keine geoeffnet ist
+
+    -04 --> die datei die erstellt werden soll wurde nicht geoeffnet (!file2.is_open())
+
+    -05 --> user versuchte beim eingeben des zu loeschenden dateinamen / oder \ zu benutzen
+
+    -06 --> fehler beim loeschen der datei (std::remove(filenamedeletefile) != 0) z.B. falscher Name, Datei existiert nicht, ...
+
+    -07 --> fehler, datei existiert bereits (in mycreatefile())
+
+    -08 --> fehler beim umbenennen der datei (if (std::rename(filenameold.c_str(), filename.c_str()) != 0)) , namen bereits geprueft
+
+    -09 --> der auszulesende ordner existiert nicht. Eigentlich nur moeglich, wenn in settings.json ein nicht vorhandener pfad liegt!
+
+    -10 --> der Dateiname der zu oeffnenden Datei existiert nicht (in myreadfile())
+    
     -12 --> einegebene zahl ist viel zu gross terminate: 'std::out_of_range' (stoi)
 
 
@@ -25,83 +34,83 @@ Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 
 **main.cpp**
 
-int main() {
-    //ruft die myinitialize() funktion auf
+int main() {  return
+    //ruft die myinitialize() funktion auf  return
 }
 
 
 **fileops.cpp**
 
-void myinitialize() {
-    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll
+void myinitialize() {  return
+    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll  return
 }
 
-void myopenfile(bool justprint) {
-    //fragt den Nutzer nach
+void myopenfile(bool justprint) {  return
+    //fragt den Nutzer nach  return
 }
 
-void myprintfile(bool justopen) {
-    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)
+void myprintfile(bool justopen) {  return
+    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)  return
 }
 
-void mycreatefile() {
-    //erstellt eine neue playlist mit beliebige vielen songs
+void mycreatefile() {  return
+    //erstellt eine neue playlist mit beliebige vielen songs  return
 }
 
-void mydeletefile() {
-    //loescht eine beliebige playlist
+void mydeletefile() {  return
+    //loescht eine beliebige playlist  return
 }
 
-void mysearchfile() {
-    //durchsucht saemtliche merkmale einer playlist auf ein beliebiges stichwort
+void mysearchfile() {  return
+    //durchsucht saemtliche merkmale einer playlist auf ein beliebiges stichwort  return
 }
 
-void myeditfile(int select) {
-    //erlaubt das hinzufuegen/bearbeiten/loeschen eines songs in einer playlist
+void myeditfile(int select) {  return
+    //erlaubt das hinzufuegen/bearbeiten/loeschen eines songs in einer playlist  return
 }
 
-void myrenamefile() {
-    //benennt eine playlist in einen beliebigen namen um
+void myrenamefile() {  return
+    //benennt eine playlist in einen beliebigen namen um  return
 }
 
-void mylistfiles() {
-    //gibt alle playlists und die anzahl deren songs im aktuellen verzeichnis aus
+void mylistfiles() {  return
+    //gibt alle playlists und die anzahl deren songs im aktuellen verzeichnis aus  return
 }
 
-void myexit(std::string inpute) {
-    //Hilfsfunktion, die Benutzereingaben auf 'beenden' ueberpruefen und ggfs. das programm schliessen
+void myexit(std::string inpute) {  return
+    //Hilfsfunktion, die Benutzereingaben auf 'beenden' ueberpruefen und ggfs. das programm schliessen  return
 }
 
-void mywaitenter() {
-    //Hilfsfunktion, die wartet bis der Benutzer die Enter-Taste drueckt. Zum Beispiel um eine Fehler-/Statusmeldung zu lesen
+void mywaitenter() {  return
+    //Hilfsfunktion, die wartet bis der Benutzer die Enter-Taste drueckt. Zum Beispiel um eine Fehler-/Statusmeldung zu lesen  return
 }
 
-void mydashedline() {
-    //Hilfsfunktion, die eine gestrichelte linie ausgibt um die ubersicht zu steigern
+void mydashedline() {  return
+    //Hilfsfunktion, die eine gestrichelte linie ausgibt um die ubersicht zu steigern  return
 }
 
-bool myjanein(std::string messagejn) {
-    //Hilfsfunktion, die eine Frage stellt und die Benutzereingabe auf 'ja' oder 'nein' ueberprueft
+bool myjanein(std::string messagejn) {  return
+    //Hilfsfunktion, die eine Frage stellt und die Benutzereingabe auf 'ja' oder 'nein' ueberprueft  return
 }
 
-std::string myaddjson(std::string filenameaj, bool addpath) {
-    //Hilfsfunktion, die die Dateiendung '.json', sowie den aktuellen Pfad an den Dateinamen anfuegen (falls noch nicht vorhanden)
+std::string myaddjson(std::string filenameaj, bool addpath) {  return
+    //Hilfsfunktion, die die Dateiendung '.json', sowie den aktuellen Pfad an den Dateinamen anfuegen (falls noch nicht vorhanden)  return
 }
 
-void mycheckname(std::string filenamecn) {
-    //Hilfsfunktion, die den eingegebenen Dateinamen auf unerlaubte Sonderzeichen ueberprueft
+void mycheckname(std::string filenamecn) {  return
+    //Hilfsfunktion, die den eingegebenen Dateinamen auf unerlaubte Sonderzeichen ueberprueft  return
 }
 
-nlohmann::json myreadfile(int select2) {
-    //Funktion die das tatsaechliche auslesen aud Dateien uebernimmt und absichert
+nlohmann::json myreadfile(int select2) {  return
+    //Funktion die das tatsaechliche auslesen aud Dateien uebernimmt und absichert  return
 }
 
-void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool currentfilewf) {
-    //Funktion die das tatsaechliche speichern in Dateien uebernimmt und absichert
+void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool currentfilewf) {  return
+    //Funktion die das tatsaechliche speichern in Dateien uebernimmt und absichert  return
 }
 
-std::string myvalidateutf8(std::string str) {
-    //Funktion entfernt vom Benutzer eingegebene Sonderzeichen und Klammern, die in .json Dateien Fehler verursachen koennten
+std::string myvalidateutf8(std::string str) {  return
+    //Funktion entfernt vom Benutzer eingegebene Sonderzeichen und Klammern, die in .json Dateien Fehler verursachen koennten  return
 }
 
 **menu.cpp**
