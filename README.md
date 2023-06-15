@@ -6,6 +6,7 @@ Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 ## Fehlercodes
 
 ***Fehlercodes***
+
     -01 --> fehler bei oeffnen der datei, datei existiert vermutlich nicht
 
     -02 --> fehler beim oeffnen der datei, sie existiert ist aber z.B. leer
@@ -41,16 +42,16 @@ int main() {  return
 
 **fileops.cpp**
 
-void myinitialize() {  return
-    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll  return
+void myinitialize() {  
+    //fragt den Nutzer ob zu Start des Programms eine Playlist geoeffnet werden soll  
 }
 
-void myopenfile(bool justprint) {  return
-    //fragt den Nutzer nach  return
+void myopenfile(bool justprint) {  
+    //fragt den Nutzer nach  
 }
 
-void myprintfile(bool justopen) {  return
-    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)  return
+void myprintfile(bool justopen) {  
+    //gibt die aktuell geoeffnet/intialisierte Datei aus (sofern vorhanden)  
 }
 
 void mycreatefile() {  return
