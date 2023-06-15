@@ -115,7 +115,7 @@ std::string myvalidateutf8(std::string str) {  return
 }
 
 **menu.cpp**
-
+<pre>
 void welcome_msg() {
     //Gibt eine Willkommensnachricht zu Beginn des Programms aus
 }
@@ -135,7 +135,7 @@ void playlist_management() {
 int input_validation(int option_num, int whichmenu) {
     //Ueberprueft dass nur die zu den erlaubten auswahlen gehoerenden zahlen eingegben wurden
 }
-
+</pre>
 
 **test1.cpp**
 
