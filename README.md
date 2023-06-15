@@ -139,14 +139,14 @@ int input_validation(int option_num, int whichmenu) {
 </pre>
 
 **test1.cpp**
-
+<pre>
 //Diente dazu diverse funktionen waehrend der entwicklung und dem troubleshooting gezielt und ohne groeßeren aufwand zu testen
-
+</pre>
 
 
 ## Changelogs und ToDo liste
 
-
+---
 **17.05.**
 
 -Story-Boards und workflow in Jira anlegen
@@ -159,7 +159,7 @@ int input_validation(int option_num, int whichmenu) {
 -erste Test in cpp
     eingaben auslesen(nicht case-sensitiv), verschiedene programmebenen erstellen
 
-
+***
 **18.05.**
 
 json datei layout:
