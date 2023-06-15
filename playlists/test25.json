@@ -15,7 +15,7 @@
       "date": 2015,
       "explicit": false,
       "genre": "test",
-      "length": "25_43",
+      "length": "25:43",
       "title": "test_song_2"
     },
     {
@@ -35,6 +35,15 @@
       "genre": "test musik",
       "length": "04_31",
       "title": "der song name"
+    },
+    {
+      "album": "test_album",
+      "artist": "test_band",
+      "date": 2015,
+      "explicit": false,
+      "genre": "test",
+      "length": "25:43",
+      "title": "test_song_2"
     }
   ]
 }

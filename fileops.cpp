@@ -18,7 +18,7 @@
 
 //inkludierung globaler variablen
 std::string mypath;
-std::string settingspath = "settings.json";
+std::string settingsdir = "settings.json";
 
 //deklarierung eigener variablen
 std::string filename = "";
@@ -74,8 +74,8 @@ void myinitialize() {
     };
 
     try {
-        if (std::filesystem::exists(settingspath)) {
-            std::ifstream tempfile(settingspath);
+        if (std::filesystem::exists(settingsdir)) {
+            std::ifstream tempfile(settingsdir);
             if(tempfile.is_open()) {
                 tempfile >> settings;
                 tempfile.close();
@@ -191,7 +191,6 @@ void myprintfile(bool justprint) {
 
 void mycreatefile() {
 
-    //char filenamecreatefile[50];
     std::string filenamecreatefile;
     int length=0;
     int tempyear=0;
@@ -202,7 +201,7 @@ void mycreatefile() {
     while(repeat) {
         if(continuecounter2>2) {
             continuecounter2=0;
-            if(!myjanein("\t\tFortfahren?")) {
+            if(!myjanein("\tFortfahren?")) {
                 main_menu();
             }
         }
@@ -260,7 +259,7 @@ void mycreatefile() {
 
     //hier beggint das einlesen der neuen songs!
     mydashedline();
-    std::cout << "ACHTUNG!! keine Sonderzeichen oder Leerzeichen eingeben" << std::endl;
+    std::cout << "---ACHTUNG!! Bitte keine Sonderzeichen eingeben---" << std::endl;
 
     //std::memset(answer, 0, sizeof(answer));
     for(int i=0; i<length; i++) {
@@ -466,7 +465,7 @@ void myeditfile(int select) {
     long long unsigned int playlistsize = currentplaylist["data"].size();
     long long unsigned int playlistsize1;
 
-    if(select==1) {playlistsize1=(playlistsize+1);}//hinzufuegen
+    if(select==1 || select==4) {playlistsize1=(playlistsize+1);}//hinzufuegen oder duplizieren
     if(select==2) {playlistsize1=playlistsize;}//bearbeiten
     if(select==3) {playlistsize1=playlistsize;}//loeschen
 
@@ -518,18 +517,24 @@ void myeditfile(int select) {
 
     //playlist ist eingelesen, jetzt kann hinzugefuegt/bearbeitet/geloescht werden!
 
-    //songnummer wird erfragt
+    //songnummer wird erfragt (ausser ein neuer song wird hinzugefuegt)
     int songposition=0;
-    if(select==2||select==3) {
+    int continuecounter3=0;
+    if(select==2||select==3||select==4) {
+        
         myprintfile(true);
         repeat=true;
         while(repeat) {
-            //std::memset(answer, 0, sizeof(answer));
+            if(continuecounter3>3) {
+                if(!myjanein("\tFortfahren?")) {
+                    main_menu();
+                }
+            }
             if(select==2) {
                 std::cout << "Welche Songnummer soll bearbeitet werden?: ";
-            } else {//song loeschen selektiert
+            } if(select==3) {
 
-                if(currentplaylist["data"].size()<2) {
+                if(currentplaylist["data"].size()<2) {//handelt die exception wenn nur ein song vorhanden ist
                     mydashedline();
                     std::cout << "\tAchtung, die ausgewaehlte Playlist enthaelt nur einen Song" << std::endl;
 
@@ -541,18 +546,22 @@ void myeditfile(int select) {
                 } else {
                         std::cout << "welche Songnummer soll geloescht werden?: ";
                 }
+            } if (select==4) {
+                std::cout << "welche Songnummer soll dupliziert werden?: ";
             }
 
-            std::getline(std::cin, tempstring);
+            std::getline(std::cin, tempstring);//eingabe erfassen
             try {
                 songposition = std::stoi(tempstring);
             }
             catch(std::invalid_argument&) {//falls keine zahl eingegeben wurde 
                 std::cin.clear();//input wird geloescht
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
+                continuecounter3++;
             }
             catch(std::out_of_range&) {
                 std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
+                continuecounter3++;
             }
             
             if(songposition>0) {//Zahlen positiv
@@ -561,14 +570,15 @@ void myeditfile(int select) {
                     songposition-=1;//sehr wichtig, da die zahlen in c++ bei 0, nicht 1 beginnen!!!!!
                 } else {//Zahl groesser als anzahl der eintraege in der Playlist
                     std::cout << "\tEingegebene Zahl ist zu gross!" << std::endl;
+                    continuecounter3++;
                 }
             } else {//Zahlen negativ
                 std::cout << "\tNegative Zahlen/Null sind nicht zulaessig!" << std::endl;
+                continuecounter3++;
             }
         }
-    }
+    }std::cout << "broke loop with : " << songposition << std::endl;
 
-    std::memset(answer, 0, sizeof(answer));
 
     //durchfuehren von hinzufuegen/bearbeiten/loeschen
     int tempyear=0;
@@ -600,7 +610,7 @@ void myeditfile(int select) {
                 std::cout << "Eingegebene Zahl ist viel zu gross! Fehlercode: 12" << std::endl;
             }
 
-            if(tempyear>0 && tempyear>2500) {
+            if(tempyear>0 && tempyear<2500) {
                 repeat=false;year.push_back(tempyear);
             } else {//success!n
                 std::cout << "Fehlerhafte Eingabe! Bitte geben sie eine (positive) Zahl ein!" << std::endl;
@@ -622,6 +632,7 @@ void myeditfile(int select) {
         std::replace(genre[tempi].begin(), genre[tempi].end(), ' ', '_');
         mydashedline();
     }
+
 
     if(select==2) {
         
@@ -707,6 +718,7 @@ void myeditfile(int select) {
         }
 
         repeat=true;
+        std::memset(answer, 0, sizeof(answer));
         if(badwords[songposition]) {std::cout << "Jugendfrei (Ja/Nein): " << "Nein" << std::endl;} else {std::cout << "Jugendfrei (Ja/Nein): " << "Ja" << std::endl;}
         while (repeat) {std::cout << "> (Ja/Nein): ";
             std::getline(std::cin, tempanswer);
@@ -732,6 +744,23 @@ void myeditfile(int select) {
     }//ende if(select==2)
         
 
+    if(select==4) {
+        
+        playlistsize+=1;
+        //long long unsigned int tempi =(playlistsize-1);
+
+        title.push_back(title[songposition]);
+        artist.push_back(artist[songposition]);
+        album.push_back(album[songposition]);
+        year.push_back(year[songposition]);
+        genre.push_back(genre[songposition]);
+        badwords.push_back(badwords[songposition]);
+        duration.push_back(duration[songposition]);
+
+        std::cout << "Song Nr. " << (songposition+1) << " wurde erfolgreich dupliziert!" << std::endl;
+    }
+
+
     //geanderte datei fuer das speichern vorbereiten
     std::cout << "Aenderungen werden in die Datei geschrieben" << std::endl;
     for(long long unsigned int i=0; i<(playlistsize1); i++) {//hier alerdings wollen wir bis currentplaylist.size()+1 gehen!!
@@ -744,6 +773,7 @@ void myeditfile(int select) {
         writefile["data"][i]["length"] = duration[i];
     }
 
+    //song (ggfs.) loeschen
     if(select==3) {
         //macht es optimisierungstechnisch einen unterschied, dass hier datein eingelesen werden, die im fall 'nein' nicht gebraucht werden??
         tempstring = "ACHTUNG! Soll song Nr. " + std::to_string((songposition+1)) + " wirklich geloscht werden?";
@@ -754,7 +784,7 @@ void myeditfile(int select) {
         }
     }//ende song loeschen
 
-    mywritefile(filename, writefile, false);
+    mywritefile(filename, writefile, true);
 }
 
 void myrenamefile() {

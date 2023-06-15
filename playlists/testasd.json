@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "album": "_asd_asd_asd_asd_asd_",
+      "artist": "s",
+      "date": 52,
+      "explicit": false,
+      "genre": "asd",
+      "length": "04_34",
+      "title": "der_songa"
+    },
+    {
+      "album": "s",
+      "artist": "dsa",
+      "date": 2020,
+      "explicit": true,
+      "genre": "asd",
+      "length": "04_21",
+      "title": "asd"
+    }
+  ]
+}

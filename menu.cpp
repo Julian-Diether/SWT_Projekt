@@ -79,11 +79,12 @@ void song_management()
     std::cout << "\n*********************\tSong Editor\t***********************" << std::endl;
     std::cout << "Song hinzufuegen  -  1" << std::endl;
     std::cout << "Song bearbeiten  -  2" << std::endl;
-    std::cout << "Song loeschen   -   3" << std::endl;
-    std::cout << "Zurueck zum menue  -  4" << std::endl;
-    std::cout << "Musikplayer beenden  - 5" << std::endl;
+    std::cout << "Song duplizieren -  3" << std::endl;
+    std::cout << "Song loeschen   -   4" << std::endl;
+    std::cout << "Zurueck zum menue - 5" << std::endl;
+    std::cout << "Musikplayer beenden - 6" << std::endl;
     int selection {0}; //User input
-    int option_num {5}; //Number of options in the displayed menu
+    int option_num {6}; //Number of options in the displayed menu
     selection = input_validation(option_num, 2); 
 
     switch(selection)
@@ -95,12 +96,15 @@ void song_management()
             myeditfile(2);
         break;
         case 3:
-            myeditfile(3);
+            myeditfile(4);
         break;
         case 4:
-            main_menu();
+            myeditfile(3);
         break;
         case 5:
+            main_menu();
+        break;
+        case 6:
             myexit(mybeenden);
         break;
         default:

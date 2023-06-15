@@ -100,6 +100,9 @@ void mywritefile(std::string filenameinwf, nlohmann::json writefilewf, bool curr
     //Funktion die das tatsaechliche speichern in Dateien uebernimmt und absichert
 }
 
+std::string myvalidateutf8(std::string str) {
+    //Funktion entfernt vom Benutzer eingegebene Sonderzeichen und Klammern, die in .json Dateien Fehler verursachen koennten
+}
 
 **menu.cpp**
 
@@ -462,6 +465,7 @@ todo: pfad (z.B. 'playlists/') nur hinzufuegen, wenn noch nicht hinzugefuegt!!!
 
 -trim whitespace (leerzeichen entfernen)
 
+**14.06.**
 DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr grosse zahlen zu vermeiden!
     ^^datei erstellen, song bearbeiten, song hinzufuegen
 
@@ -481,5 +485,19 @@ DONEtodo: bedingung - erscheinungsjahr darf nicht groesser als 2500 sein um sehr
     --welcher song geloescht werden soll-
 
 DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
+
+**15.06.**
+-logik fehler beim aufrufen von mywritefile() in myeditfile() behoben!
+
+-in myeditfile() beim abfragen welcher song bearbeitet/geloescht/dupliziert werden soll eine "Fortfahren?" abfrage nach 3 fehlversuchen ergaentz
+
+-in myeditfile() funktionalitaet zum duplizieren von songs hinzugefuegt,und abgesichert
+    song menue dementsprechend angepasst
+
+-logik fehler beim validieren des erscheinungsjahr beim hinzufuegen eines songs zur playlist behoben
+
+-kleinere fehler beim duplizieren eines songs behoben
+
+
 
 
