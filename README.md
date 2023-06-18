@@ -27,6 +27,8 @@ Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 
     -10 --> der Dateiname der zu oeffnenden Datei existiert nicht (in myreadfile())
     
+    -11 --> das Format der eingelesenen Datei passt nicht zu dem vorgegebenen. (in myvalidatesyntax())
+
     -12 --> einegebene zahl ist viel zu gross terminate: 'std::out_of_range' (stoi)
 
 
@@ -547,6 +549,10 @@ DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
 -logik fehler beim validieren des erscheinungsjahr beim hinzufuegen eines songs zur playlist behoben
 
 -kleinere fehler beim duplizieren eines songs behoben
+
+-validierung des syntax hinzugefuegt. falsch formatierte dateien werden jetzt nicht geoeffnet und eine Fehlermeldung wird ausgegeben
+
+todo: saemtliche zahlen-eingaben mit kommazahlen ueberpruefen!! Auch z.B. wieviele Songs hinzugefuegt werden sollen!!!!!!!
 
 
 </pre>

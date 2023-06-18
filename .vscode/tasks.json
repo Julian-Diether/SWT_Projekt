@@ -6,7 +6,7 @@
             "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
             "args": [
                 "-I",
-                "${workspaceFolder}",
+                "${workspaceFolder}/**",
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",

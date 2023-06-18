@@ -1,0 +1,38 @@
+{
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "album": {
+              "type": "string"
+            },
+            "artist": {
+              "type": "string"
+            },
+            "date": {
+              "type": "integer"
+            },
+            "explicit": {
+              "type": "boolean"
+            },
+            "genre": {
+              "type": "string"
+            },
+            "length": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
+          },
+          "required": ["album", "artist", "date", "explicit", "genre", "length", "title"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["data"]
+  }
+  

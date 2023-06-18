@@ -13,8 +13,9 @@
 #include <limits>//warnungsfreihe vergleiche
 #include <stdexcept>//um z.B. std::invalid_argument zu catchen
 #include <vector>//dynamische speicher allokation
-#include "source/utf8.h"
-#include "nlohmann/json.hpp"//json manipulation
+#include "libraries/utf8library/source/utf8.h"//erkennen und filtern von sonderzeichen
+//#include "libraries/json-schema-validator-main/src/nlohmann/json-schema.hpp"//schema/syntax validator SCHROTT
+#include "libraries/nlohmann/json.hpp"//json manipulation
 
 //inkludierung globaler variablen
 std::string mypath;
@@ -59,6 +60,7 @@ void mycheckname(const std::string filenamecn);
 nlohmann::json myreadfile(int select2);
 void mywritefile(std::string filenamewf, const nlohmann::json writefilewf, bool currentfilewf);
 std::string myvalidateutf8(std::string str);
+bool myvalidatesyntax(const nlohmann::json playlistvs);
 
 void myinitialize() {
 
@@ -1090,8 +1092,17 @@ nlohmann::json myreadfile(int select2) {
 
             fileread >> playlistread;//Datei wird eingelesen
             fileread.close();//Datei wird geschlossen
+
             if(makecurrentfile){filename=filenameread;}//dateiname wird uebergeben, sobald Datei geoeffnet ist.
             std::cout << "     -Die Datei wurde geoeffnet" << std::endl;
+
+            if(myvalidatesyntax(playlistread)) {
+                std::cout << "     -Dateiformat ist gueltig" << std::endl;
+            } else {
+                playlistread.clear();
+                mywaitenter();
+                main_menu();
+            }
 
             return playlistread;
             //-----------------------------------------------------------------
@@ -1106,11 +1117,9 @@ nlohmann::json myreadfile(int select2) {
             std::cout << "\nDatei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << error.what() << std::endl;
             mydashedline();
         }
-        //catch(playlist falsch eingelesen - falscher syntax!) {
-        //    
-        //}
     }
-    //DAMIT MEIN PROGRAMM WIEDER FUNKTINOIERT - AHHHH!!
+    //WIE HANDELN WIR DAS??
+    //^gar nicht, dieser Punkt wird nie erreicht, der return dient nur dazu, compiler warnungen loszuwerden!
     return playlistread;
 }
 
@@ -1179,5 +1188,119 @@ std::string myvalidateutf8(std::string str) {
     std::replace(temp.begin(), temp.end(), '{', '?');
     std::replace(temp.begin(), temp.end(), '}', '?');
     return temp;
+}
+
+bool myvalidatesyntax(const nlohmann::json playlistvs) {
+    
+    bool validvs = true;
+    long long unsigned int lengthvs = 0;// [-Wconversion]
+    std::string tempstringvs = "";
+    int tempintvs = 0;
+    bool tempboolvs = false;
+    std::string attributevs;
+
+    lengthvs = playlistvs["data"].size();//ist immer >0, da sonst
+    std::cout << "asdasdasdasdasdasdasd - laenge: " << lengthvs << std::endl;
+    for(long long unsigned i=0; i<lengthvs; i++) {
+
+        try{
+            attributevs = "Titel";tempstringvs = playlistvs["data"][i]["title"]; //std::cout << i << " +1 == " << playlistvs["data"][i]["title"] << std::endl;
+            attributevs = "Album";tempstringvs = playlistvs["data"][i]["album"]; //std::cout << i << " +2 == " << playlistvs["data"][i]["album"] << std::endl;
+            attributevs = "Interpret";tempstringvs = playlistvs["data"][i]["artist"]; //std::cout << i << " +3 == " << playlistvs["data"][i]["artist"] << std::endl;
+            attributevs = "Erscheinungsjahr";tempintvs = playlistvs["data"][i]["date"]; //std::cout << i << " +4 == " << playlistvs["data"][i]["date"] << std::endl;
+            attributevs = "Laenge";tempstringvs = playlistvs["data"][i]["length"]; //std::cout << i << " +5 == " << playlistvs["data"][i]["length"] << std::endl;
+            attributevs = "Genre";tempstringvs = playlistvs["data"][i]["genre"]; //std::cout << i << " +6 == " << playlistvs["data"][i]["genre"] << std::endl;
+            attributevs = "Jugendfrei";tempboolvs = playlistvs["data"][i]["explicit"]; //std::cout << i << " +7 == " << playlistvs["data"][i]["explicit"] << std::endl;
+            //mydashedline();
+        }
+        catch(const std::exception& errorvs) {//  der for loop bricht trotzdem nach erstem catch ab :(
+            validvs = false;
+            mydashedline();
+            std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;
+            std::cout << "Song Nr. " << (i+1) << " -  Inkorrektes Attribut: " << attributevs << std::endl;
+            std::cerr << "mehr Informationen: " << errorvs.what() << std::endl;
+            continue;
+        }
+        catch(...) {//const nlohmann::json::exception& error2vs) {
+            validvs = false;
+            mydashedline();
+            std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;
+            std::cout << "Song Nr. " << (i+1) << " -  Fehlendes Attribut: " << attributevs << std::endl;
+            //std::cerr << "mehr Informationen: " << error2vs.what() << std::endl;
+            continue;
+        }
+    }
+    
+    //apeasement fur [-Wunused-but-set-variable]
+    tempintvs++;
+    static_cast<void>(tempboolvs);// :)
+    
+    return validvs;
+    
+
+    /*Bibliothek kann einfach nicht installiert werden
+    //https://github.com/pboettch/json-schema-validator
+
+    //hier kommt unser syntax. Wir speichern ihn NICHT in einer externen .json Datei, da es sonst probleme geben koennte wenn die Datei
+    //nicht geoeffnet werden kann!!!! Viel zu Fehler anfaellig und unnoetig komplex. macht es aber schwieriger den Syntax zu aendern!!
+    static nlohmann::json playlist_schema = R"(
+    {
+    "type": "object",
+    "properties": {
+        "data": {
+            "type": "array",
+        "items": {
+            "type": "object",
+        "properties": {
+            "album": {
+              "type": "string"
+            },
+            "artist": {
+              "type": "string"
+            },
+            "date": {
+              "type": "integer"
+            },
+            "explicit": {
+              "type": "boolean"
+            },
+            "genre": {
+              "type": "string"
+            },
+            "length": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
+        },
+        "required": ["album", "artist", "date", "explicit", "genre", "length", "title"],
+        "additionalProperties": true
+        }
+      }
+    },
+    "required": ["data"],
+    "additionalProperties": true
+    }
+
+    )"_json;
+    //^^additionalProperties auf true: Es sollte keine Fehlermeldung geben, nur weil zusaetzlich zu allen hier verwendeten infos
+    //noch andere im Programm gespeichert werden!!!! Diese koennte von anderen Programmen/Diensten/Entwicklern genutzt werden!!
+    bool returntf = true;
+    nlohmann::json_schema::json_validator myvalidator;
+
+    for (auto &song : playlistvs) {
+        std::cout << "About to validate this song:\n"
+                  << std::setw(2) << playlistvs["data"] << std::endl;
+        try {
+            myvalidator.validate(song); // Einzelner Song wird validiert
+            std::cout << "Validation succeeded\n";
+        } catch (const std::exception &e) {
+            returntf=false;
+            std::cerr << "Validation failed, here is why: " << e.what() << "\n";
+        }
+    }
+    return returntf;
+    */
 }
 

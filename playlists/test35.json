@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "album": "asd",
+      "artist": 2,
+      "date": "testt",
+      "explicit": "asd",
+      "genre": false,
+      "length": 123,
+      "title": ""
+    }
+  ]
+}
