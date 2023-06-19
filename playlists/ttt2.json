@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "album": "Befehl_von_ganz_unten",
+      "artist": "Deichkind",
+      "date": 2012,
+      "explicit": false,
+      "genre": "Rap",
+      "length": "03_11",
+      "title": "Leider_Geil"
+    },
+    {
+      "album": "Befehl_von_ganz_unten2",
+      "artist": "Deichkind2",
+      "date": 2012,
+      "explicit": true,
+      "genre": "Rap2",
+      "length": "03_11",
+      "title": "Leider_Geil2"
+    },
+    {
+      "album": "Aufstand_im_Schlaraffenland",
+      "artist": "Deichkind",
+      "date": 2006,
+      "explicit": false,
+      "genre": "elektro",
+      "length": "04_40",
+      "title": "Remmidemmi"
+    },
+    {
+      "album": "Neues_Vom_Dauerzustand",
+      "artist": "Deichkind",
+      "date": 2023,
+      "explicit": false,
+      "genre": "elektro",
+      "length": "03_13",
+      "title": "Delle_Am_Helm"
+    },
+    {
+      "album": "Drucker",
+      "artist": "Deichkind",
+      "date": 2023,
+      "explicit": false,
+      "genre": "elektro",
+      "length": "02_08",
+      "title": "Drucker"
+    },
+    {
+      "album": "testalbum",
+      "artist": "dertester",
+      "date": 2021,
+      "explicit": false,
+      "genre": "testsongs",
+      "length": "05_27",
+      "title": "test"
+    }
+  ]
+}

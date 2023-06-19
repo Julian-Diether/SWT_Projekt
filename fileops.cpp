@@ -14,7 +14,6 @@
 #include <stdexcept>//um z.B. std::invalid_argument zu catchen
 #include <vector>//dynamische speicher allokation
 #include "libraries/utf8library/source/utf8.h"//erkennen und filtern von sonderzeichen
-//#include "libraries/json-schema-validator-main/src/nlohmann/json-schema.hpp"//schema/syntax validator SCHROTT
 #include "libraries/nlohmann/json.hpp"//json manipulation
 
 //inkludierung globaler variablen
@@ -49,6 +48,7 @@ void mydeletefile();
 void mysearchfile();
 void myeditfile(int select);
 void myrenamefile();
+void myduplicatefile();
 void mylistfiles();
 
 void myexit(std::string inpute);
@@ -60,7 +60,7 @@ void mycheckname(const std::string filenamecn);
 nlohmann::json myreadfile(int select2);
 void mywritefile(std::string filenamewf, const nlohmann::json writefilewf, bool currentfilewf);
 std::string myvalidateutf8(std::string str);
-bool myvalidatesyntax(const nlohmann::json playlistvs);
+bool myvalidatesyntax(const nlohmann::json& playlistvs);
 
 void myinitialize() {
 
@@ -793,7 +793,6 @@ void myrenamefile() {
     //filename wird nichzt benutzt, da hier keine datei geoeffnet wird und es (z.B.) bei myprintfile() zu logischen fehlern kommen koennte
     std::string filenameold;
     std::string filenamenew;
-    nlohmann::json renameplaylist;
     
     repeat=true;
     while (repeat) {
@@ -837,6 +836,62 @@ void myrenamefile() {
                     if(myjanein("Zurzeck zum Hauptmenue? \'Nein\' --> erneuter Versuch")) {
                         repeat=false;
                     }
+                }
+            } else {
+                if(!myjanein("Eingegebener Dateiname existiert bereits! Erneut versuchen?")) {
+                    repeat=false;
+                }
+            }
+        } else {
+            if(!myjanein("Eingegebener Dateiname existiert nicht! Erneut versuchen?")) {
+                repeat=false;
+            }
+        }
+    }
+    main_menu();
+}
+
+void myduplicatefile() {
+    //filename wird nichzt benutzt, da hier keine datei geoeffnet wird und es (z.B.) bei myprintfile() zu logischen fehlern kommen koennte
+    std::string filenameold;
+    std::string filenamenew;
+    
+    repeat=true;
+    while (repeat) {
+        //loop verlassen, wenn erfolgreich umbenannt oder aufgegeben
+        mydashedline();
+        std::cout << "Geben sie den Namen der zu duplizierenden Playlist ein: ";
+        std::getline(std::cin, filenameold);
+        mycheckname(filenameold);
+        tempstring2 = filenameold;
+        filenameold = myaddjson(filenameold, true);
+
+        if(std::filesystem::exists(filenameold)) {
+            std::cout << " Namen fuer duplizierte Playlist eingeben: ";
+            std::getline(std::cin, filenamenew);
+            mycheckname(filenamenew);
+            tempstring3 = filenamenew;
+            filenamenew = myaddjson(filenamenew, true);
+
+            if(!std::filesystem::exists(filenamenew)) {
+                //hier passen beide Dateinamen, es kann also fortgefahren werden!!!
+                tempstring = "\'" + tempstring2 + "\'" + " wird in " + "\'" + tempstring3 + "\'" + " dupliziert. Fortfahren?";
+                if(myjanein(tempstring)) {
+
+                    try {
+                        std::filesystem::copy(filenameold, filenamenew);
+                    }
+                    catch (const std::filesystem::filesystem_error& e) {
+                        std::cout << "Fehler! Datei konnte nicht dupliziert werden. Fehlercode: 14 - mehr Informationen: " << e.what() << std::endl;
+                        if(myjanein("Zurzeck zum Hauptmenue? \'Nein\' --> erneuter Versuch")) {
+                        repeat=false;
+                    }
+                    }
+
+                    mydashedline();
+                    std::cout << "\tDie Datei wurde erfolgreich dupliziert!" << std::endl;
+                    repeat=false;
+                    mywaitenter();
                 }
             } else {
                 if(!myjanein("Eingegebener Dateiname existiert bereits! Erneut versuchen?")) {
@@ -1031,6 +1086,7 @@ nlohmann::json myreadfile(int select2) {
         }
     };
     std::string filenameread;
+    std::string tempstringfr = "";
     bool repeatread = true;//damit andere loops nicht beeinflusst werden!!! koennte sonst KATASTROPHAL werden.
     bool makecurrentfile=false;//die datei die in myprintfile() angezeigt wird (aus der musik abgespielt werden soll)
     int continuecounter = 0;
@@ -1038,16 +1094,16 @@ nlohmann::json myreadfile(int select2) {
     switch(select2) {
         case 1:
     //z.b. 1=search, 2=delete, 3=open, 4=edit, usw...
-            tempstring2="Name der zu oeffnenden Playlist eingeben: ";
+            tempstringfr="Name der zu oeffnenden Playlist eingeben: ";
             //userconfirm=false;//tempstring3="< wird " + tempstring3 + " geoeffnet. Fortfahren?";//Dateiname hier noch nicht verfuegbar
             makecurrentfile=true;
             //follow the pattern! dann auch unnnoetige abfragen spaeter in den einzelnen funktionen entfernen
         break;
         case 2:
-            tempstring2="Name der zu durchsuchenden Playlist eingeben: ";
+            tempstringfr="Name der zu durchsuchenden Playlist eingeben: ";
         break;
         case 3:
-            tempstring2="Name der zu bearbeitenden Playlist eingeben: ";
+            tempstringfr="Name der zu bearbeitenden Playlist eingeben: ";
             makecurrentfile=true;
         break;
         default:
@@ -1064,7 +1120,7 @@ nlohmann::json myreadfile(int select2) {
                 main_menu();
             }
         }
-        std::cout << tempstring2;
+        std::cout << tempstringfr;
         std::getline(std::cin, filenameread);
         mycheckname(filenameread);
         filenameread = myaddjson(filenameread, true);
@@ -1099,12 +1155,19 @@ nlohmann::json myreadfile(int select2) {
             if(myvalidatesyntax(playlistread)) {
                 std::cout << "     -Dateiformat ist gueltig" << std::endl;
             } else {
+                continuecounter++;
+                repeatread = true;
                 playlistread.clear();
-                mywaitenter();
-                main_menu();
+                //mywaitenter();
+                //main_menu();
             }
 
-            return playlistread;
+            if(!repeatread) {
+                return playlistread;
+            }//oder wir verlassen hier den loop und gehen zum return am ende der funktion
+            //  ^^^^der return wird ja nur gerufen, wenn die datei erfolgreich geoeffnen und
+            //      ueberprueft wurde. ansonsten wird die funktion durch aufrufen der
+            //      main_menu() bzw. myexit() verlassen und keine playlist muss returned werden
             //-----------------------------------------------------------------
             //was returnen wir, wenn es nicht klappt? leere playlist und das wird dann per if statement geprueft und eine eigene fehlermeldung ausgegeben?!
             //-----------------------------------------------------------------
@@ -1114,7 +1177,7 @@ nlohmann::json myreadfile(int select2) {
         catch (const std::exception& error) {
             continuecounter++;
             repeatread = true;//erneut versuchen, da fehler
-            std::cout << "\nDatei konnte nicht geoeffnet werden! Fehlercode: 02 mehr informationen: " << std::endl << error.what() << std::endl;
+            std::cout << "\nDatei konnte nicht geoeffnet werden! Fehlercode: 02 - mehr informationen: " << std::endl << error.what() << std::endl;
             mydashedline();
         }
     }
@@ -1190,29 +1253,120 @@ std::string myvalidateutf8(std::string str) {
     return temp;
 }
 
-bool myvalidatesyntax(const nlohmann::json playlistvs) {
+bool myvalidatesyntax(const nlohmann::json& playlistvs) {
     
     bool validvs = true;
     long long unsigned int lengthvs = 0;// [-Wconversion]
-    std::string tempstringvs = "";
-    int tempintvs = 0;
-    bool tempboolvs = false;
-    std::string attributevs;
+    //std::string tempstringvs = "";
+    std::string tempstring2vs = "";
+    bool error1vs = false;//syntax falsch
+    bool error2vs = false;//objekt fehlt
+    std::vector<std::string> errmsgs1;
+    std::vector<std::string> errmsgs2;
 
-    lengthvs = playlistvs["data"].size();//ist immer >0, da sonst
-    std::cout << "asdasdasdasdasdasdasd - laenge: " << lengthvs << std::endl;
-    for(long long unsigned i=0; i<lengthvs; i++) {
+    if(!playlistvs.contains("data")) {
+        validvs = false;
+        mydashedline();
+        std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;
+        std::cout << "\tDas Objekt  \"data\" existiert nicht" << std::endl;
+    } else {
+        lengthvs = playlistvs["data"].size();//ist immer >0, da sonst
+        std::cout << "asdasdasdasdasdasdasd - laenge: " << lengthvs << std::endl;
 
-        try{
-            attributevs = "Titel";tempstringvs = playlistvs["data"][i]["title"]; //std::cout << i << " +1 == " << playlistvs["data"][i]["title"] << std::endl;
-            attributevs = "Album";tempstringvs = playlistvs["data"][i]["album"]; //std::cout << i << " +2 == " << playlistvs["data"][i]["album"] << std::endl;
-            attributevs = "Interpret";tempstringvs = playlistvs["data"][i]["artist"]; //std::cout << i << " +3 == " << playlistvs["data"][i]["artist"] << std::endl;
-            attributevs = "Erscheinungsjahr";tempintvs = playlistvs["data"][i]["date"]; //std::cout << i << " +4 == " << playlistvs["data"][i]["date"] << std::endl;
-            attributevs = "Laenge";tempstringvs = playlistvs["data"][i]["length"]; //std::cout << i << " +5 == " << playlistvs["data"][i]["length"] << std::endl;
-            attributevs = "Genre";tempstringvs = playlistvs["data"][i]["genre"]; //std::cout << i << " +6 == " << playlistvs["data"][i]["genre"] << std::endl;
-            attributevs = "Jugendfrei";tempboolvs = playlistvs["data"][i]["explicit"]; //std::cout << i << " +7 == " << playlistvs["data"][i]["explicit"] << std::endl;
+        for(long long unsigned i=0; i<lengthvs; i++) {
+
+            //ueberpruefen der einzelnen merkmale fuer jeden song
+            if(playlistvs["data"][i].contains("title")) {
+                if (!(playlistvs["data"][i]["title"].type() == nlohmann::json::value_t::string)) {
+                    error2vs = true;
+                    tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Titel";
+                    errmsgs2.push_back(tempstring2vs);
+                }
+            } else {
+                error1vs = true;
+                tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Titel";
+                errmsgs1.push_back(tempstring2vs);
+            }
+
+
+            if(playlistvs["data"][i].contains("album")) {
+                if (!(playlistvs["data"][i]["album"].type() == nlohmann::json::value_t::string)) {
+                    error2vs = true;
+                    tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Album";
+                    errmsgs2.push_back(tempstring2vs);
+                }
+            } else {
+                error1vs = true;
+                tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Album";
+                errmsgs1.push_back(tempstring2vs);
+            }
+
+
+            if(playlistvs["data"][i].contains("artist")) {std::cout << "ja" << std::endl;
+                if (!(playlistvs["data"][i]["artist"].type() == nlohmann::json::value_t::string)) {
+                    error2vs = true;
+                    tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Interpret";
+                    errmsgs2.push_back(tempstring2vs);
+                }
+            } else {
+                error1vs = true;
+                tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Interpret";
+                errmsgs1.push_back(tempstring2vs);
+            }
+
+
+            if(playlistvs["data"][i].contains("date")) {
+                if (!(playlistvs["data"][i]["date"].type() == nlohmann::json::value_t::number_unsigned)) {
+                    error2vs = true;
+                    tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Erscheinungsjahr";
+                    errmsgs2.push_back(tempstring2vs);
+                }
+            } else {
+                error1vs = true;
+                tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Erscheinungsjahr";
+                errmsgs1.push_back(tempstring2vs);
+            }
+
+
+            if(playlistvs["data"][i].contains("length")) {
+                if (!(playlistvs["data"][i]["length"].type() == nlohmann::json::value_t::string)) {
+                    error2vs = true;
+                    tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Laenge";
+                    errmsgs2.push_back(tempstring2vs);
+                }
+            } else {
+                error1vs = true;
+                tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Laenge";
+                errmsgs1.push_back(tempstring2vs);
+            }
+
+
+            if(playlistvs["data"][i].contains("genre")) {
+                if (!(playlistvs["data"][i]["genre"].type() == nlohmann::json::value_t::string)) {
+                    error2vs = true;
+                    tempstring2 = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Genre";
+                    errmsgs2.push_back(tempstring2);
+                }
+            } else {
+                error1vs = true;
+                tempstring2 = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Genre";
+                errmsgs1.push_back(tempstring2);
+            }
+
+
+            if(playlistvs["data"][i].contains("explicit")) {
+                if (!(playlistvs["data"][i]["explicit"].type() == nlohmann::json::value_t::boolean)) {
+                    error2vs = true;
+                    tempstring2 = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Jugenfrei";
+                    errmsgs2.push_back(tempstring2);
+                }
+            } else {
+                error1vs = true;
+                tempstring2 = "Song Nr. " + std::to_string(i+1) + " - Fehlendes Attribut: Jugendfrei";
+                errmsgs1.push_back(tempstring2);
+            }
             //mydashedline();
-        }
+        /*}
         catch(const std::exception& errorvs) {//  der for loop bricht trotzdem nach erstem catch ab :(
             validvs = false;
             mydashedline();
@@ -1228,79 +1382,46 @@ bool myvalidatesyntax(const nlohmann::json playlistvs) {
             std::cout << "Song Nr. " << (i+1) << " -  Fehlendes Attribut: " << attributevs << std::endl;
             //std::cerr << "mehr Informationen: " << error2vs.what() << std::endl;
             continue;
+        }*/
+    
+        }//end for loop
+    }//end: data exists
+/*
+mydashedline();//////////////test
+    if(error1vs) {//////////////test
+        std::cout << "true" << std::endl;//////////////test
+    } else {//////////////test
+        std::cout << "false" << std::endl;//////////////test
+    }//////////////test
+    if(error2vs) {//////////////test
+        std::cout << "true" << std::endl;//////////////test
+    } else {//////////////test
+        std::cout << "false" << std::endl;//////////////test
+    }//////////////test
+    std::cout << errmsgs1.size() << std::endl;//////////////test
+    std::cout << errmsgs2.size() << std::endl;//////////////test
+*/
+
+    //Ausgeben der Fehlermeldungen, "data" existiert but einzelne elemente fehlen oder sind vom falschen typ!!!
+    if(error1vs) {
+        validvs = false;
+        mydashedline();
+        std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;
+        for(const auto& errmsg : errmsgs1) {
+            std::cout << errmsg << std::endl;
         }
     }
-    
-    //apeasement fur [-Wunused-but-set-variable]
-    tempintvs++;
-    static_cast<void>(tempboolvs);// :)
-    
-    return validvs;
-    
 
-    /*Bibliothek kann einfach nicht installiert werden
-    //https://github.com/pboettch/json-schema-validator
-
-    //hier kommt unser syntax. Wir speichern ihn NICHT in einer externen .json Datei, da es sonst probleme geben koennte wenn die Datei
-    //nicht geoeffnet werden kann!!!! Viel zu Fehler anfaellig und unnoetig komplex. macht es aber schwieriger den Syntax zu aendern!!
-    static nlohmann::json playlist_schema = R"(
-    {
-    "type": "object",
-    "properties": {
-        "data": {
-            "type": "array",
-        "items": {
-            "type": "object",
-        "properties": {
-            "album": {
-              "type": "string"
-            },
-            "artist": {
-              "type": "string"
-            },
-            "date": {
-              "type": "integer"
-            },
-            "explicit": {
-              "type": "boolean"
-            },
-            "genre": {
-              "type": "string"
-            },
-            "length": {
-              "type": "string"
-            },
-            "title": {
-              "type": "string"
-            }
-        },
-        "required": ["album", "artist", "date", "explicit", "genre", "length", "title"],
-        "additionalProperties": true
-        }
-      }
-    },
-    "required": ["data"],
-    "additionalProperties": true
-    }
-
-    )"_json;
-    //^^additionalProperties auf true: Es sollte keine Fehlermeldung geben, nur weil zusaetzlich zu allen hier verwendeten infos
-    //noch andere im Programm gespeichert werden!!!! Diese koennte von anderen Programmen/Diensten/Entwicklern genutzt werden!!
-    bool returntf = true;
-    nlohmann::json_schema::json_validator myvalidator;
-
-    for (auto &song : playlistvs) {
-        std::cout << "About to validate this song:\n"
-                  << std::setw(2) << playlistvs["data"] << std::endl;
-        try {
-            myvalidator.validate(song); // Einzelner Song wird validiert
-            std::cout << "Validation succeeded\n";
-        } catch (const std::exception &e) {
-            returntf=false;
-            std::cerr << "Validation failed, here is why: " << e.what() << "\n";
+    if(error2vs) {
+        validvs = false;
+        if(error1vs) {mydashedline();} else
+        {std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;}
+        for(const auto& errmsg : errmsgs2) {
+            std::cout << errmsg << std::endl;
         }
     }
-    return returntf;
-    */
+
+    //tatsaechlicher return
+    return validvs;    
 }
 

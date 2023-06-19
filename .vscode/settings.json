@@ -70,6 +70,9 @@
         "thread": "cpp",
         "bitset": "cpp",
         "regex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "csignal": "cpp",
+        "unordered_set": "cpp",
+        "span": "cpp"
     }
 }

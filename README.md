@@ -31,6 +31,7 @@ Gruppe1 -- Julian Diether, Lionel Felipe, Noah Traub, Frederik Kempke
 
     -12 --> einegebene zahl ist viel zu gross terminate: 'std::out_of_range' (stoi)
 
+    -14 --> die datei konnte nicht dupliziert werden terminate: 'std::filesystem::filesystem_error' (std::filesystem::copy())
 
 
 ## Erklaerung saemtlicher Funktionen
@@ -74,6 +75,10 @@ void myeditfile(int select) {
 
 void myrenamefile() {
     //benennt eine playlist in einen beliebigen namen um
+}
+
+void myduplicatefile() {
+    //dupliziert ein playlist in eine neue mit beliebigem namen
 }
 
 void mylistfiles() {
@@ -553,6 +558,29 @@ DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
 -validierung des syntax hinzugefuegt. falsch formatierte dateien werden jetzt nicht geoeffnet und eine Fehlermeldung wird ausgegeben
 
 todo: saemtliche zahlen-eingaben mit kommazahlen ueberpruefen!! Auch z.B. wieviele Songs hinzugefuegt werden sollen!!!!!!!
+
+-alter validierungscode und ungenutzte bibliothek entfernt
+
+-saemtliche logik fehler beim ueberpruefen des syntaxes einer playlist behoben myvalidatesyntax() in myreadfile()
+
+todo: position von return playlistread; in myreadfile() ueberdenken!! siehe kommentar vor dem jetzigen return!!!!!
+
+-diverse variablen in myreadfile() und myvalidatesyntax() ersetzt um probleme zu vermeiden
+
+-endlos-schleife beim oeffnen einer datei mit falschem syntax behoben
+
+todo: verify boolean funktion die dann auch beim syntax aufgerufen wird!!!
+
+-myvalidatesyntax() sehr stark vereinfacht!
+
+-myduplicatefile() ergaenzt
+
+-unbenutzte variable in myrenamefile() geloescht
+
+todo: bei mydeletefile() sicherstellen, dass die playlist existiert bevor sie geloescht werden kann !!
+    vergleichbar mit myrenamefile() myduplicatefile()
+
+
 
 
 </pre>
