@@ -73,6 +73,7 @@
         "variant": "cpp",
         "csignal": "cpp",
         "unordered_set": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "future": "cpp"
     }
 }

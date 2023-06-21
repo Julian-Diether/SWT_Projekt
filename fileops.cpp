@@ -16,6 +16,9 @@
 #include "libraries/utf8library/source/utf8.h"//erkennen und filtern von sonderzeichen
 #include "libraries/nlohmann/json.hpp"//json manipulation
 
+#include "main.cpp"
+#include "menu.cpp"
+
 //inkludierung globaler variablen
 std::string mypath;
 std::string settingsdir = "settings.json";
@@ -1251,7 +1254,7 @@ std::string myvalidateutf8(std::string str) {
     std::replace(temp.begin(), temp.end(), '{', '?');
     std::replace(temp.begin(), temp.end(), '}', '?');
     return temp;
-}
+}   
 
 bool myvalidatesyntax(const nlohmann::json& playlistvs) {
     
@@ -1271,7 +1274,6 @@ bool myvalidatesyntax(const nlohmann::json& playlistvs) {
         std::cout << "\tDas Objekt  \"data\" existiert nicht" << std::endl;
     } else {
         lengthvs = playlistvs["data"].size();//ist immer >0, da sonst
-        std::cout << "asdasdasdasdasdasdasd - laenge: " << lengthvs << std::endl;
 
         for(long long unsigned i=0; i<lengthvs; i++) {
 
@@ -1302,7 +1304,7 @@ bool myvalidatesyntax(const nlohmann::json& playlistvs) {
             }
 
 
-            if(playlistvs["data"][i].contains("artist")) {std::cout << "ja" << std::endl;
+            if(playlistvs["data"][i].contains("artist")) {
                 if (!(playlistvs["data"][i]["artist"].type() == nlohmann::json::value_t::string)) {
                     error2vs = true;
                     tempstring2vs = "Song Nr. " + std::to_string(i+1) + " - Inkorrektes Attribut: Interpret";

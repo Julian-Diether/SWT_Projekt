@@ -28,13 +28,13 @@
       "title": "a"
     },
     {
-      "album": "das test album2",
-      "artist": "der tester 1",
+      "album": "das_test_album2",
+      "artist": "der_tester 1",
       "date": 2012,
       "explicit": true,
-      "genre": "test musik",
+      "genre": "test_musik",
       "length": "04_31",
-      "title": "der song name"
+      "title": "der_song_name"
     },
     {
       "album": "test_album",

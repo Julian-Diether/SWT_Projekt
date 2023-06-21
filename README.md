@@ -577,7 +577,7 @@ todo: verify boolean funktion die dann auch beim syntax aufgerufen wird!!!
 
 -unbenutzte variable in myrenamefile() geloescht
 
-todo: bei mydeletefile() sicherstellen, dass die playlist existiert bevor sie geloescht werden kann !!
+DONEtodo: bei mydeletefile() sicherstellen, dass die playlist existiert bevor sie geloescht werden kann !!
     vergleichbar mit myrenamefile() myduplicatefile()
 
 

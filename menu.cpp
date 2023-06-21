@@ -3,6 +3,8 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
+#include "main.cpp"
+#include "fileops.cpp"
 
 //eigene variablen
 int counter=0;
@@ -27,6 +29,7 @@ void myduplicatefile();
 void mylistfiles();
 void myeditfile(int select);
 void myexit(std::string inpute);
+void mydashedline();
 
 void welcome_msg()
 {
