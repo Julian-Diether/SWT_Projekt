@@ -16,8 +16,6 @@
 #include "libraries/utf8library/source/utf8.h"//erkennen und filtern von sonderzeichen
 #include "libraries/nlohmann/json.hpp"//json manipulation
 
-#include "main.cpp"
-#include "menu.cpp"
 
 //inkludierung globaler variablen
 std::string mypath;
@@ -1141,7 +1139,7 @@ nlohmann::json myreadfile(int select2) {
             //}
         }
 
-        std::cout << "Datei >" << filenameread << "< wird geoeffnet.";// << std::endl;
+        std::cout << "Datei >" << filenameread << "< wird geoeffnet." << std::endl;
         try {
             std::ifstream fileread(filenameread);
             if (!fileread.is_open()) {

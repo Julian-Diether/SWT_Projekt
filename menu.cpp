@@ -3,8 +3,6 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
-#include "main.cpp"
-#include "fileops.cpp"
 
 //eigene variablen
 int counter=0;
