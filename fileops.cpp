@@ -1026,7 +1026,7 @@ bool myjanein(std::string messagejn) {
 }
 
 std::string myaddjson(std::string filenameaj, bool addpath) {
-    //std::cout << "testsetsttests111: " << filenameaj << std::endl;
+    
     if (filenameaj.find(".json") != std::string::npos) {
     } else {
         filenameaj = filenameaj + ".json";//.json wird angefuegt
@@ -1036,7 +1036,6 @@ std::string myaddjson(std::string filenameaj, bool addpath) {
             filenameaj = mypath + filenameaj;
         }
     }
-    //std::cout << "testsetsttests222: " << filenameaj << std::endl;
     return filenameaj;
 }
 
@@ -1366,41 +1365,8 @@ bool myvalidatesyntax(const nlohmann::json& playlistvs) {
                 errmsgs1.push_back(tempstring2);
             }
             //mydashedline();
-        /*}
-        catch(const std::exception& errorvs) {//  der for loop bricht trotzdem nach erstem catch ab :(
-            validvs = false;
-            mydashedline();
-            std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;
-            std::cout << "Song Nr. " << (i+1) << " -  Inkorrektes Attribut: " << attributevs << std::endl;
-            std::cerr << "mehr Informationen: " << errorvs.what() << std::endl;
-            continue;
-        }
-        catch(...) {//const nlohmann::json::exception& error2vs) {
-            validvs = false;
-            mydashedline();
-            std::cout << "Fehler! Datei Format ist inkorrekt. Fehlercode: 11" << std::endl;
-            std::cout << "Song Nr. " << (i+1) << " -  Fehlendes Attribut: " << attributevs << std::endl;
-            //std::cerr << "mehr Informationen: " << error2vs.what() << std::endl;
-            continue;
-        }*/
-    
         }//end for loop
     }//end: data exists
-/*
-mydashedline();//////////////test
-    if(error1vs) {//////////////test
-        std::cout << "true" << std::endl;//////////////test
-    } else {//////////////test
-        std::cout << "false" << std::endl;//////////////test
-    }//////////////test
-    if(error2vs) {//////////////test
-        std::cout << "true" << std::endl;//////////////test
-    } else {//////////////test
-        std::cout << "false" << std::endl;//////////////test
-    }//////////////test
-    std::cout << errmsgs1.size() << std::endl;//////////////test
-    std::cout << errmsgs2.size() << std::endl;//////////////test
-*/
 
     //Ausgeben der Fehlermeldungen, "data" existiert but einzelne elemente fehlen oder sind vom falschen typ!!!
     if(error1vs) {
