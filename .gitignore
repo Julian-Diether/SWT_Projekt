@@ -1,2 +1,11 @@
 
-/test-cases/
+.vscode/
+libraries/
+playlists/
+
+fileops.cpp
+main.cpp
+main.exe
+menu.cpp
+README.md
+settings.json

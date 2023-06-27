@@ -554,17 +554,11 @@ DONEtodo:uerberpruefen ob myvalidate ueberall angewendet wird
 -logik fehler beim validieren des erscheinungsjahr beim hinzufuegen eines songs zur playlist behoben
 
 -kleinere fehler beim duplizieren eines songs behoben
-</pre>
----
-**18.06.**
-<pre>
+
 -validierung des syntax hinzugefuegt. falsch formatierte dateien werden jetzt nicht geoeffnet und eine Fehlermeldung wird ausgegeben
 
 todo: saemtliche zahlen-eingaben mit kommazahlen ueberpruefen!! Auch z.B. wieviele Songs hinzugefuegt werden sollen!!!!!!!
-</pre>
----
-**19.06.**
-<pre>
+
 -alter validierungscode und ungenutzte bibliothek entfernt
 
 -saemtliche logik fehler beim ueberpruefen des syntaxes einer playlist behoben myvalidatesyntax() in myreadfile()
