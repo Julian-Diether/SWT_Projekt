@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "album": "testsongs_das_album",
+      "artist": "dertestsaenger",
+      "date": 2009,
+      "explicit": false,
+      "genre": "testmusik",
+      "length": "05_39",
+      "title": "testsing"
+    }
+  ]
+}
