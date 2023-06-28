@@ -1,0 +1,193 @@
+{
+  "data": [
+    {
+      "album": "21",
+      "artist": "Adele",
+      "date": 2011,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:48",
+      "title": "Rolling in the Deep"
+    },
+    {
+      "album": "Blurred Lines",
+      "artist": "Robin Thicke ft. T.I.",
+      "date": 2013,
+      "explicit": true,
+      "genre": "R&B",
+      "length": "04:23",
+      "title": "Blurred Lines"
+    },
+    {
+      "album": "Get Lucky",
+      "artist": "Daft Punk ft. Pharrell W.",
+      "date": 2013,
+      "explicit": false,
+      "genre": "Electronic",
+      "length": "04:08",
+      "title": "Get Lucky"
+    },
+    {
+      "album": "Royals",
+      "artist": "Lorde",
+      "date": 2013,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:10",
+      "title": "Royals"
+    },
+    {
+      "album": "Happy",
+      "artist": "Pharrell Williams",
+      "date": 2013,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:53",
+      "title": "Happy"
+    },
+    {
+      "album": "Uptown Funk",
+      "artist": "Mark Ronson ft. Bruno Mars",
+      "date": 2014,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "04:31",
+      "title": "Uptown Funk"
+    },
+    {
+      "album": "Thinking Out Loud",
+      "artist": "Ed Sheeran",
+      "date": 2014,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "04:41",
+      "title": "Thinking Out Loud"
+    },
+    {
+      "album": "Shape of You",
+      "artist": "Ed Sheeran",
+      "date": 2017,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:53",
+      "title": "Shape of You"
+    },
+    {
+      "album": "Hello",
+      "artist": "Adele",
+      "date": 2015,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "04:55",
+      "title": "Hello"
+    },
+    {
+      "album": "Somebody That I Used to Know",
+      "artist": "Gotye feat. Kimbra",
+      "date": 2011,
+      "explicit": false,
+      "genre": "Alternative",
+      "length": "04:04",
+      "title": "Somebody That I Used to Know"
+    },
+    {
+      "album": "Shape of You",
+      "artist": "Ed Sheeran",
+      "date": 2017,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:53",
+      "title": "Shape of You"
+    },
+    {
+      "album": "nATIVE",
+      "artist": "OneRepublic",
+      "date": 2012,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "04:17",
+      "title": "cointung sTARS"
+    },
+    {
+      "album": "Radioactive",
+      "artist": "Imagine Dragons",
+      "date": 2012,
+      "explicit": false,
+      "genre": "Alternative",
+      "length": "03:08",
+      "title": "Radioactive"
+    },
+    {
+      "album": "All of Me",
+      "artist": "John Legend",
+      "date": 2013,
+      "explicit": false,
+      "genre": "R&B",
+      "length": "04:29",
+      "title": "All of Me"
+    },
+    {
+      "album": "Someone Like You",
+      "artist": "Adele",
+      "date": 2011,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "04:45",
+      "title": "Someone Like You"
+    },
+    {
+      "album": "Love Yourself",
+      "artist": "Justin Bieber",
+      "date": 2015,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:53",
+      "title": "Love Yourself"
+    },
+    {
+      "album": "Can't Stop the Feeling!",
+      "artist": "Justin Timberlake",
+      "date": 2016,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:56",
+      "title": "Can't Stop the Feeling!"
+    },
+    {
+      "album": "Roar",
+      "artist": "Katy Perry",
+      "date": 2013,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:42",
+      "title": "Roar"
+    },
+    {
+      "album": "Shake It Off",
+      "artist": "Taylor Swift",
+      "date": 2014,
+      "explicit": false,
+      "genre": "Pop",
+      "length": "03:39",
+      "title": "Shake It Off"
+    },
+    {
+      "album": "Despacito",
+      "artist": "Luis Fonsi ft. Daddy Yankee",
+      "date": 2017,
+      "explicit": false,
+      "genre": "Latin",
+      "length": "03:48",
+      "title": "Despacito"
+    },
+    {
+      "album": "Gangnam Style",
+      "artist": "PSY",
+      "date": 2012,
+      "explicit": false,
+      "genre": "K-pop",
+      "length": "03:39",
+      "title": "Gangnam Style"
+    }
+  ]
+}

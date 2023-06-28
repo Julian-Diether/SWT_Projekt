@@ -529,6 +529,7 @@ void myeditfile(int select) {
         repeat=true;
         while(repeat) {
             if(continuecounter3>3) {
+                continuecounter3=0;
                 if(!myjanein("\tFortfahren?")) {
                     main_menu();
                 }
@@ -587,7 +588,6 @@ void myeditfile(int select) {
     int tempyear=0;
     if(select==1) {
         playlistsize+=1;
-
     
     long long unsigned int tempi =(playlistsize-1);
     
